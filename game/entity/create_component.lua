@@ -1,6 +1,14 @@
 local components = require("game.entity.components")
 
 return {
+   [components.attack] = function(amount, time_since_last_attack)
+      return {
+         name = components.attack,
+         amount = amount,
+         time_since_last_attack = time_since_last_attack,
+      }
+   end,
+
    [components.camera] = function()
       return {
          name = components.camera,

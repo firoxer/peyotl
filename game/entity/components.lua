@@ -1,4 +1,5 @@
 return table.uptight({
+   attack = "attack",
    camera = "camera",
    chase = "chase",
    collision = "collision",
