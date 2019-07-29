@@ -1,7 +1,7 @@
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 return function(rendering_config)
-   local cell = rendering_config.window_cell_size
+   local cell = rendering_config.tileset_cell_size
 
    local image = love.graphics.newImage("data/tileset.png")
    image:setFilter("nearest", "linear")

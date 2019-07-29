@@ -75,12 +75,18 @@ return table.uptight({
    },
 
    rendering = {
+      tileset_cell_size = 32,
       window_cell_size = 32,
-      --window_cell_size = 16,
-
       window_width = 24,
-      --window_width = 64,
       window_height = 24,
-      --window_height = 64,
    },
+
+--[[
+   rendering = {
+      tileset_cell_size = 32,
+      window_cell_size = 16,
+      window_width = 64,
+      window_height = 64,
+   },
+--]]
 })
