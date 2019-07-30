@@ -39,6 +39,14 @@ subjects.player_input:add_observer(function(event)
 end)
 
 function love.load(arg)
+   if table.contains(arg, "--help") then
+      print([[usage: ./run [options]
+    --profile
+    --report-memory-usage
+    --report-low-fps
+    --retard-performance]])
+      love.event.quit()
+   end
    if table.contains(arg, "--dev") then
       -- Default flags for dev
       table.insert(arg, "--report-low-fps")
