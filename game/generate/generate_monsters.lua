@@ -23,6 +23,9 @@ return function(entity_manager, levels_config)
       for _, position_c in entity_manager:iterate(components.position, components.input) do
          player_position_c = position_c
       end
+      if not player_position_c then
+         error("no player found")
+      end
 
       for i = 1, levels_config[level_name].monsters.n do
          local point = walkable_points[i % #walkable_points]

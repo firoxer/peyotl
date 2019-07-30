@@ -25,16 +25,11 @@ return table.uptight({
             --add_interval_s = 2,
          },
 
-         generation_algorithm =  "simplex",
+         generation_algorithm =  "random_squares",
          generation_algorithm_settings = {
-            a_noise_density = 0.02,
-            a_noise_threshold = 0.5,
-            a_noise_jaggedness = 8,
-
-            b_noise_density = 0.02,
-            b_noise_threshold_low = 0.5,
-            b_noise_threshold_high = 0.8,
-            b_noise_jaggedness = 8,
+            square_size_min = 2,
+            square_size_max = 15,
+            minimum_wall_density = 0.3,
          },
       },
 

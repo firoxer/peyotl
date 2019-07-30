@@ -20,15 +20,15 @@ return function(levels_config, entity_manager)
 
       subjects.entity_manager:add_observer(function(event, data)
          if event == events.component_added and data.component_name == components.collision then
-            local position_c = entity_manager:get_component(components.position, data.id)
+            local position_c = entity_manager:get_component(data.id, components.position)
             collision_matrices[position_c.level]:set(position_c.point, true)
          end
       end)
 
       subjects.entity_manager:add_observer(function(event, data)
          if event == events.component_updated and data.component_name == components.position then
-            if entity_manager:has_component(components.collision, data.id) then
-               local position_c = entity_manager:get_component(components.position, data.id)
+            if entity_manager:has_component(data.id, components.collision) then
+               local position_c = entity_manager:get_component(data.id, components.position)
                collision_matrices[position_c.level]:set(data.old_fields.point, false)
                collision_matrices[position_c.level]:set(data.new_fields.point, true)
             end

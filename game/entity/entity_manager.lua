@@ -9,12 +9,12 @@ function EntityManager:new_entity_id()
    return self._entity_id
 end
 
-function EntityManager:get_component(component_name, id)
-   return self._entities[component_name][id]
+function EntityManager:get_component(entity_id, component_name)
+   return self._entities[component_name][entity_id]
 end
 
-function EntityManager:has_component(component_name, id)
-   return self._entities[component_name][id] ~= nil
+function EntityManager:has_component(entity_id, component_name)
+   return self._entities[component_name][entity_id] ~= nil
 end
 
 function EntityManager:add_component(entity_id, component)

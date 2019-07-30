@@ -64,7 +64,7 @@ end
                renderable:set(offset_position, render_c)
             end
 
-            if entity_manager:get_component(components.opaque, id) == nil then
+            if entity_manager:get_component(id, components.opaque) == nil then
                illuminable:set(offset_position, true)
             else
                illuminable:set(offset_position, false)

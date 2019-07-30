@@ -19,7 +19,7 @@ return function(_, entity_manager)
             if attack_c.time_since_last_attack > 1 then
                for attacked_entity_id, attacked_position_c in pairs(attackable_positions) do
                   if Point.chebyshev_distance(attacking_position_c.point, attacked_position_c.point) == 1 then
-                     local health_c = entity_manager:get_component(components.health, attacked_entity_id)
+                     local health_c = entity_manager:get_component(attacked_entity_id, components.health)
                      entity_manager:update_component(attacked_entity_id, health_c, {
                         amount = health_c.amount - attack_c.amount
                      })
