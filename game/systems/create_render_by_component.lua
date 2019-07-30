@@ -40,10 +40,8 @@ end
       while true do
          coroutine.yield()
 
-         local camera_entity_position_c
-         for _, _, position_c in entity_manager:iterate(components.camera, components.position) do
-            camera_entity_position_c = position_c
-         end
+         local camera_entity_id = entity_manager:get_unique_component(components.camera)
+         local camera_entity_position_c = entity_manager:get_component(camera_entity_id, components.position)
 
          local renderable = Matrix.new()
          local illuminable = Matrix.new()

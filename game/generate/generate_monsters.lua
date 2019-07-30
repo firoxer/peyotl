@@ -19,13 +19,8 @@ return function(entity_manager, levels_config)
          error("too few walkable tiles for monsters")
       end
 
-      local player_position_c
-      for _, position_c in entity_manager:iterate(components.position, components.input) do
-         player_position_c = position_c
-      end
-      if not player_position_c then
-         error("no player found")
-      end
+      local player_entity_id = entity_manager:get_unique_component(components.input)
+      local player_position_c = entity_manager:get_component(player_entity_id, components.position)
 
       for i = 1, levels_config[level_name].monsters.n do
          local point = walkable_points[i % #walkable_points]

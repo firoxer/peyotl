@@ -30,18 +30,16 @@ return function(rendering_config, entity_manager)
          love.graphics.setColor(1, 0, 1, 1)
          love.graphics.print(tostring(love.timer.getFPS()), 0, 0)
 
-         -- Render player stats
-         local player_health_amount
-         for _, health_c in entity_manager:iterate(components.health) do
-            player_health_amount = health_c.amount
-         end
+         -- Render input entity (player) stats
+         local input_entity_id = entity_manager:get_unique_component(components.input)
+         local input_entity_health_c = entity_manager:get_component(input_entity_id, components.health)
 
          love.graphics.setColor(hsl(0.05, 0.8, 0.5, 1))
          love.graphics.rectangle(
             "fill",
             ui_unit,
             window_real_height - ui_unit * 3,
-            ((window_real_width / 2) - ui_unit * 2) * (player_health_amount / 100),
+            ((window_real_width / 2) - ui_unit * 2) * (input_entity_health_c.amount / 100),
             ui_unit * 2
          )
       end
