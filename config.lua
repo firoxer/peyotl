@@ -42,8 +42,8 @@ return table.uptight({
             lighting_max_range = 12,
             lighting_dimming_range = 6,
 
-            unexplored_alpha = 0.5,
-            explored_alpha = 0.5,
+            unexplored_alpha = 0.0,
+            explored_alpha = 0.2,
          },
 
          monsters = {
