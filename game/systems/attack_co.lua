@@ -31,6 +31,10 @@ return function(_, entity_manager)
 
          if atk_c.time_since_last_attack > atk_c.time_between_attacks then
             for atkd_entity_id, atkd_position_c in pairs(attackable_positions) do
+               if atk_position_c.level ~= atkd_position_c.level then
+                  goto continue
+               end
+
                if Point.chebyshev_distance(atk_position_c.point, atkd_position_c.point) ~= ATTACK_RANGE then
                   goto continue
                end
