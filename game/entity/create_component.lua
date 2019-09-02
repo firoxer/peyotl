@@ -1,10 +1,11 @@
 local components = require("game.entity.components")
 
 return {
-   [components.attack] = function(amount, time_since_last_attack)
+   [components.attack] = function(amount, time_between_attacks, time_since_last_attack)
       return {
          name = components.attack,
          amount = amount,
+         time_between_attacks = time_between_attacks,
          time_since_last_attack = time_since_last_attack,
       }
    end,
