@@ -6,8 +6,8 @@ local seed = require("seed")
 
 local EntityManager = require("game.entity.entity_manager")
 local bind_player_input_to_love = require("game.bind_player_input_to_love")
-local create_render = require("game.create_render")
-local create_update = require("game.create_update")
+local render_co = require("game.render_co")
+local update_co = require("game.update_co")
 local events = require("game.event.events")
 local generate = require("game.generate")
 local subjects = require("game.event.subjects")
@@ -16,16 +16,17 @@ local entity_manager = EntityManager.new()
 local game_state = { paused = false, terminating = false, restarting = false }
 local tick_input = bind_player_input_to_love(config.player_input)
 
-local render
 local update
+local render
 
 local function reset()
    seed()
 
-   update = coroutine.wrap(create_update(config.levels, entity_manager))
-   update() -- Initialize
+   update = coroutine.wrap(update_co)
+   update(config.levels, entity_manager)
 
-   render = coroutine.wrap(create_render(config.rendering, config.levels, entity_manager))
+   render = coroutine.wrap(render_co)
+   render(config.rendering, config.levels, entity_manager)
 
    generate(entity_manager, config)
 end
@@ -86,5 +87,5 @@ function love.update(dt)
 end
 
 function love.draw()
-   render()
+   render(config.rendering, config.levels, entity_manager)
 end
