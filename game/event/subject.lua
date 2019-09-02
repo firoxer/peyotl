@@ -8,11 +8,11 @@ local ignored_events = Set.new({
    events.component_updated,
 })
 
-function Subject:add_observer(observer)
+function Subject:subscribe(observer)
    self._observers[observer] = observer
 end
 
-function Subject:remove_observer(observer)
+function Subject:unsubscribe(observer)
    self._observers[observer] = nil
 end
 

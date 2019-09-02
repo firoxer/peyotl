@@ -4,7 +4,7 @@ local subjects = require("game.event.subjects")
 
 return function(_, entity_manager)
    local do_warp = false
-   subjects.player_input:add_observer(function(event)
+   subjects.player_input:subscribe(function(event)
       if event == events.warp then
          do_warp = true
       end

@@ -31,7 +31,7 @@ local function reset()
    generate(entity_manager, config)
 end
 
-subjects.player_input:add_observer(function(event)
+subjects.player_input:subscribe(function(event)
    if event == events.quit_game then
       game_state.terminating = true
    elseif event == events.toggle_game_pause then

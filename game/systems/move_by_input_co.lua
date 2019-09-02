@@ -37,14 +37,14 @@ return function(levels_config, entity_manager)
       collision_matrices[level_name] = matrix
    end
 
-   subjects.entity_manager:add_observer(function(event, data)
+   subjects.entity_manager:subscribe(function(event, data)
       if event == events.component_added and data.component_name == components.collision then
          local position_c = entity_manager:get_component(data.id, components.position)
          collision_matrices[position_c.level]:set(position_c.point, true)
       end
    end)
 
-   subjects.entity_manager:add_observer(function(event, data)
+   subjects.entity_manager:subscribe(function(event, data)
       if event == events.component_updated and data.component_name == components.position then
          if entity_manager:has_component(data.id, components.collision) then
             local position_c = entity_manager:get_component(data.id, components.position)
@@ -55,7 +55,7 @@ return function(levels_config, entity_manager)
    end)
 
    local pending_events = Queue.new()
-   subjects.player_input:add_observer(function(event)
+   subjects.player_input:subscribe(function(event)
       pending_events:enqueue(event)
    end)
 
