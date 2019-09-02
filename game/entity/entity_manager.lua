@@ -1,4 +1,4 @@
-local component_names = require("game.entity.components")
+local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
 local subjects = require("game.event.subjects")
 

@@ -1,7 +1,7 @@
 local Matrix = require("game.data_structures.matrix")
 local Point = require("game.data_structures.point")
 local Queue = require("game.data_structures.queue")
-local components = require("game.entity.components")
+local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
 local subjects = require("game.event.subjects")
 
@@ -38,16 +38,16 @@ return function(levels_config, entity_manager)
    end
 
    subjects.entity_manager:subscribe(function(event, data)
-      if event == events.component_added and data.component_name == components.collision then
-         local position_c = entity_manager:get_component(data.id, components.position)
+      if event == events.component_added and data.component_name == component_names.collision then
+         local position_c = entity_manager:get_component(data.id, component_names.position)
          collision_matrices[position_c.level]:set(position_c.point, true)
       end
    end)
 
    subjects.entity_manager:subscribe(function(event, data)
-      if event == events.component_updated and data.component_name == components.position then
-         if entity_manager:has_component(data.id, components.collision) then
-            local position_c = entity_manager:get_component(data.id, components.position)
+      if event == events.component_updated and data.component_name == component_names.position then
+         if entity_manager:has_component(data.id, component_names.collision) then
+            local position_c = entity_manager:get_component(data.id, component_names.position)
             collision_matrices[position_c.level]:set(data.old_fields.point, false)
             collision_matrices[position_c.level]:set(data.new_fields.point, true)
          end
@@ -64,7 +64,7 @@ return function(levels_config, entity_manager)
 
       while not pending_events:is_empty() do
          local event = pending_events:dequeue()
-         for entity_id, _, position_c in entity_manager:iterate(components.input, components.position) do
+         for entity_id, _, position_c in entity_manager:iterate(component_names.input, component_names.position) do
             local point_diff_x, point_diff_y = offset(event)
 
             if not point_diff_x or not point_diff_y then

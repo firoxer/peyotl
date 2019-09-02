@@ -1,66 +1,66 @@
-local components = require("game.entity.components")
+local component_names = require("game.entity.component_names")
 
 return {
-   [components.attack] = function(amount, time_between_attacks, time_since_last_attack)
+   [component_names.attack] = function(amount, time_between_attacks, time_since_last_attack)
       return {
-         name = components.attack,
+         name = component_names.attack,
          amount = amount,
          time_between_attacks = time_between_attacks,
          time_since_last_attack = time_since_last_attack,
       }
    end,
 
-   [components.camera] = function()
+   [component_names.camera] = function()
       return {
-         name = components.camera,
+         name = component_names.camera,
       }
    end,
 
-   [components.chase] = function(target)
+   [component_names.chase] = function(target)
       return {
-         name = components.chase,
+         name = component_names.chase,
          target = target,
          time_since_last_movement = math.huge,
       }
    end,
 
-   [components.collision] = function()
+   [component_names.collision] = function()
       return {
-         name = components.collision,
+         name = component_names.collision,
       }
    end,
 
-   [components.health] = function(amount, max_amount)
+   [component_names.health] = function(amount, max_amount)
       return {
-         name = components.health,
+         name = component_names.health,
          amount = amount,
          max_amount = max_amount,
       }
    end,
 
-   [components.input] = function()
+   [component_names.input] = function()
       return {
-         name = components.input,
+         name = component_names.input,
       }
    end,
 
-   [components.opaque] = function()
+   [component_names.opaque] = function()
       return {
-         name = components.opaque,
+         name = component_names.opaque,
       }
    end,
 
-   [components.position] = function(level, point)
+   [component_names.position] = function(level, point)
       return {
-         name = components.position,
+         name = component_names.position,
          level = level,
          point = point,
       }
    end,
 
-   [components.render] = function(tileset_quad_name, layer)
+   [component_names.render] = function(tileset_quad_name, layer)
       return {
-         name = components.render,
+         name = component_names.render,
          tileset_quad_name = tileset_quad_name,
          layer = layer,
       }

@@ -1,11 +1,11 @@
 local render_ui_co = require("game.render.render_ui_co")
 local render_by_component_co = require("game.render.render_by_component_co")
 local create_tileset = require("game.render.create_tileset")
-local components = require("game.entity.components")
+local component_names = require("game.entity.component_names")
 
 local function set_background_color(entity_manager)
-   local input_entity_id = entity_manager:get_unique_component(components.input)
-   local input_position_c = entity_manager:get_component(input_entity_id, components.position)
+   local input_entity_id = entity_manager:get_unique_component(component_names.input)
+   local input_position_c = entity_manager:get_component(input_entity_id, component_names.position)
    if input_position_c.level == "aboveground" then
       love.graphics.setBackgroundColor(9 / 256, 73  / 256, 63 / 256)
    else

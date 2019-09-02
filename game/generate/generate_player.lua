@@ -1,10 +1,10 @@
-local components = require("game.entity.components")
+local component_names = require("game.entity.component_names")
 local create_component = require("game.entity.create_component")
 
 local function find_free_position_c(entity_manager, level)
    local free_positions = {}
-   for tile_entity_id, position_c in entity_manager:iterate(components.position) do
-      if entity_manager:get_component(tile_entity_id, components.collision) == nil
+   for tile_entity_id, position_c in entity_manager:iterate(component_names.position) do
+      if entity_manager:get_component(tile_entity_id, component_names.collision) == nil
          and position_c.level == level
       then
          table.insert(free_positions, position_c)

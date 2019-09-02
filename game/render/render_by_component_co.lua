@@ -3,7 +3,7 @@
 local Matrix = require("game.data_structures.matrix")
 local Point = require("game.data_structures.point")
 local VisibilityCalculator = require("game.render.visibility_calculator")
-local components = require("game.entity.components")
+local component_names = require("game.entity.component_names")
 
 local function smoothen_alphas(level_config, illuminable, alphas)
    local smoothened_alphas = Matrix.new()
@@ -41,12 +41,12 @@ return function(rendering_config, levels_config, entity_manager, tileset)
    while true do
       coroutine.yield()
 
-      local camera_entity_id = entity_manager:get_unique_component(components.camera)
-      local camera_entity_position_c = entity_manager:get_component(camera_entity_id, components.position)
+      local camera_entity_id = entity_manager:get_unique_component(component_names.camera)
+      local camera_entity_position_c = entity_manager:get_component(camera_entity_id, component_names.position)
 
       local renderable = Matrix.new()
       local illuminable = Matrix.new()
-      for id, render_c, position_c in entity_manager:iterate(components.render, components.position) do
+      for id, render_c, position_c in entity_manager:iterate(component_names.render, component_names.position) do
          if position_c.level ~= camera_entity_position_c.level
             or position_c.point.x < camera_entity_position_c.point.x - (window_width / 2)
             or position_c.point.x >= camera_entity_position_c.point.x + (window_width / 2)
@@ -63,7 +63,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
             renderable:set(offset_position, render_c)
          end
 
-         if entity_manager:get_component(id, components.opaque) == nil then
+         if entity_manager:get_component(id, component_names.opaque) == nil then
             illuminable:set(offset_position, true)
          else
             illuminable:set(offset_position, false)
