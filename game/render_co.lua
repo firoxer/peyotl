@@ -3,14 +3,10 @@ local render_by_component_co = require("game.render.render_by_component_co")
 local create_tileset = require("game.render.create_tileset")
 local component_names = require("game.entity.component_names")
 
-local function set_background_color(entity_manager)
+local function set_background_color(entity_manager, levels_config)
    local input_entity_id = entity_manager:get_unique_component(component_names.input)
    local input_position_c = entity_manager:get_component(input_entity_id, component_names.position)
-   if input_position_c.level == "aboveground" then
-      love.graphics.setBackgroundColor(9 / 256, 73  / 256, 63 / 256)
-   else
-      love.graphics.setBackgroundColor(25 / 256, 16  / 256, 46 / 256)
-   end
+   love.graphics.setBackgroundColor(levels_config[input_position_c.level].background_color)
 end
 
 return function(rendering_config, levels_config, entity_manager)
@@ -29,7 +25,7 @@ return function(rendering_config, levels_config, entity_manager)
    while true do
       coroutine.yield()
 
-      set_background_color(entity_manager)
+      set_background_color(entity_manager, levels_config)
       render_by_component()
       render_ui()
    end

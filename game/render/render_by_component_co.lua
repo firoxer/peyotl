@@ -6,23 +6,22 @@ local VisibilityCalculator = require("game.render.visibility_calculator")
 local component_names = require("game.entity.component_names")
 
 local function smoothen_alphas(level_config, illuminable, alphas)
-   local smoothened_alphas = Matrix.new()
+   -- I don't know if using the same matrix as both the source and target
+   -- of smoothening is a good idea, but hey it seems to work
+   local unexplored_alpha = level_config.lighting_settings.unexplored_alpha
    for point, alpha in alphas:ipairs() do
-      if alpha <= level_config.lighting_settings.unexplored_alpha then
-         local neighbors = alphas:get_immediate_neighbors(point, true)
-         local max_neighbor_alpha = 0
-         for neighbor_point, neighbor_alpha in pairs(neighbors) do
+      if alpha <= unexplored_alpha then
+         local max_neighbor_alpha = unexplored_alpha
+         for neighbor_point, neighbor_alpha in pairs(alphas:get_immediate_neighbors(point, true)) do
             if neighbor_alpha > max_neighbor_alpha and illuminable:get(neighbor_point) then
                max_neighbor_alpha = neighbor_alpha
             end
          end
-         smoothened_alphas:set(point, max_neighbor_alpha * 0.8)
+         alphas:set(point, max_neighbor_alpha * 0.5)
       else
-         smoothened_alphas:set(point, alpha)
+         alphas:set(point, alpha)
       end
    end
-
-   return smoothened_alphas
 end
 
 return function(rendering_config, levels_config, entity_manager, tileset)
@@ -37,6 +36,14 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       )
    end
 
+   local is_out_of_view = function(camera_pos_c, render_pos_c)
+      return render_pos_c.level ~= camera_pos_c.level
+         or render_pos_c.point.x < camera_pos_c.point.x - (window_width / 2)
+         or render_pos_c.point.x >= camera_pos_c.point.x + (window_width / 2)
+         or render_pos_c.point.y < camera_pos_c.point.y - (window_height / 2)
+         or render_pos_c.point.y >= camera_pos_c.point.y + (window_height / 2)
+   end
+
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
    while true do
       coroutine.yield()
@@ -47,12 +54,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       local renderable = Matrix.new()
       local illuminable = Matrix.new()
       for id, render_c, position_c in entity_manager:iterate(component_names.render, component_names.position) do
-         if position_c.level ~= camera_entity_position_c.level
-            or position_c.point.x < camera_entity_position_c.point.x - (window_width / 2)
-            or position_c.point.x >= camera_entity_position_c.point.x + (window_width / 2)
-            or position_c.point.y < camera_entity_position_c.point.y - (window_height / 2)
-            or position_c.point.y >= camera_entity_position_c.point.y + (window_height / 2)
-         then
+         if is_out_of_view(camera_entity_position_c, position_c) then
             goto continue
          end
 
@@ -73,7 +75,6 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       end
 
       local level_config = levels_config[camera_entity_position_c.level]
-
       local calculate_alpha
       if level_config.lighting == "full" then
          calculate_alpha = function()
@@ -99,7 +100,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
             alpha_matrix:set(point, math.max(visibility_calculator:calculate(point), unexplored_alpha))
          end
 
-         alpha_matrix = smoothen_alphas(level_config, illuminable, alpha_matrix)
+         smoothen_alphas(level_config, illuminable, alpha_matrix)
 
          calculate_alpha = function(point)
             return alpha_matrix:get(point)
@@ -109,13 +110,14 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       tileset_batch:clear()
       for point, render_c in renderable:ipairs() do
          local alpha = calculate_alpha(point)
-         -- By setting everything to alpha we get both lower opacity *and* desaturation
-         tileset_batch:setColor(alpha, alpha, alpha, alpha)
-         tileset_batch:add(
-            tileset.quads[render_c.tileset_quad_name],
-            point.x * window_cell_size,
-            point.y * window_cell_size
-         )
+         if alpha > 0 then
+            tileset_batch:setColor(1, 1, 1, alpha)
+            tileset_batch:add(
+               tileset.quads[render_c.tileset_quad_name],
+               point.x * window_cell_size,
+               point.y * window_cell_size
+            )
+         end
       end
       tileset_batch:flush()
 

@@ -1,6 +1,6 @@
 local get = require("game.data_structures.point.get")
 
--- Bresenham line algorithm
+--- Bresenham line algorithm
 -- From https://stackoverflow.com/questions/4672279/bresenham-algorithm-in-javascript
 --
 -- Calls the callback for every position, carries on if the callback returns true

@@ -18,6 +18,8 @@ return table.uptight({
          width = 64,
          height = 64,
 
+         background_color = { 9 / 256, 73  / 256, 63 / 256 },
+
          lighting = "full",
 
          monsters = {
@@ -37,9 +39,11 @@ return table.uptight({
          width = 64,
          height = 64,
 
+         background_color = { 25 / 256, 16 / 256, 46 / 256 },
+
          lighting = "fog_of_war",
          lighting_settings = {
-            lighting_max_range = 12,
+            lighting_max_range = 10,
             lighting_dimming_range = 6,
 
             unexplored_alpha = 0.0,
@@ -54,7 +58,7 @@ return table.uptight({
 
             movement_erraticness = 0.1,
             damage = 3,
-            aggro_range = 16,
+            aggro_range = 8,
          },
 
          generation_algorithm = "cellular_automatons",
