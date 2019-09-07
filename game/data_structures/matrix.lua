@@ -1,3 +1,5 @@
+local yield = coroutine.yield
+
 local Point = require("game.data_structures.point")
 
 local Matrix = {}
@@ -21,16 +23,15 @@ function Matrix:set(point, elem)
 
    self._contents[point.y][point.x] = elem
 
-   self._nw_x = math.min(self._nw_x or math.huge, point.x)
-   self._nw_y = math.min(self._nw_y or math.huge, point.y)
-   self._se_x = math.max(self._se_x or -math.huge, point.x)
-   self._se_y = math.max(self._se_y or -math.huge, point.y)
+   self._bounds_up_to_date = false
 end
 
 function Matrix:remove(point)
    if self:has(point) then
       self._contents[point.y][point.x] = nil
    end
+
+   self._bounds_up_to_date = false
 end
 
 function Matrix:has(point)
@@ -108,7 +109,7 @@ function Matrix:ipairs()
    local function iter(tbl)
       for y, row in pairs(tbl) do
          for x, elem in pairs(row) do
-            coroutine.yield(Point.new(x, y), elem)
+            yield(Point.new(x, y), elem)
          end
       end
    end
@@ -119,19 +120,33 @@ function Matrix:ipairs()
 end
 
 function Matrix:bounds()
-   return
-      Point.new(self._nw_x, self._nw_y),
-      Point.new(self._se_x, self._se_y)
+   if not self._bounds_up_to_date then
+      local nw_x = math.huge
+      local nw_y = math.huge
+      local se_x = math.huge
+      local se_y = math.huge
+      for point in self:ipairs() do
+         nw_x = math.min(nw_x, point.x)
+         nw_y = math.min(nw_y, point.y)
+         se_x = math.max(se_x, point.x)
+         se_y = math.max(se_y, point.y)
+      end
+      self._nw_bound = Point.new(nw_x, nw_y)
+      self._se_bound = Point.new(se_x, se_y)
+
+      self._bounds_up_to_date = true
+   end
+
+   return self._nw_bound, self._se_bound
 end
 
 return {
    new = function()
       local instance = instantiate(Matrix, {
          _contents = {},
-         _nw_x = nil,
-         _nw_y = nil,
-         _se_x = nil,
-         _se_y = nil,
+         _bounds_up_to_date = true,
+         _nw_bound = nil,
+         _se_bound = nil,
       })
       return instance
    end

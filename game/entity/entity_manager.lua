@@ -1,3 +1,5 @@
+local yield = coroutine.yield
+
 local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
 local subjects = require("game.event.subjects")
@@ -79,7 +81,7 @@ function EntityManager:iterate(...)
 
          for id = 1, self._entity_id do
             if first_components[id] ~= nil and second_components[id] ~= nil then
-               coroutine.yield(id, first_components[id], second_components[id])
+               yield(id, first_components[id], second_components[id])
             end
          end
       else
