@@ -1,7 +1,7 @@
 --- Technically this should go under systems/ but this way it just makes more sense
+local ceil, floor, max, round = math.ceil, math.floor, math.max, math.round
 
 local Matrix = require("game.data_structures.matrix")
-local Point = require("game.data_structures.point")
 local VisibilityCalculator = require("game.render.visibility_calculator")
 local component_names = require("game.entity.component_names")
 
@@ -24,98 +24,109 @@ local function smoothen_alphas(level_config, illuminable, alphas)
    end
 end
 
+local function get_calculate_alpha(level_config, illuminable, renderable, camera_entity_position_c)
+   if level_config.lighting == "full" then
+      return function()
+         return 1
+      end
+   elseif level_config.lighting == "fog_of_war" then
+      local visibility_calculator = VisibilityCalculator.new(
+         function(point)
+            return illuminable:get(point)
+         end,
+         level_config.lighting_settings.lighting_max_range,
+         level_config.lighting_settings.lighting_dimming_range
+      )
+
+      visibility_calculator:set_light_source(camera_entity_position_c.point, camera_entity_position_c.point)
+
+      local unexplored_alpha = level_config.lighting_settings.unexplored_alpha
+
+      local alpha_matrix = Matrix.new()
+      for point in renderable:ipairs() do
+         alpha_matrix:set(point, max(visibility_calculator:calculate(point), unexplored_alpha))
+      end
+
+      smoothen_alphas(level_config, illuminable, alpha_matrix)
+
+      return function(point)
+         return alpha_matrix:get(point)
+      end
+   end
+end
+
 return function(rendering_config, levels_config, entity_manager, tileset)
+   local camera_rigidness = rendering_config.camera_rigidness
    local window_width = rendering_config.window_width
    local window_height = rendering_config.window_height
    local window_cell_size = rendering_config.window_cell_size
+   local tileset_draw_rounding = 1 / (rendering_config.tileset_cell_size / rendering_config.tileset_pixel_density)
 
-   local offset_point = function(a, b)
-      return Point.new(
-         a.x - b.x + math.floor(window_width / 2),
-         a.y - b.y + math.floor(window_height / 2)
-      )
-   end
+   local current_camera_x = 0
+   local current_camera_y = 0
 
-   local is_out_of_view = function(camera_pos_c, render_pos_c)
-      return render_pos_c.level ~= camera_pos_c.level
-         or render_pos_c.point.x < camera_pos_c.point.x - (window_width / 2)
-         or render_pos_c.point.x >= camera_pos_c.point.x + (window_width / 2)
-         or render_pos_c.point.y < camera_pos_c.point.y - (window_height / 2)
-         or render_pos_c.point.y >= camera_pos_c.point.y + (window_height / 2)
+   local is_out_of_view = function(render_pos_c)
+      return render_pos_c.point.x < floor(current_camera_x) - (window_width / 2)
+         or render_pos_c.point.x > ceil(current_camera_x) + (window_width / 2) - 1
+         or render_pos_c.point.y < floor(current_camera_y) - (window_height / 2)
+         or render_pos_c.point.y > ceil(current_camera_y) + (window_height / 2) - 1
    end
 
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
    while true do
       coroutine.yield()
 
-      local camera_entity_id = entity_manager:get_unique_component(component_names.camera)
-      local camera_entity_position_c = entity_manager:get_component(camera_entity_id, component_names.position)
+      local camera_entity_position_c = entity_manager:get_component(
+         entity_manager:get_unique_component(component_names.camera),
+         component_names.position
+      )
+
+      -- By moving the camera only a bit at a time, it gets nice and sticky
+      -- and it follows its target more naturally
+      local camera_entity_position_point = camera_entity_position_c.point
+      current_camera_x = current_camera_x + (camera_entity_position_point.x - current_camera_x) * camera_rigidness
+      current_camera_y = current_camera_y + (camera_entity_position_point.y - current_camera_y) * camera_rigidness
 
       local renderable = Matrix.new()
       local illuminable = Matrix.new()
+      -- TODO: Keep track of render_c's per position in a matrix and iterate its submatrix
+      -- instead of going to the entity manager every frame
       for id, render_c, position_c in entity_manager:iterate(component_names.render, component_names.position) do
-         if is_out_of_view(camera_entity_position_c, position_c) then
+         if position_c.level ~= camera_entity_position_c.level or is_out_of_view(position_c) then
             goto continue
          end
 
-         local offset_position = offset_point(position_c.point, camera_entity_position_c.point)
-         if not renderable:has(offset_position)
-            or renderable:get(offset_position).layer <= render_c.layer
+         if not renderable:has(position_c.point)
+            or renderable:get(position_c.point).layer <= render_c.layer
          then
-            renderable:set(offset_position, render_c)
+            renderable:set(position_c.point, render_c)
          end
 
          if entity_manager:get_component(id, component_names.opaque) == nil then
-            illuminable:set(offset_position, true)
+            illuminable:set(position_c.point, true)
          else
-            illuminable:set(offset_position, false)
+            illuminable:set(position_c.point, false)
          end
 
          ::continue::
       end
 
       local level_config = levels_config[camera_entity_position_c.level]
-      local calculate_alpha
-      if level_config.lighting == "full" then
-         calculate_alpha = function()
-            return 1
-         end
-      elseif level_config.lighting == "fog_of_war" then
-         local visibility_calculator = VisibilityCalculator.new(
-            function(point)
-               return illuminable:get(point)
-            end,
-            level_config.lighting_settings.lighting_max_range,
-            level_config.lighting_settings.lighting_dimming_range
-         )
-
-         visibility_calculator:set_light_source(
-            offset_point(camera_entity_position_c.point, camera_entity_position_c.point)
-         )
-
-         local unexplored_alpha = level_config.lighting_settings.unexplored_alpha
-
-         local alpha_matrix = Matrix.new()
-         for point in renderable:ipairs() do
-            alpha_matrix:set(point, math.max(visibility_calculator:calculate(point), unexplored_alpha))
-         end
-
-         smoothen_alphas(level_config, illuminable, alpha_matrix)
-
-         calculate_alpha = function(point)
-            return alpha_matrix:get(point)
-         end
-      end
+      local calculate_alpha =
+         get_calculate_alpha(level_config, illuminable, renderable, camera_entity_position_c)
 
       tileset_batch:clear()
       for point, render_c in renderable:ipairs() do
          local alpha = calculate_alpha(point)
          if alpha > 0 then
+            local offset_x = round(point.x - current_camera_x + floor(window_width / 2), tileset_draw_rounding)
+            local offset_y = round(point.y - current_camera_y + floor(window_height / 2), tileset_draw_rounding)
+
             tileset_batch:setColor(1, 1, 1, alpha)
             tileset_batch:add(
                tileset.quads[render_c.tileset_quad_name],
-               point.x * window_cell_size,
-               point.y * window_cell_size
+               offset_x * window_cell_size,
+               offset_y * window_cell_size
             )
          end
       end

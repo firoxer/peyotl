@@ -1,3 +1,7 @@
+_G.math.round = function(n, multiple)
+   return math.floor(n / multiple + 0.5) * multiple
+end
+
 _G.hsl =
    require("game.util.hsl")
 

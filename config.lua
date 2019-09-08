@@ -75,6 +75,10 @@ return table.uptight({
 
    rendering = {
       tileset_cell_size = 32,
+      tileset_pixel_density = 2,
+
+      camera_rigidness = 0.15,
+
       window_cell_size = 32,
       window_width = 24,
       window_height = 24,
