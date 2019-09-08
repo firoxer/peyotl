@@ -47,6 +47,10 @@ return function(levels_config, entity_manager)
             goto continue
          end
 
+         if position_c.level ~= chase_c.target.level then
+            goto continue
+         end
+
          local aggro_range = levels_config[position_c.level].monsters.aggro_range
          if Point.chebyshev_distance(position_c.point, chase_c.target.point) > aggro_range then
             goto continue
