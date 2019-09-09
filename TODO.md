@@ -1,10 +1,11 @@
 TODO
 ===
 
-* Check if function names could have descriptive prepositions
-
 * Minimap
 * Increasing run speed?
+
+* Internals
+    * Selective subscription to events so that the subscriber callbacks would be called less often
 
 * Tower level
     * Generation

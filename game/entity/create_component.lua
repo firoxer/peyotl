@@ -20,7 +20,7 @@ return {
       return {
          name = component_names.chase,
          target = target,
-         time_since_last_movement = math.huge,
+         time_at_last_movement = 0,
       }
    end,
 

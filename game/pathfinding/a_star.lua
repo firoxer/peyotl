@@ -1,5 +1,5 @@
 local Matrix = require("game.data_structures.matrix")
-local Node = require("game.pathfinder.node")
+local Node = require("game.pathfinding.node")
 local Point = require("game.data_structures.point")
 local PriorityQueue = require("game.data_structures.priority_queue")
 
