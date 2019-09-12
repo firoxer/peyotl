@@ -4,6 +4,7 @@ globals = {
 
    "string",
    "table",
+   "math",
 
    "hsl",
    "instantiate",
