@@ -15,5 +15,5 @@ return table.uptight({
    toggle_game_pause = "toggle_game_pause",
 
    component_added = "component_added",
-   component_updated = "component_updated",
+   component_to_be_updated = "component_to_be_updated",
 })

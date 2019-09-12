@@ -3,7 +3,6 @@ local Point = require("game.data_structures.point")
 local Queue = require("game.data_structures.queue")
 local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
-local subjects = require("game.event.subjects")
 
 local function offset(event)
    if event == events.move_n then
@@ -25,7 +24,7 @@ local function offset(event)
    end
 end
 
-return function(levels_config, entity_manager)
+return function(levels_config, entity_manager, player_input)
    local collision_matrices = {}
    for level_name, level_config in pairs(levels_config) do
       local matrix = Matrix.new()
@@ -37,25 +36,25 @@ return function(levels_config, entity_manager)
       collision_matrices[level_name] = matrix
    end
 
-   subjects.entity_manager:subscribe(function(event, data)
+   entity_manager.subject:subscribe(function(event, data)
       if event == events.component_added and data.component_name == component_names.collision then
-         local position_c = entity_manager:get_component(data.id, component_names.position)
+         local position_c = entity_manager:get_component(data.entity_id, component_names.position)
          collision_matrices[position_c.level]:set(position_c.point, true)
       end
    end)
 
-   subjects.entity_manager:subscribe(function(event, data)
-      if event == events.component_updated and data.component_name == component_names.position then
-         if entity_manager:has_component(data.id, component_names.collision) then
-            local position_c = entity_manager:get_component(data.id, component_names.position)
-            collision_matrices[position_c.level]:set(data.old_fields.point, false)
-            collision_matrices[position_c.level]:set(data.new_fields.point, true)
+   entity_manager.subject:subscribe(function(event, data)
+      if event == events.component_to_be_updated and data.component_name == component_names.position then
+         if entity_manager:has_component(data.entity_id, component_names.collision) then
+            local position_c = entity_manager:get_component(data.entity_id, component_names.position)
+            collision_matrices[position_c.level]:set(position_c.point, false)
+            collision_matrices[position_c.level]:set(data.updated_fields.point, true)
          end
       end
    end)
 
    local pending_events = Queue.new()
-   subjects.player_input:subscribe(function(event)
+   player_input.subject:subscribe(function(event)
       pending_events:enqueue(event)
    end)
 

@@ -2,10 +2,8 @@ local BreadthFirst = require("game.pathfinding.breadth_first")
 local Matrix = require("game.data_structures.matrix")
 local Point = require("game.data_structures.point")
 local component_names = require("game.entity.component_names")
-local events = require("game.event.events")
-local subjects = require("game.event.subjects")
 
-return function(levels_config, entity_manager)
+local function create_collision_matrices(levels_config)
    local collision_matrices = {}
    for level_name, level_config in pairs(levels_config) do
       local matrix = Matrix.new()
@@ -17,41 +15,41 @@ return function(levels_config, entity_manager)
       collision_matrices[level_name] = matrix
    end
 
+   return collision_matrices
+end
+
+return function(levels_config, entity_manager)
+   local collision_matrices = create_collision_matrices(levels_config)
    local pathfinders_by_chase_target = {}
 
-   subjects.entity_manager:subscribe(function(event, data)
-      if event == events.component_added and data.component_name == component_names.collision then
-         local position_c = entity_manager:get_component(data.id, component_names.position)
-
-         collision_matrices[position_c.level]:set(position_c.point, true)
+   entity_manager.subject:subscribe_to_any_change_of(
+      { component_names.position, component_names.collision },
+      function(event_data, position_c)
+         if event_data.updated_fields and event_data.updated_fields.point then
+            collision_matrices[position_c.level]:set(position_c.point, false)
+            collision_matrices[position_c.level]:set(event_data.updated_fields.point, true)
+         else
+            collision_matrices[position_c.level]:set(position_c.point, true)
+         end
 
          for _, pathfinder in pairs(pathfinders_by_chase_target) do
             pathfinder:update_point(position_c.point)
-         end
-      end
-   end)
 
-   subjects.entity_manager:subscribe(function(event, data)
-      if event == events.component_updated and data.component_name == component_names.position then
-         if entity_manager:has_component(data.id, component_names.input) then
-            for chase_target, pathfinder in pairs(pathfinders_by_chase_target) do
-               pathfinder:update_all(chase_target.point)
-            end
-         end
-
-         if entity_manager:has_component(data.id, component_names.collision) then
-            local position_c = entity_manager:get_component(data.id, component_names.position)
-
-            collision_matrices[position_c.level]:set(data.old_fields.point, false)
-            collision_matrices[position_c.level]:set(data.new_fields.point, true)
-
-            for _, pathfinder in pairs(pathfinders_by_chase_target) do
-               pathfinder:update_point(data.old_fields.point)
-               pathfinder:update_point(data.new_fields.point)
+            if event_data.updated_fields and event_data.updated_fields.point then
+               pathfinder:update_point(event_data.updated_fields.point)
             end
          end
       end
-   end)
+   )
+
+   entity_manager.subject:subscribe_to_any_change_of(
+      { component_names.position, component_names.input },
+      function()
+         for chase_target, pathfinder in pairs(pathfinders_by_chase_target) do
+            pathfinder:update_all(chase_target.point)
+         end
+      end
+   )
 
    while true do
       coroutine.yield()

@@ -5,16 +5,18 @@ local extra = require("extra")
 local seed = require("seed")
 
 local EntityManager = require("game.entity.entity_manager")
-local bind_player_input_to_love = require("game.bind_player_input_to_love")
+local PlayerInput = require("game.player_input")
 local render_co = require("game.render_co")
 local update_co = require("game.update_co")
 local events = require("game.event.events")
 local generate = require("game.generate")
-local subjects = require("game.event.subjects")
 
 local entity_manager = EntityManager.new()
+
 local game_state = { paused = false, terminating = false, restarting = false }
-local tick_input = bind_player_input_to_love(config.player_input)
+
+local player_input = PlayerInput.new()
+player_input:bind_to_love(config.player_input)
 
 local update
 local render
@@ -23,7 +25,7 @@ local function reset()
    seed()
 
    update = coroutine.wrap(update_co)
-   update(config.levels, entity_manager)
+   update(config.levels, entity_manager, player_input)
 
    render = coroutine.wrap(render_co)
    render(config.rendering, config.levels, entity_manager)
@@ -31,7 +33,7 @@ local function reset()
    generate(entity_manager, config)
 end
 
-subjects.player_input:subscribe(function(event)
+player_input.subject:subscribe(function(event)
    if event == events.quit_game then
       game_state.terminating = true
    elseif event == events.toggle_game_pause then
@@ -80,7 +82,7 @@ function love.update(dt)
       reset()
    end
 
-   tick_input(dt)
+   player_input:tick(dt)
    update(dt)
 
    extra.tick()

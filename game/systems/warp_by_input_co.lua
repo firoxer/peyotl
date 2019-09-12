@@ -1,10 +1,9 @@
 local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
-local subjects = require("game.event.subjects")
 
-return function(_, entity_manager)
+return function(_, entity_manager, player_input)
    local do_warp = false
-   subjects.player_input:subscribe(function(event)
+   player_input.subject:subscribe(function(event)
       if event == events.warp then
          do_warp = true
       end

@@ -5,7 +5,7 @@ local Subject = {}
 
 local ignored_events = Set.new({
    events.component_added,
-   events.component_updated,
+   events.component_to_be_updated,
 })
 
 function Subject:subscribe(observer)

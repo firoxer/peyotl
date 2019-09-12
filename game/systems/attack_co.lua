@@ -1,14 +1,13 @@
 local Point = require("game.data_structures.point")
 local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
-local subjects = require("game.event.subjects")
 
 local ATTACK_RANGE = 1
 
 return function(_, entity_manager)
    local attackable_positions = nil
 
-   subjects.entity_manager:subscribe(function(event, data)
+   entity_manager.subject:subscribe(function(event, data)
       if event == events.component_added and data.component_name == component_names.collision then
          attackable_positions = {}
          for entity_id, _, position_c in entity_manager:iterate(component_names.health, component_names.position) do

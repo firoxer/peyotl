@@ -2,7 +2,7 @@ local yield = coroutine.yield
 
 local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
-local subjects = require("game.event.subjects")
+local Subject = require("game.event.subject")
 
 local EntityManager = {}
 
@@ -30,7 +30,10 @@ function EntityManager:add_component(entity_id, component)
 
    self._components[component.name][entity_id] = component
 
-   subjects.entity_manager:notify(events.component_added, { component_name = component.name, id = entity_id })
+   self.subject:notify(events.component_added, {
+      component_name = component.name,
+      entity_id = entity_id
+   })
 end
 
 function EntityManager:get_unique_component(component_name)
@@ -51,19 +54,16 @@ function EntityManager:get_unique_component(component_name)
    return unique_entity_id, unique_component
 end
 
-function EntityManager:update_component(entity_id, component, new_fields)
-   local old_fields = {}
-   for key, value in pairs(new_fields) do
-      old_fields[key] = self._components[component.name][entity_id][key]
+function EntityManager:update_component(entity_id, component, fields)
+   self.subject:notify(events.component_to_be_updated, {
+      component_name = component.name,
+      entity_id = entity_id,
+      updated_fields = fields,
+   })
+
+   for key, value in pairs(fields) do
       self._components[component.name][entity_id][key] = value
    end
-
-   subjects.entity_manager:notify(events.component_updated, {
-      component_name = component.name,
-      id = entity_id,
-      old_fields = old_fields,
-      new_fields = new_fields,
-   })
 end
 
 function EntityManager:iterate(...)
@@ -102,9 +102,46 @@ return {
       end
 
       local instance = instantiate(EntityManager, {
+         subject = Subject.new(),
+
          _components = components,
          _entity_id = 0,
       })
+
+      instance.subject.subscribe_to_any_change_of = function(self, names, callback)
+         if #names ~= 2 then
+            error("not implemented")
+         end
+
+         self:subscribe(function(event, data)
+            if event == events.component_added
+               and names[1] == data.component_name or names[2] == data.component_name
+               and instance:has_component(data.entity_id, names[1])
+               and instance:has_component(data.entity_id, names[2])
+            then
+               callback(
+                  data,
+                  instance:get_component(data.entity_id, names[1]),
+                  instance:get_component(data.entity_id, names[2])
+               )
+            end
+         end)
+
+         self:subscribe(function(event, data)
+            if event == events.component_to_be_updated
+               and names[1] == data.component_name or names[2] == data.component_name
+               and instance:has_component(data.entity_id, names[1])
+               and instance:has_component(data.entity_id, names[2])
+            then
+               callback(
+                  data,
+                  instance:get_component(data.entity_id, names[1]),
+                  instance:get_component(data.entity_id, names[2])
+               )
+            end
+         end)
+      end
+
       return instance
    end
 }
