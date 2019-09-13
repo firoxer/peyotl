@@ -1,4 +1,3 @@
-local render_background_co = require("game.render.render_background_co")
 local render_by_component_co = require("game.render.render_by_component_co")
 local render_ui_co = require("game.render.render_ui_co")
 local create_tileset = require("game.render.create_tileset")
@@ -17,18 +16,15 @@ return function(rendering_config, levels_config, entity_manager)
 
    local tileset = create_tileset(rendering_config)
 
-   local render_background = coroutine.wrap(render_background_co)
    local render_by_component = coroutine.wrap(render_by_component_co)
    local render_ui = coroutine.wrap(render_ui_co)
 
-   render_background(levels_config, entity_manager)
    render_by_component(rendering_config, levels_config, entity_manager, tileset)
    render_ui(rendering_config, entity_manager)
 
    while true do
       coroutine.yield()
 
-      render_background()
       render_by_component()
       render_ui()
    end

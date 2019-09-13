@@ -5,6 +5,7 @@ local Matrix = require("game.data_structures.matrix")
 local Set = require("game.data_structures.set")
 local VisibilityCalculator = require("game.render.visibility_calculator")
 local component_names = require("game.entity.component_names")
+local render_background_co = require("game.render.render_background_co")
 
 local function smoothen_alphas(level_config, illuminables, alphas)
    -- I don't know if using the same matrix as both the source and target
@@ -78,6 +79,8 @@ return function(rendering_config, levels_config, entity_manager, tileset)
    local canvas = love.graphics.newCanvas(window_width * tile_size, window_height * tile_size)
    canvas:setFilter("nearest", "nearest")
 
+   local render_background = coroutine.wrap(render_background_co)
+
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
    while true do
       coroutine.yield()
@@ -127,6 +130,10 @@ return function(rendering_config, levels_config, entity_manager, tileset)
 
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
+
+      -- The background has to be rendered here so that the alphas
+      -- go nicely on top of it
+      render_background(levels_config, entity_manager)
 
       table.sort(renderable_layer_ids)
       for _, layer_id in ipairs(renderable_layer_ids) do
