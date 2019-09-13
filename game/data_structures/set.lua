@@ -25,6 +25,10 @@ function Set:size()
    return size
 end
 
+function Set:pairs()
+   return pairs(self._contents)
+end
+
 return {
    new = function(values)
       assert(type(values) == "table" or values == nil, "initial values must be a table or omitted altogether")

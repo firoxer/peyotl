@@ -1,5 +1,6 @@
 local component_names = require("game.entity.component_names")
 local create_component = require("game.entity.create_component")
+local tileset_quad_names = require("game.render.tileset_quad_names")
 
 local function find_free_position_c(entity_manager, level)
    local free_positions = {}
@@ -26,5 +27,5 @@ return function(entity_manager, player_config)
    entity_manager:add_component(id, create_component.health(player_config.initial_health, player_config.max_health))
    entity_manager:add_component(id, create_component.input())
    entity_manager:add_component(id, create_component.camera())
-   entity_manager:add_component(id, create_component.render("underground_player", 2))
+   entity_manager:add_component(id, create_component.render(tileset_quad_names.player, 2))
 end

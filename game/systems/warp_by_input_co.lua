@@ -15,13 +15,9 @@ return function(_, entity_manager)
 
       if do_warp then
          local input_entity_id = entity_manager:get_unique_component(component_names.input)
-
          local position_c = entity_manager:get_component(input_entity_id, component_names.position)
-         local render_c = entity_manager:get_component(input_entity_id, component_names.render)
-
          local new_level = position_c.level == "aboveground" and "underground" or "aboveground"
          entity_manager:update_component(input_entity_id, position_c, { level = new_level })
-         entity_manager:update_component(input_entity_id, render_c, { tileset_quad_name = new_level .. "_player" })
 
          do_warp = false
       end

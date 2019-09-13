@@ -15,6 +15,8 @@ return table.uptight({
 
    levels = {
       aboveground = {
+         gems = false,
+
          width = 64,
          height = 64,
 
@@ -22,10 +24,7 @@ return table.uptight({
 
          lighting = "full",
 
-         monsters = {
-            n = 0,
-            --add_interval_s = 2,
-         },
+         monsters = false,
 
          generation_algorithm =  "random_squares",
          generation_algorithm_settings = {
@@ -61,6 +60,10 @@ return table.uptight({
             aggro_range = 8,
          },
 
+         gems = {
+            density = 0.01,
+         },
+
          generation_algorithm = "cellular_automatons",
          generation_algorithm_settings = {
             initial_wall_chance = 0.45,
@@ -74,22 +77,13 @@ return table.uptight({
    },
 
    rendering = {
-      tileset_cell_size = 32,
-      tileset_pixel_density = 2,
+      scale = 2,
 
-      camera_rigidness = 0.15,
+      tile_size = 16,
 
-      window_cell_size = 32,
       window_width = 24,
       window_height = 24,
-   },
 
---[[
-   rendering = {
-      tileset_cell_size = 32,
-      window_cell_size = 16,
-      window_width = 64,
-      window_height = 64,
+      camera_rigidness = 0.05,
    },
---]]
 })

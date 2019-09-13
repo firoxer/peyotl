@@ -21,8 +21,8 @@ end
 
 return function(rendering_config, entity_manager)
    local ui_unit = rendering_config.window_width / 10
-   local window_real_width = rendering_config.window_width * rendering_config.window_cell_size
-   local window_real_height = rendering_config.window_height * rendering_config.window_cell_size
+   local window_real_width = rendering_config.window_width * rendering_config.tile_size * rendering_config.scale
+   local window_real_height = rendering_config.window_height * rendering_config.tile_size * rendering_config.scale
 
    while true do
       coroutine.yield()

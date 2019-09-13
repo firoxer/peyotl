@@ -1,7 +1,7 @@
 local Matrix = require("game.data_structures.matrix")
 local Point = require("game.data_structures.point")
 local create_component = require("game.entity.create_component")
---local tileset_quad_names = require("game.render.tileset_quad_names")
+local tileset_quad_names = require("game.render.tileset_quad_names")
 
 local tile_kinds = {
    empty = "empty",
@@ -195,23 +195,23 @@ return function(entity_manager, levels_config)
          else
             if level_name == "aboveground" then
                tileset_quad_name = table.sample({
-                  "aboveground_empty",
-                  "aboveground_empty",
-                  "aboveground_empty",
-                  "aboveground_empty",
-                  "aboveground_empty",
-                  "aboveground_empty",
-                  "aboveground_empty2",
+                  tileset_quad_names.aboveground_empty,
+                  tileset_quad_names.aboveground_empty,
+                  tileset_quad_names.aboveground_empty,
+                  tileset_quad_names.aboveground_empty,
+                  tileset_quad_names.aboveground_empty,
+                  tileset_quad_names.aboveground_empty,
+                  tileset_quad_names.aboveground_empty2,
                })
             else
                tileset_quad_name = table.sample({
-                  "underground_empty",
-                  "underground_empty",
-                  "underground_empty",
-                  "underground_empty",
-                  "underground_empty",
-                  "underground_empty",
-                  "underground_empty2",
+                  tileset_quad_names.underground_empty,
+                  tileset_quad_names.underground_empty,
+                  tileset_quad_names.underground_empty,
+                  tileset_quad_names.underground_empty,
+                  tileset_quad_names.underground_empty,
+                  tileset_quad_names.underground_empty,
+                  tileset_quad_names.underground_empty2,
                })
             end
          end
