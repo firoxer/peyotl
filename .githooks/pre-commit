@@ -1,0 +1,15 @@
+#!/bin/sh
+
+./test
+if [ $? -ne 0 ]; then
+    echo "tests did not pass"
+    exit 1
+fi
+
+luacheck . --exclude-files lib
+if [ $? -ne 0 ]; then
+    echo "luacheck did not pass"
+    exit 1
+fi
+
+exit 0
