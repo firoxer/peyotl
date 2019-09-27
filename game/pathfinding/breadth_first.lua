@@ -13,16 +13,16 @@ function BreadthFirst:update_all(origin_point)
    self._distances = {}
    self._distances[origin_point] = 0
 
-   local open_queue = Queue.new()
-   open_queue:enqueue(origin_point)
-
-   self:_traverse(open_queue)
+   self:_traverse_from(origin_point)
 end
 
-function BreadthFirst:_traverse(open_queue)
+function BreadthFirst:_traverse_from(origin_point)
    local max_distance = self._max_distance
    local parents = self._parents
    local distances = self._distances
+
+   local open_queue = Queue.new()
+   open_queue:enqueue(origin_point)
 
    while not open_queue:is_empty() do
       local point = open_queue:dequeue()
@@ -61,15 +61,13 @@ function BreadthFirst:update_point(point)
       end
    end
 
-   if self._collision_matrix:get(point) == false then
+   if lowest_neighbor_distance ~= nil and self._collision_matrix:get(point) == false then
       self._distances[point] = lowest_neighbor_distance + calculate_distance(point, lowest_neighbor_point)
    else
       self:_reset_lineage(point)
    end
 
-   local open_queue = Queue.new()
-   open_queue:enqueue(point)
-   self:_traverse(open_queue)
+   self:_traverse_from(point)
 end
 
 function BreadthFirst:_reset_lineage(point)

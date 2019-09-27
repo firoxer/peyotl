@@ -1,61 +1,10 @@
 --- Technically this should go under systems/ but this way it just makes more sense
-local max, round = math.max, math.round
+local round = math.round
 
 local Matrix = require("game.data_structures.matrix")
-local Set = require("game.data_structures.set")
-local VisibilityCalculator = require("game.render.visibility_calculator")
 local component_names = require("game.entity.component_names")
+local create_calculate_alpha = require("game.render.create_calculate_alpha")
 local render_background_co = require("game.render.render_background_co")
-
-local function smoothen_alphas(level_config, illuminables, alphas)
-   -- I don't know if using the same matrix as both the source and target
-   -- of smoothening is a good idea, but hey it seems to work
-   local unexplored_alpha = level_config.lighting_settings.unexplored_alpha
-   for point, alpha in alphas:ipairs() do
-      if alpha <= unexplored_alpha then
-         local max_neighbor_alpha = unexplored_alpha
-         for neighbor_point, neighbor_alpha in pairs(alphas:get_immediate_neighbors(point, true)) do
-            if neighbor_alpha > max_neighbor_alpha and illuminables:get(neighbor_point) then
-               max_neighbor_alpha = neighbor_alpha
-            end
-         end
-         alphas:set(point, max_neighbor_alpha * 0.5)
-      else
-         alphas:set(point, alpha)
-      end
-   end
-end
-
-local function get_calculate_alpha(level_config, illuminables, points_to_render, camera_entity_position_c)
-   if level_config.lighting == "full" then
-      return function()
-         return 1
-      end
-   elseif level_config.lighting == "fog_of_war" then
-      local visibility_calculator = VisibilityCalculator.new(
-         function(point)
-            return illuminables:get(point)
-         end,
-         level_config.lighting_settings.lighting_max_range,
-         level_config.lighting_settings.lighting_dimming_range
-      )
-
-      visibility_calculator:set_light_source(camera_entity_position_c.point, camera_entity_position_c.point)
-
-      local unexplored_alpha = level_config.lighting_settings.unexplored_alpha
-
-      local alpha_matrix = Matrix.new()
-      for point in points_to_render:pairs() do
-         alpha_matrix:set(point, max(visibility_calculator:calculate(point), unexplored_alpha))
-      end
-
-      smoothen_alphas(level_config, illuminables, alpha_matrix)
-
-      return function(point)
-         return alpha_matrix:get(point)
-      end
-   end
-end
 
 return function(rendering_config, levels_config, entity_manager, tileset)
    local camera_rigidness = rendering_config.camera_rigidness
@@ -98,8 +47,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
 
       local renderables_by_layer = {}
       local renderable_layer_ids = {}
-      local points_to_render = Set.new()
-      local illuminables = Matrix.new()
+      local illuminabilities = Matrix.new()
       -- TODO: Keep track of render_c's per position in a matrix and iterate its submatrix
       -- instead of going to the entity manager every frame
       for id, render_c, position_c in entity_manager:iterate(component_names.render, component_names.position) do
@@ -113,20 +61,32 @@ return function(rendering_config, levels_config, entity_manager, tileset)
          end
 
          renderables_by_layer[render_c.layer]:set(position_c.point, render_c)
-         points_to_render:add(position_c.point)
 
          if entity_manager:get_component(id, component_names.opaque) == nil then
-            illuminables:set(position_c.point, true)
+            illuminabilities:set(position_c.point, true)
          else
-            illuminables:set(position_c.point, false)
+            illuminabilities:set(position_c.point, false)
          end
 
          ::continue::
       end
 
+      for point in illuminabilities:pairs() do
+         local has_illuminable_neighbor = false
+         for neighbor_point in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
+            if illuminabilities:get(neighbor_point) == true then
+               has_illuminable_neighbor = true
+            end
+         end
+
+         if not has_illuminable_neighbor then
+            illuminabilities:remove(point)
+         end
+      end
+
       local level_config = levels_config[camera_entity_position_c.level]
       local calculate_alpha =
-         get_calculate_alpha(level_config, illuminables, points_to_render, camera_entity_position_c)
+         create_calculate_alpha(level_config, illuminabilities, camera_entity_position_c)
 
       love.graphics.setCanvas(canvas)
       love.graphics.clear()

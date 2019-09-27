@@ -42,8 +42,7 @@ return table.uptight({
 
          lighting = "fog_of_war",
          lighting_settings = {
-            lighting_max_range = 10,
-            lighting_dimming_range = 6,
+            lighting_range = 7.8, -- Nice and round
 
             unexplored_alpha = 0.0,
             explored_alpha = 0.2,
