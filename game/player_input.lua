@@ -6,7 +6,7 @@ local PlayerInput = {}
 function PlayerInput:bind_to_love(player_input_config)
    local short_tick = player_input_config.keyboard_short_tick_s
    local long_tick = player_input_config.keyboard_long_tick_s
-   local key_tick_intervals = table.uptight({
+   local key_tick_intervals = {
       escape = long_tick,
       q = long_tick,
 
@@ -18,11 +18,15 @@ function PlayerInput:bind_to_love(player_input_config)
       a = short_tick,
       s = short_tick,
       d = short_tick,
-   })
+   }
 
    local pressed_keys = {}
 
    love.keypressed = function(key)
+      if key_tick_intervals[key] == nil then
+        log.debug("key pressed with no action bound: " .. key)
+      end
+
       pressed_keys[key] = key_tick_intervals[key]
 
       -- Synchronize keys for diagonal movement
