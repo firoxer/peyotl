@@ -79,7 +79,7 @@ local function carve_with_random_squares(level_config)
       local wall_n = 0
       local empty_n = 0
 
-      for _, tile_kind in matrix:ipairs() do
+      for _, tile_kind in matrix:pairs() do
          if tile_kind == tile_kinds.empty then
             empty_n = empty_n + 1
          else
@@ -184,7 +184,7 @@ return function(entity_manager, levels_config)
       else
          error("unknown map generation algorithm: " .. level_config.generation_algorithm)
       end
-      for point, tile_kind in matrix:ipairs() do
+      for point, tile_kind in matrix:pairs() do
          local tileset_quad_name
          if tile_kind == tile_kinds.wall then
             if level_name == "aboveground" then

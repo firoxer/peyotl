@@ -140,7 +140,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
          local renderables = renderables_by_layer[layer_id]
 
          tileset_batch:clear()
-         for point, render_c in renderables:ipairs() do
+         for point, render_c in renderables:pairs() do
             local alpha = calculate_alpha(point)
             if alpha > 0 then
                local offset_x = round(point.x - current_camera_x + (window_width / 2), tileset_draw_rounding)

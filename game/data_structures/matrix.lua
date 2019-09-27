@@ -104,8 +104,7 @@ function Matrix:get_neighbors(point, range)
    return neighbors
 end
 
--- TODO: Optimize
-function Matrix:ipairs()
+function Matrix:pairs()
    local function iter(tbl)
       for y, row in pairs(tbl) do
          for x, elem in pairs(row) do
@@ -125,7 +124,7 @@ function Matrix:bounds()
       local nw_y = math.huge
       local se_x = math.huge
       local se_y = math.huge
-      for point in self:ipairs() do
+      for point in self:pairs() do
          nw_x = math.min(nw_x, point.x)
          nw_y = math.min(nw_y, point.y)
          se_x = math.max(se_x, point.x)

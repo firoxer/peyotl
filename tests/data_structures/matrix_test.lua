@@ -15,7 +15,7 @@ do
    m:set(Point.new(1, 2), "c")
    m:set(Point.new(2, 2), "d")
 
-   for point, e in m:ipairs() do
+   for point, e in m:pairs() do
       assert(e == tbl[point.y][point.x])
    end
 end
