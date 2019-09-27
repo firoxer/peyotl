@@ -20,7 +20,7 @@ return table.uptight({
          width = 64,
          height = 64,
 
-         background_color = { 9 / 256, 73  / 256, 63 / 256 },
+         background_color = { 62 / 256, 33 / 256, 55 / 256 },
 
          lighting = "full",
 
@@ -38,7 +38,7 @@ return table.uptight({
          width = 64,
          height = 64,
 
-         background_color = { 25 / 256, 16 / 256, 46 / 256 },
+         background_color = { 31 / 256, 14 / 256, 28 / 256 },
 
          lighting = "fog_of_war",
          lighting_settings = {
@@ -77,12 +77,12 @@ return table.uptight({
    },
 
    rendering = {
-      scale = 2,
+      scale = 3,
 
       tile_size = 16,
 
-      window_width = 24,
-      window_height = 24,
+      window_width = 20,
+      window_height = 20,
 
       camera_rigidness = 0.05,
    },
