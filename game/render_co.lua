@@ -16,16 +16,17 @@ return function(rendering_config, levels_config, entity_manager)
 
    local tileset = create_tileset(rendering_config)
 
-   local render_by_component = coroutine.wrap(render_by_component_co)
-   local render_ui = coroutine.wrap(render_ui_co)
+   local render_by_component =
+      render_by_component_co(rendering_config, levels_config, entity_manager, tileset)
+   local render_ui =
+      render_ui_co(rendering_config, entity_manager)
 
-   render_by_component(rendering_config, levels_config, entity_manager, tileset)
-   render_ui(rendering_config, entity_manager)
+   return coroutine.wrap(function()
+      while true do
+         render_by_component()
+         render_ui()
 
-   while true do
-      coroutine.yield()
-
-      render_by_component()
-      render_ui()
-   end
+         coroutine.yield()
+      end
+   end)
 end

@@ -9,16 +9,18 @@ return function(_, entity_manager, player_input)
       end
    end)
 
-   while true do
-      coroutine.yield()
+   return coroutine.wrap(function()
+      while true do
+         if do_warp then
+            local input_entity_id = entity_manager:get_unique_component(component_names.input)
+            local position_c = entity_manager:get_component(input_entity_id, component_names.position)
+            local new_level = position_c.level == "aboveground" and "underground" or "aboveground"
+            entity_manager:update_component(input_entity_id, position_c, { level = new_level })
 
-      if do_warp then
-         local input_entity_id = entity_manager:get_unique_component(component_names.input)
-         local position_c = entity_manager:get_component(input_entity_id, component_names.position)
-         local new_level = position_c.level == "aboveground" and "underground" or "aboveground"
-         entity_manager:update_component(input_entity_id, position_c, { level = new_level })
+            do_warp = false
+         end
 
-         do_warp = false
+         coroutine.yield()
       end
-   end
+   end)
 end

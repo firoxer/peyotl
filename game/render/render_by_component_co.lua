@@ -28,99 +28,102 @@ return function(rendering_config, levels_config, entity_manager, tileset)
    local canvas = love.graphics.newCanvas(window_width * tile_size, window_height * tile_size)
    canvas:setFilter("nearest", "nearest")
 
-   local render_background = coroutine.wrap(render_background_co)
+   local render_background = render_background_co(levels_config, entity_manager)
 
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
-   while true do
-      coroutine.yield()
 
-      local camera_entity_position_c = entity_manager:get_component(
-         entity_manager:get_unique_component(component_names.camera),
-         component_names.position
-      )
+   return coroutine.wrap(function()
+      while true do
+         local camera_entity_position_c = entity_manager:get_component(
+            entity_manager:get_unique_component(component_names.camera),
+            component_names.position
+         )
 
-      -- By moving the camera only a bit at a time, it gets nice and sticky
-      -- and it follows its target more naturally
-      local camera_entity_position_point = camera_entity_position_c.point
-      current_camera_x = current_camera_x + (camera_entity_position_point.x - current_camera_x) * camera_rigidness
-      current_camera_y = current_camera_y + (camera_entity_position_point.y - current_camera_y) * camera_rigidness
+         -- By moving the camera only a bit at a time, it gets nice and sticky
+         -- and it follows its target more naturally
+         local camera_entity_position_point = camera_entity_position_c.point
+         current_camera_x = current_camera_x + (camera_entity_position_point.x - current_camera_x) * camera_rigidness
+         current_camera_y = current_camera_y + (camera_entity_position_point.y - current_camera_y) * camera_rigidness
 
-      local renderables_by_layer = {}
-      local renderable_layer_ids = {}
-      local illuminabilities = Matrix.new()
-      -- TODO: Keep track of render_c's per position in a matrix and iterate its submatrix
-      -- instead of going to the entity manager every frame
-      for id, render_c, position_c in entity_manager:iterate(component_names.render, component_names.position) do
-         if position_c.level ~= camera_entity_position_c.level or is_out_of_view(position_c) then
-            goto continue
+         local renderables_by_layer = {}
+         local renderable_layer_ids = {}
+         local illuminabilities = Matrix.new()
+         -- TODO: Keep track of render_c's per position in a matrix and iterate its submatrix
+         -- instead of going to the entity manager every frame
+         for id, render_c, position_c in entity_manager:iterate(component_names.render, component_names.position) do
+            if position_c.level ~= camera_entity_position_c.level or is_out_of_view(position_c) then
+               goto continue
+            end
+
+            if not renderables_by_layer[render_c.layer] then
+               renderables_by_layer[render_c.layer] = Matrix.new()
+               table.insert(renderable_layer_ids, render_c.layer)
+            end
+
+            renderables_by_layer[render_c.layer]:set(position_c.point, render_c)
+
+            if entity_manager:get_component(id, component_names.opaque) == nil then
+               illuminabilities:set(position_c.point, true)
+            else
+               illuminabilities:set(position_c.point, false)
+            end
+
+            ::continue::
          end
 
-         if not renderables_by_layer[render_c.layer] then
-            renderables_by_layer[render_c.layer] = Matrix.new()
-            table.insert(renderable_layer_ids, render_c.layer)
-         end
+         for point in illuminabilities:pairs() do
+            local has_illuminable_neighbor = false
+            for neighbor_point in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
+               if illuminabilities:get(neighbor_point) == true then
+                  has_illuminable_neighbor = true
+               end
+            end
 
-         renderables_by_layer[render_c.layer]:set(position_c.point, render_c)
-
-         if entity_manager:get_component(id, component_names.opaque) == nil then
-            illuminabilities:set(position_c.point, true)
-         else
-            illuminabilities:set(position_c.point, false)
-         end
-
-         ::continue::
-      end
-
-      for point in illuminabilities:pairs() do
-         local has_illuminable_neighbor = false
-         for neighbor_point in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
-            if illuminabilities:get(neighbor_point) == true then
-               has_illuminable_neighbor = true
+            if not has_illuminable_neighbor then
+               illuminabilities:remove(point)
             end
          end
 
-         if not has_illuminable_neighbor then
-            illuminabilities:remove(point)
-         end
-      end
+         local level_config = levels_config[camera_entity_position_c.level]
+         local calculate_alpha =
+            create_calculate_alpha(level_config, illuminabilities, camera_entity_position_c)
 
-      local level_config = levels_config[camera_entity_position_c.level]
-      local calculate_alpha =
-         create_calculate_alpha(level_config, illuminabilities, camera_entity_position_c)
+         love.graphics.setCanvas(canvas)
+         love.graphics.clear()
 
-      love.graphics.setCanvas(canvas)
-      love.graphics.clear()
+         -- The background has to be rendered here so that the alphas
+         -- go nicely on top of it
+         render_background()
 
-      -- The background has to be rendered here so that the alphas
-      -- go nicely on top of it
-      render_background(levels_config, entity_manager)
+         table.sort(renderable_layer_ids)
+         for _, layer_id in ipairs(renderable_layer_ids) do
+            local renderables = renderables_by_layer[layer_id]
 
-      table.sort(renderable_layer_ids)
-      for _, layer_id in ipairs(renderable_layer_ids) do
-         local renderables = renderables_by_layer[layer_id]
+            tileset_batch:clear()
+            for point, render_c in renderables:pairs() do
+               local alpha = calculate_alpha(point)
+               if alpha > 0 then
+                  local offset_x = round(point.x - current_camera_x + (window_width / 2), tileset_draw_rounding)
+                  local offset_y = round(point.y - current_camera_y + (window_height / 2), tileset_draw_rounding)
 
-         tileset_batch:clear()
-         for point, render_c in renderables:pairs() do
-            local alpha = calculate_alpha(point)
-            if alpha > 0 then
-               local offset_x = round(point.x - current_camera_x + (window_width / 2), tileset_draw_rounding)
-               local offset_y = round(point.y - current_camera_y + (window_height / 2), tileset_draw_rounding)
-
-               tileset_batch:setColor(1, 1, 1, alpha)
-               tileset_batch:add(
-                  tileset.quads[render_c.tileset_quad_name],
-                  offset_x * tile_size,
-                  offset_y * tile_size
-               )
+                  tileset_batch:setColor(1, 1, 1, alpha)
+                  tileset_batch:add(
+                     tileset.quads[render_c.tileset_quad_name],
+                     offset_x * tile_size,
+                     offset_y * tile_size
+                  )
+               end
             end
+            tileset_batch:flush()
+
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.draw(tileset_batch)
          end
-         tileset_batch:flush()
 
-         love.graphics.setColor(1, 1, 1, 1)
-         love.graphics.draw(tileset_batch)
+         love.graphics.setCanvas()
+         love.graphics.draw(canvas, 0, 0, 0, scale)
+
+         coroutine.yield()
       end
-
-      love.graphics.setCanvas()
-      love.graphics.draw(canvas, 0, 0, 0, scale)
-   end
+   end)
 end

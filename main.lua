@@ -32,11 +32,8 @@ local render
 local function reset()
    seed()
 
-   update = coroutine.wrap(update_co)
-   update(config.levels, entity_manager, player_input)
-
-   render = coroutine.wrap(render_co)
-   render(config.rendering, config.levels, entity_manager)
+   update = update_co(config.levels, entity_manager, player_input)
+   render = render_co(config.rendering, config.levels, entity_manager)
 
    generate(entity_manager, config)
 end
