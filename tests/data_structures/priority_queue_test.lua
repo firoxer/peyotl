@@ -1,5 +1,3 @@
-require("../../init")
-
 local PriorityQueue = require("../game/data_structures/priority_queue")
 
 do

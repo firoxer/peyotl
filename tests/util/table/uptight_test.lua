@@ -1,5 +1,3 @@
-require("../../../init")
-
 do
    local tbl = table.uptight({ a = 1 })
    assert(tbl.a == 1)

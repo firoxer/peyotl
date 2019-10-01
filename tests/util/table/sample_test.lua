@@ -1,11 +1,3 @@
-require("../../../init")
-
-love = {
-   math = {
-      random = math.random
-   }
-}
-
 do
    local tbl = { 1, 2, 3 }
    local s = table.sample(tbl)

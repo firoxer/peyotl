@@ -1,5 +1,3 @@
-require("../../init")
-
 local Set = require("../game/data_structures/set")
 
 do

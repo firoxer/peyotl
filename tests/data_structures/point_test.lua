@@ -1,5 +1,3 @@
-require("../init")
-
 local Point = require("../game/data_structures/point")
 
 do

@@ -1,3 +1,5 @@
+--- Set globals to make development and testing nicer
+
 _G.math.round = function(n, multiple)
    return math.floor(n / multiple + 0.5) * multiple
 end
@@ -41,3 +43,11 @@ table.shuffle =
 table.uptight =
    require("game.util.table.uptight")
 
+if love == nil then
+   -- For tests
+   love = {
+      math = {
+         random = math.random
+      }
+   }
+end

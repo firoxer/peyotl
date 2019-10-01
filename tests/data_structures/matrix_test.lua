@@ -1,5 +1,3 @@
-require("../../init")
-
 local Point = require("../game/data_structures/point")
 local Matrix = require("../game/data_structures/matrix")
 

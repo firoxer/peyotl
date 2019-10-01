@@ -1,5 +1,3 @@
-require("../../init")
-
 local Queue = require("../game/data_structures/queue")
 
 do

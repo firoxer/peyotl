@@ -1,5 +1,3 @@
-require("../../init")
-
 local CircularBuffer = require("../game/data_structures/circular_buffer")
 
 do
