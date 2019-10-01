@@ -1,7 +1,7 @@
 require("./init")
 
 local config = require("config")
-local extra = require("extra")
+local devtools = require("devtools")
 local seed = require("seed")
 
 local EntityManager = require("game.entity.entity_manager")
@@ -58,13 +58,13 @@ function love.load(arg)
 
    for i = 1, #arg do
       if arg[i] == "--profile" then
-         extra.enable_profiler_reports()
+         devtools.enable_profiler_reports()
       elseif arg[i] == "--report-memory-usage" then
-         extra.enable_memory_usage_reports()
+         devtools.enable_memory_usage_reports()
       elseif arg[i] == "--report-low-fps" then
-         extra.enable_low_fps_reports()
+         devtools.enable_low_fps_reports()
       elseif arg[i] == "--retard-performance" then
-         extra.enable_performance_retardation()
+         devtools.enable_performance_retardation()
       end
    end
 
@@ -85,7 +85,7 @@ function love.update(dt)
    player_input:tick(dt)
    update(dt)
 
-   extra.tick()
+   devtools.tick()
 end
 
 function love.draw()
