@@ -5,8 +5,8 @@ local seed = require("seed")
 
 local EntityManager = require("game.entity.entity_manager")
 local PlayerInput = require("game.player_input")
-local render_co = require("game.render_co")
-local update_co = require("game.update_co")
+local make_render = require("game.make_render")
+local make_update = require("game.make_update")
 local config = require("game.config")
 local events = require("game.event.events")
 local generate = require("game.generate")
@@ -32,8 +32,8 @@ local render
 local function reset()
    seed()
 
-   update = update_co(config.levels, entity_manager, player_input)
-   render = render_co(config.rendering, config.levels, entity_manager)
+   update = make_update(config.levels, entity_manager, player_input)
+   render = make_render(config.rendering, config.levels, entity_manager)
 
    generate(entity_manager, config)
 end

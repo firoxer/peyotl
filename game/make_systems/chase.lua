@@ -51,40 +51,36 @@ return function(levels_config, entity_manager)
       end
    )
 
-   return coroutine.wrap(function()
-      while true do
-         local current_time = love.timer.getTime()
-         for entity_id, chase_c, position_c
-               in entity_manager:iterate(component_names.chase, component_names.position) do
-            if current_time - chase_c.time_at_last_movement < 1 then
-               goto continue
-            end
-
-            if position_c.level ~= chase_c.target.level then
-               goto continue
-            end
-
-            local aggro_range = levels_config[position_c.level].monsters.aggro_range
-            if Point.chebyshev_distance(position_c.point, chase_c.target.point) > aggro_range then
-               goto continue
-            end
-
-            local pathfinder = pathfinders_by_chase_target[chase_c.target]
-            if not pathfinder then
-               pathfinder = BreadthFirst.new(collision_matrices[position_c.level], aggro_range)
-               pathfinders_by_chase_target[chase_c.target] = pathfinder
-               pathfinder:update_all(chase_c.target.point)
-            end
-            local next_point = pathfinder:find_next_step(position_c.point)
-            if next_point ~= nil and next_point ~= chase_c.target.point then
-               entity_manager:update_component(entity_id, position_c, { point = next_point })
-               entity_manager:update_component(entity_id, chase_c, { time_at_last_movement = current_time })
-            end
-
-            ::continue::
+   return function()
+      local current_time = love.timer.getTime()
+      for entity_id, chase_c, position_c
+            in entity_manager:iterate(component_names.chase, component_names.position) do
+         if current_time - chase_c.time_at_last_movement < 1 then
+            goto continue
          end
 
-         coroutine.yield()
+         if position_c.level ~= chase_c.target.level then
+            goto continue
+         end
+
+         local aggro_range = levels_config[position_c.level].monsters.aggro_range
+         if Point.chebyshev_distance(position_c.point, chase_c.target.point) > aggro_range then
+            goto continue
+         end
+
+         local pathfinder = pathfinders_by_chase_target[chase_c.target]
+         if not pathfinder then
+            pathfinder = BreadthFirst.new(collision_matrices[position_c.level], aggro_range)
+            pathfinders_by_chase_target[chase_c.target] = pathfinder
+            pathfinder:update_all(chase_c.target.point)
+         end
+         local next_point = pathfinder:find_next_step(position_c.point)
+         if next_point ~= nil and next_point ~= chase_c.target.point then
+            entity_manager:update_component(entity_id, position_c, { point = next_point })
+            entity_manager:update_component(entity_id, chase_c, { time_at_last_movement = current_time })
+         end
+
+         ::continue::
       end
-   end)
+   end
 end

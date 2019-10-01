@@ -58,51 +58,47 @@ return function(levels_config, entity_manager, player_input)
       pending_events:enqueue(event)
    end)
 
-   return coroutine.wrap(function()
-      while true do
-         while not pending_events:is_empty() do
-            local event = pending_events:dequeue()
-            for entity_id, _, position_c in entity_manager:iterate(component_names.input, component_names.position) do
-               local point_diff_x, point_diff_y = offset(event)
+   return function()
+      while not pending_events:is_empty() do
+         local event = pending_events:dequeue()
+         for entity_id, _, position_c in entity_manager:iterate(component_names.input, component_names.position) do
+            local point_diff_x, point_diff_y = offset(event)
 
-               if not point_diff_x or not point_diff_y then
-                  -- Event matched no movement
-                  goto continue
-               end
+            if not point_diff_x or not point_diff_y then
+               -- Event matched no movement
+               goto continue
+            end
 
-               local collision_matrix = collision_matrices[position_c.level]
+            local collision_matrix = collision_matrices[position_c.level]
 
-               -- Orthogonal movement
-               if point_diff_x == 0 or point_diff_y == 0 then
-                  if collision_matrix:get(Point.offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
-                     entity_manager:update_component(entity_id, position_c, {
-                        point = Point.offset(position_c.point, point_diff_x, point_diff_y)
-                     })
-                  end
-
-                  goto continue
-               end
-
-               -- Diagonal movement, allowing sticking to a wall when one axis collides
+            -- Orthogonal movement
+            if point_diff_x == 0 or point_diff_y == 0 then
                if collision_matrix:get(Point.offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
                   entity_manager:update_component(entity_id, position_c, {
                      point = Point.offset(position_c.point, point_diff_x, point_diff_y)
                   })
-               elseif collision_matrix:get(Point.offset(position_c.point, point_diff_x, 0)) ~= true then
-                  entity_manager:update_component(entity_id, position_c, {
-                     point = Point.offset(position_c.point, point_diff_x, 0)
-                  })
-               elseif collision_matrix:get(Point.offset(position_c.point, 0, point_diff_y)) ~= true then
-                  entity_manager:update_component(entity_id, position_c, {
-                     point = Point.offset(position_c.point, 0, point_diff_y)
-                  })
                end
 
-               ::continue::
+               goto continue
             end
-         end
 
-         coroutine.yield()
+            -- Diagonal movement, allowing sticking to a wall when one axis collides
+            if collision_matrix:get(Point.offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
+               entity_manager:update_component(entity_id, position_c, {
+                  point = Point.offset(position_c.point, point_diff_x, point_diff_y)
+               })
+            elseif collision_matrix:get(Point.offset(position_c.point, point_diff_x, 0)) ~= true then
+               entity_manager:update_component(entity_id, position_c, {
+                  point = Point.offset(position_c.point, point_diff_x, 0)
+               })
+            elseif collision_matrix:get(Point.offset(position_c.point, 0, point_diff_y)) ~= true then
+               entity_manager:update_component(entity_id, position_c, {
+                  point = Point.offset(position_c.point, 0, point_diff_y)
+               })
+            end
+
+            ::continue::
+         end
       end
-   end)
+   end
 end
