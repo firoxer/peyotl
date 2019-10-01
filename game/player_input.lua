@@ -3,7 +3,7 @@ local Subject = require("game.event.subject")
 
 local PlayerInput = {}
 
-function PlayerInput:bind_to_love(player_input_config)
+function PlayerInput:_bind_to_love(player_input_config)
    local short_tick = player_input_config.keyboard_short_tick_s
    local long_tick = player_input_config.keyboard_long_tick_s
    local key_tick_intervals = {
@@ -112,13 +112,16 @@ function PlayerInput:tick(dt)
 end
 
 return {
-   new = function()
+   new = function(player_input_config)
       local instance = instantiate(PlayerInput, {
          subject = Subject.new(),
 
          _key_tick_intervals = {},
          _pressed_keys = {},
       })
+
+      instance:_bind_to_love(player_input_config)
+
       return instance
    end
 }

@@ -11,12 +11,20 @@ local config = require("game.config")
 local events = require("game.event.events")
 local generate = require("game.generate")
 
+local game_paused = false
+local game_terminating = false
+local game_restarting = false
+
 local entity_manager = EntityManager.new()
+local player_input = PlayerInput.new(config.player_input)
 
-local game_state = { paused = false, terminating = false, restarting = false }
-
-local player_input = PlayerInput.new()
-player_input:bind_to_love(config.player_input)
+player_input.subject:subscribe(function(event)
+   if event == events.quit_game then
+      game_terminating = true
+   elseif event == events.toggle_game_pause then
+      game_paused = not game_paused
+   end
+end)
 
 local update
 local render
@@ -32,14 +40,6 @@ local function reset()
 
    generate(entity_manager, config)
 end
-
-player_input.subject:subscribe(function(event)
-   if event == events.quit_game then
-      game_state.terminating = true
-   elseif event == events.toggle_game_pause then
-      game_state.paused = not game_state.paused
-   end
-end)
 
 function love.load(arg)
    if table.contains(arg, "--help") then
@@ -72,14 +72,14 @@ function love.load(arg)
 end
 
 function love.update(dt)
-   if game_state.paused then
-      return
-   end
-   if game_state.terminating then
+   if game_terminating then
       love.event.quit()
    end
-   if game_state.restarting then
+   if game_restarting then
       reset()
+   end
+   if game_paused then
+      return
    end
 
    player_input:tick(dt)
@@ -89,5 +89,5 @@ function love.update(dt)
 end
 
 function love.draw()
-   render(config.rendering, config.levels, entity_manager)
+   render()
 end
