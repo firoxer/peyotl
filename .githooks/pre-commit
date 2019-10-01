@@ -1,6 +1,6 @@
 #!/bin/sh
 
-./test
+./test.sh
 if [ $? -ne 0 ]; then
     echo "tests did not pass"
     exit 1
