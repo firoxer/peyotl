@@ -2,7 +2,9 @@ TODO
 ===
 
 * Minimap
-* Increasing run speed?
+
+* Movement
+    * Striding?
 
 * Internals
     * Selective subscription to events so that the subscriber callbacks would be called less often

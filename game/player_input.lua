@@ -1,126 +1,106 @@
-local events = require("game.event.events")
+local Set = require("game.data_structures.set")
 local Subject = require("game.event.subject")
+local events = require("game.event.events")
 
 local PlayerInput = {}
 
-function PlayerInput:_bind_to_love(player_input_config)
-   local short_tick = player_input_config.keyboard_short_tick_s
-   local long_tick = player_input_config.keyboard_long_tick_s
-   local key_tick_intervals = {
-      escape = long_tick,
-      q = long_tick,
-
-      p = long_tick,
-      space = long_tick,
-      c = long_tick,
-
-      w = short_tick,
-      a = short_tick,
-      s = short_tick,
-      d = short_tick,
-   }
-
-   local pressed_keys = {}
-
+function PlayerInput:_bind_to_love()
    love.keypressed = function(key)
-      if key_tick_intervals[key] == nil then
-        log.debug("key pressed with no action bound: " .. key)
+      if self._key_cooldowns[key] == nil then
+         log.debug("key pressed with no action bound: " .. key)
+         return
       end
 
-      pressed_keys[key] = key_tick_intervals[key]
-
-      -- Synchronize keys for diagonal movement
-      if (key == "a" or key == "d") and pressed_keys.w ~= nil then
-         pressed_keys.w = key_tick_intervals[key]
-      elseif (key == "w" or key == "s") and pressed_keys.d ~= nil then
-         pressed_keys.d = key_tick_intervals[key]
-      elseif (key == "a" or key == "d") and pressed_keys.s ~= nil then
-         pressed_keys.s = key_tick_intervals[key]
-      elseif (key == "w" or key == "s") and pressed_keys.a ~= nil then
-         pressed_keys.a = key_tick_intervals[key]
-      end
+      self._pressed_keys:add(key)
    end
 
    love.keyreleased = function(key)
-      pressed_keys[key] = nil
+      self._pressed_keys:remove(key)
    end
-
-   self._pressed_keys = pressed_keys
-   self._key_tick_intervals = key_tick_intervals
 end
 
 function PlayerInput:tick(dt)
-   local pressed_keys = self._pressed_keys
-   local key_tick_intervals = self._key_tick_intervals
-   local activated_keys
+   self._cooldown_left = self._cooldown_left - dt
 
-   for key in pairs(pressed_keys) do
-      pressed_keys[key] = pressed_keys[key] + dt
-
-      if pressed_keys[key] >= key_tick_intervals[key] then
-         if not activated_keys then
-            activated_keys = {}
-         end
-
-         activated_keys[key] = true
-
-         pressed_keys[key] = pressed_keys[key] - key_tick_intervals[key]
-      end
-   end
-
-   if not activated_keys then
+   if self._cooldown_left > 0 or self._pressed_keys:is_empty() then
       return
    end
 
-   if activated_keys.w then
-      if activated_keys.a then
+   local pressed_keys = self._pressed_keys
+
+   for key in pressed_keys:pairs() do
+      self._cooldown_left =
+         self._cooldown_left < self._key_cooldowns[key]
+            and self._key_cooldowns[key]
+            or self._cooldown_left
+   end
+
+   if pressed_keys:contains("w") then
+      if pressed_keys:contains("a") then
          self.subject:notify(events.move_nw)
-      elseif activated_keys.d then
+      elseif pressed_keys:contains("d") then
          self.subject:notify(events.move_ne)
       else
          self.subject:notify(events.move_n)
       end
-   elseif activated_keys.s then
-      if activated_keys.a then
+   elseif pressed_keys:contains("s") then
+      if pressed_keys:contains("a") then
          self.subject:notify(events.move_sw)
-      elseif activated_keys.d then
+      elseif pressed_keys:contains("d") then
          self.subject:notify(events.move_se)
       else
          self.subject:notify(events.move_s)
       end
-   elseif activated_keys.a then
+   elseif pressed_keys:contains("a") then
       self.subject:notify(events.move_w)
-   elseif activated_keys.d then
+   elseif pressed_keys:contains("d") then
       self.subject:notify(events.move_e)
    end
 
-   if activated_keys.c then
+   if pressed_keys:contains("c") then
       self.subject:notify(events.warp)
    end
 
-   if activated_keys.space then
+   if pressed_keys:contains("space") then
       self.subject:notify(events.interact)
    end
 
-   if activated_keys.escape then
+   if pressed_keys:contains("escape") then
       self.subject:notify(events.quit_game)
    end
 
-   if activated_keys.p then
+   if pressed_keys:contains("p") then
       self.subject:notify(events.toggle_game_pause)
    end
 end
 
 return {
    new = function(player_input_config)
+      local short_tick = player_input_config.keyboard_short_tick_s
+      local long_tick = player_input_config.keyboard_long_tick_s
+
       local instance = instantiate(PlayerInput, {
          subject = Subject.new(),
 
-         _key_tick_intervals = {},
-         _pressed_keys = {},
+         _key_cooldowns = {
+            escape = long_tick,
+            q = long_tick,
+
+            p = long_tick,
+            space = long_tick,
+            c = long_tick,
+
+            w = short_tick,
+            a = short_tick,
+            s = short_tick,
+            d = short_tick,
+         },
+
+         _cooldown_left = 0,
+         _pressed_keys = Set.new(),
       })
 
-      instance:_bind_to_love(player_input_config)
+      instance:_bind_to_love()
 
       return instance
    end

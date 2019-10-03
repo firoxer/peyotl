@@ -6,6 +6,7 @@ function Set:add(elem)
    end
 
    self._contents[elem] = elem
+   self._size = self._size + 1
 end
 
 function Set:contains(elem)
@@ -13,16 +14,16 @@ function Set:contains(elem)
 end
 
 function Set:remove(elem)
-   self._contents[elem] = nil
-end
-
-function Set:size()
-   local size = 0
-   for _ in pairs(self._contents) do
-      size = size + 1
+   if self._contents[elem] == nil then
+      return
    end
 
-   return size
+   self._contents[elem] = nil
+   self._size = self._size - 1
+end
+
+function Set:is_empty()
+   return self._size == 0
 end
 
 function Set:pairs()
@@ -34,7 +35,8 @@ return {
       assert(type(values) == "table" or values == nil, "initial values must be a table or omitted altogether")
 
       local instance = instantiate(Set, {
-         _contents = {}
+         _contents = {},
+         _size = 0,
       })
 
       if values ~= nil then

@@ -32,5 +32,6 @@ do
    s:add('a')
    s:add('a')
    s:add('a')
-   assert(s:size() == 1)
+   s:remove('a')
+   assert(s:is_empty() == true)
 end
