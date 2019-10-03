@@ -7,7 +7,15 @@ return function(x, y)
 
    if points[y][x] == nil then
       local p = { x = x, y = y }
+
+      setmetatable(p, {
+         __tostring = function()
+            return "{ x = " .. x .. ", y = " .. y .. " }"
+         end
+      })
+
       p.type = "data_structures.Point" -- So that the code can assume this is a prototype
+
       points[y][x] = table.readonly(p)
    end
 

@@ -1,9 +1,11 @@
 return function(tbl)
-   return setmetatable({}, {
-      __index = tbl,
+   local mt = getmetatable(tbl) or {}
 
-      __newindex = function(_, key)
-         error("trying to set property of readonly table; key: " .. key)
-      end
-   })
+   mt.__index = tbl
+
+   mt.__newindex = function(_, key)
+      error("trying to set property of readonly table; key: " .. key)
+   end
+
+   return setmetatable({}, mt)
 end
