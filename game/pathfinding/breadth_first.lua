@@ -61,7 +61,7 @@ function BreadthFirst:update_point(point)
       end
    end
 
-   if lowest_neighbor_distance ~= nil and self._collision_matrix:get(point) == false then
+   if lowest_neighbor_point ~= nil and self._collision_matrix:get(point) == false then
       self._distances[point] = lowest_neighbor_distance + calculate_distance(point, lowest_neighbor_point)
    else
       self:_reset_lineage(point)
