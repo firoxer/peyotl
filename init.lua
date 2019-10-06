@@ -13,6 +13,8 @@ _G.instantiate =
 _G.log =
    require("game.util.log")
 
+_G.game_debug = {}
+
 string.camelcasify =
    require("game.util.string.camelcasify")
 

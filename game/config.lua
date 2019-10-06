@@ -80,5 +80,7 @@ return table.uptight({
       window_height = 20,
 
       camera_rigidness = 0.05,
+
+      debug_overlay_enabled = false,
    },
 })

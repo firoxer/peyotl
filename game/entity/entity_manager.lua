@@ -115,7 +115,7 @@ return {
 
          self:subscribe(function(event, data)
             if event == events.component_added
-               and names[1] == data.component_name or names[2] == data.component_name
+               and (names[1] == data.component_name or names[2] == data.component_name)
                and instance:has_component(data.entity_id, names[1])
                and instance:has_component(data.entity_id, names[2])
             then
@@ -129,7 +129,7 @@ return {
 
          self:subscribe(function(event, data)
             if event == events.component_to_be_updated
-               and names[1] == data.component_name or names[2] == data.component_name
+               and (names[1] == data.component_name or names[2] == data.component_name)
                and instance:has_component(data.entity_id, names[1])
                and instance:has_component(data.entity_id, names[2])
             then

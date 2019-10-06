@@ -44,10 +44,32 @@ return function(levels_config, entity_manager)
 
    entity_manager.subject:subscribe_to_any_change_of(
       { component_names.position, component_names.input },
-      function()
-         for chase_target, pathfinder in pairs(pathfinders_by_chase_target) do
-            pathfinder:update_all(chase_target.point)
+      function(event_data)
+         if not event_data.updated_fields
+               or (not event_data.updated_fields.point and not event_data.updated_fields.level) then
+            return
          end
+
+         local pathfinder = pathfinders_by_chase_target[event_data.entity_id]
+
+         if not pathfinder then
+            return
+         end
+
+         local chase_target_level =
+            event_data.updated_fields.level
+            or entity_manager:get_component(event_data.entity_id, component_names.position).level
+         if pathfinder.level ~= chase_target_level then
+            return
+         end
+
+         --_G.game_debug.overlay = collision_matrices[chase_target_level]
+
+         local chase_target_point =
+            event_data.updated_fields.point
+            or entity_manager:get_component(event_data.entity_id, component_names.position).point
+
+         pathfinder:update_origin(chase_target_point)
       end
    )
 
@@ -59,23 +81,26 @@ return function(levels_config, entity_manager)
             goto continue
          end
 
-         if position_c.level ~= chase_c.target.level then
+         local chase_position_c =
+            entity_manager:get_component(chase_c.target_id, component_names.position)
+
+         if position_c.level ~= chase_position_c.level then
             goto continue
          end
 
          local aggro_range = levels_config[position_c.level].monsters.aggro_range
-         if Point.chebyshev_distance(position_c.point, chase_c.target.point) > aggro_range then
+         if Point.chebyshev_distance(position_c.point, chase_position_c.point) > aggro_range then
             goto continue
          end
 
-         local pathfinder = pathfinders_by_chase_target[chase_c.target]
+         local pathfinder = pathfinders_by_chase_target[chase_c.target_id]
          if not pathfinder then
-            pathfinder = BreadthFirst.new(collision_matrices[position_c.level], aggro_range)
-            pathfinders_by_chase_target[chase_c.target] = pathfinder
-            pathfinder:update_all(chase_c.target.point)
+            pathfinder = BreadthFirst.new(collision_matrices[position_c.level], position_c.level, aggro_range)
+            pathfinders_by_chase_target[chase_c.target_id] = pathfinder
+            pathfinder:update_origin(chase_position_c.point)
          end
          local next_point = pathfinder:find_next_step(position_c.point)
-         if next_point ~= nil and next_point ~= chase_c.target.point then
+         if next_point ~= nil and next_point ~= chase_position_c.point then
             entity_manager:update_component(entity_id, position_c, { point = next_point })
             entity_manager:update_component(entity_id, chase_c, { time_at_last_movement = current_time })
          end

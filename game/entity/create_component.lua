@@ -16,10 +16,10 @@ return {
       }
    end,
 
-   [component_names.chase] = function(target)
+   [component_names.chase] = function(target_id)
       return {
          name = component_names.chase,
-         target = target,
+         target_id = target_id,
          time_at_last_movement = 0,
       }
    end,

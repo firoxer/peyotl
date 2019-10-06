@@ -8,7 +8,7 @@ end
 
 local BreadthFirst = {}
 
-function BreadthFirst:update_all(origin_point)
+function BreadthFirst:update_origin(origin_point)
    self._parents = {}
    self._distances = {}
    self._distances[origin_point] = 0
@@ -84,10 +84,11 @@ function BreadthFirst:find_next_step(point)
 end
 
 return {
-   new = function(collision_matrix, max_distance)
+   new = function(collision_matrix, level, max_distance)
       local instance = instantiate(BreadthFirst, {
-         _max_distance = max_distance,
+         level = level,
 
+         _max_distance = max_distance,
          _collision_matrix = collision_matrix,
          _parents = {},
          _distances = {},

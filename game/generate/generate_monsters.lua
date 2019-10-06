@@ -15,7 +15,6 @@ local function generate_monsters(entity_manager, level_name, level_config)
    end
 
    local player_entity_id = entity_manager:get_unique_component(component_names.input)
-   local player_position_c = entity_manager:get_component(player_entity_id, component_names.position)
 
    for i = 1, level_config.monsters.n do
       local point = walkable_points[i % #walkable_points]
@@ -24,7 +23,7 @@ local function generate_monsters(entity_manager, level_name, level_config)
       entity_manager:add_component(monster_id, create_component.attack(level_config.monsters.damage, 1, 0))
       entity_manager:add_component(monster_id, create_component.position(level_name, point))
       entity_manager:add_component(monster_id, create_component.collision())
-      entity_manager:add_component(monster_id, create_component.chase(player_position_c))
+      entity_manager:add_component(monster_id, create_component.chase(player_entity_id))
       entity_manager:add_component(monster_id, create_component.render(tileset_quad_names.monster, 1))
    end
 end
