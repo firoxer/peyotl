@@ -1,9 +1,8 @@
-local Set = require("game.data_structures.set")
 local events = require("game.event.events")
 
 local Subject = {}
 
-local ignored_events = Set.new({
+local ignored_events = ds.Set.new({
    events.component_added,
    events.component_to_be_updated,
 })

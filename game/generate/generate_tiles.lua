@@ -1,5 +1,3 @@
-local Matrix = require("game.data_structures.matrix")
-local Point = require("game.data_structures.point")
 local create_component = require("game.entity.create_component")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
@@ -11,12 +9,12 @@ local tile_kinds = {
 -- Using math.ceil ensures that the jaggedness matches with the map's edges
 local function carve_with_simplex_noise(level_config)
    local algo = level_config.generation_algorithm_settings
-   local matrix = Matrix.new()
+   local matrix = ds.Matrix.new()
    local random_offset = love.math.random(0, 1000)
 
    for y = 1, level_config.height do
       for x = 1, level_config.width do
-         matrix:set(Point.new(x, y), tile_kinds.wall)
+         matrix:set(ds.Point.new(x, y), tile_kinds.wall)
       end
    end
 
@@ -36,7 +34,7 @@ local function carve_with_simplex_noise(level_config)
          local noise = love.math.noise(modified_x, modified_y) -- Not affected by love.math.setRandomSeed
 
          if noise < algo.a_noise_threshold then
-            local point = Point.new(x, y)
+            local point = ds.Point.new(x, y)
             if matrix:has(point) then
                matrix:set(point, tile_kinds.empty)
             end
@@ -59,7 +57,7 @@ local function carve_with_simplex_noise(level_config)
 
          local noise = love.math.noise(modified_x, modified_y) -- Not affected by love.math.setRandomSeed
          if noise > algo.b_noise_threshold_low and noise < algo.b_noise_threshold_high then
-            local point = Point.new(x, y)
+            local point = ds.Point.new(x, y)
             if matrix:has(point) then
                matrix:set(point, tile_kinds.empty)
             end
@@ -73,7 +71,7 @@ end
 local function carve_with_random_squares(level_config)
    local algo = level_config.generation_algorithm_settings
 
-   local matrix = Matrix.new()
+   local matrix = ds.Matrix.new()
 
    local calculate_free_area = function()
       local wall_n = 0
@@ -96,7 +94,7 @@ local function carve_with_random_squares(level_config)
 
    for y = 1, level_config.height do
       for x = 1, level_config.width do
-         matrix:set(Point.new(x, y), tile_kinds.empty)
+         matrix:set(ds.Point.new(x, y), tile_kinds.empty)
       end
    end
 
@@ -109,7 +107,7 @@ local function carve_with_random_squares(level_config)
 
       for y = random_nw_y, random_se_y do
          for x = random_nw_x, random_se_x do
-            matrix:set(Point.new(x, y), tile_kinds.wall)
+            matrix:set(ds.Point.new(x, y), tile_kinds.wall)
          end
       end
    end
@@ -119,14 +117,14 @@ end
 
 local function carve_with_cellular_automatons(level_config)
    local algo = level_config.generation_algorithm_settings
-   local matrix = Matrix.new()
+   local matrix = ds.Matrix.new()
 
    for y = 1, level_config.height do
       for x = 1, level_config.width do
          if love.math.random() < algo.initial_wall_chance then
-            matrix:set(Point.new(x, y), tile_kinds.wall)
+            matrix:set(ds.Point.new(x, y), tile_kinds.wall)
          else
-            matrix:set(Point.new(x, y), tile_kinds.empty)
+            matrix:set(ds.Point.new(x, y), tile_kinds.empty)
          end
       end
    end
@@ -136,7 +134,7 @@ local function carve_with_cellular_automatons(level_config)
 
       for y = 1, level_config.height do
          for x = 1, level_config.width do
-            local point = Point.new(x, y)
+            local point = ds.Point.new(x, y)
             local tile = matrix:get(point)
 
             local neighbors = matrix:get_immediate_neighbors(point)

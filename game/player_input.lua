@@ -1,4 +1,3 @@
-local Set = require("game.data_structures.set")
 local Subject = require("game.event.subject")
 local events = require("game.event.events")
 
@@ -97,7 +96,7 @@ return {
          },
 
          _cooldown_left = 0,
-         _pressed_keys = Set.new(),
+         _pressed_keys = ds.Set.new(),
       })
 
       instance:_bind_to_love()

@@ -1,6 +1,7 @@
-local Point = require("game.data_structures.point")
 local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
+
+local chebyshev_distance = ds.Point.chebyshev_distance
 
 local ATTACK_RANGE = 1
 
@@ -32,7 +33,7 @@ return function(_, entity_manager)
                   goto continue
                end
 
-               if Point.chebyshev_distance(atk_position_c.point, atkd_position_c.point) ~= ATTACK_RANGE then
+               if chebyshev_distance(atk_position_c.point, atkd_position_c.point) ~= ATTACK_RANGE then
                   goto continue
                end
 

@@ -1,19 +1,18 @@
 --- Set globals to make development and testing nicer
 
-_G.math.round = function(n, multiple)
-   return math.floor(n / multiple + 0.5) * multiple
-end
+game_debug = {}
 
-_G.hsl =
+ds =
+   require("game.util.ds")
+
+hsl =
    require("game.util.hsl")
 
-_G.instantiate =
+instantiate =
    require("game.util.instantiate")
 
-_G.log =
+log =
    require("game.util.log")
-
-_G.game_debug = {}
 
 string.camelcasify =
    require("game.util.string.camelcasify")
@@ -44,6 +43,11 @@ table.shuffle =
 
 table.uptight =
    require("game.util.table.uptight")
+
+math.round =
+   function(n, multiple)
+      return math.floor(n / multiple + 0.5) * multiple
+   end
 
 if love == nil then
    -- For tests

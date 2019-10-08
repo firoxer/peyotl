@@ -1,7 +1,7 @@
 --- Technically this should go under systems/ but this way it just makes more sense
+
 local round = math.round
 
-local Matrix = require("game.data_structures.matrix")
 local component_names = require("game.entity.component_names")
 local create_calculate_alpha = require("game.render.create_calculate_alpha")
 local make_render_background = require("game.render.make_render_background")
@@ -46,7 +46,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
 
       local renderables_by_layer = {}
       local renderable_layer_ids = {}
-      local illuminabilities = Matrix.new()
+      local illuminabilities = ds.Matrix.new()
       -- TODO: Keep track of render_c's per position in a matrix and iterate its submatrix
       -- instead of going to the entity manager every frame
       for id, render_c, position_c in entity_manager:iterate(component_names.render, component_names.position) do
@@ -55,7 +55,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
          end
 
          if not renderables_by_layer[render_c.layer] then
-            renderables_by_layer[render_c.layer] = Matrix.new()
+            renderables_by_layer[render_c.layer] = ds.Matrix.new()
             table.insert(renderable_layer_ids, render_c.layer)
          end
 

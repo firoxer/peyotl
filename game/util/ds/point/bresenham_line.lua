@@ -1,4 +1,4 @@
-local get = require("game.data_structures.point.get")
+local get = require("game.util.ds.point.get")
 
 --- Bresenham line algorithm
 -- From https://stackoverflow.com/questions/4672279/bresenham-algorithm-in-javascript

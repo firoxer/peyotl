@@ -1,7 +1,5 @@
-local Queue = require("../game/data_structures/queue")
-
 do
-   local q = Queue.new()
+   local q = ds.Queue.new()
    q:enqueue(1)
    q:enqueue(2)
    q:enqueue(3)
@@ -11,7 +9,7 @@ do
 end
 
 do
-   local q = Queue.new()
+   local q = ds.Queue.new()
    q:enqueue(1)
    assert(q:dequeue() == 1)
    q:enqueue(2)
@@ -21,13 +19,13 @@ do
 end
 
 do
-   local q = Queue.new()
+   local q = ds.Queue.new()
    local _, err = pcall(function() q:dequeue() end)
    assert(err ~= nil)
 end
 
 do
-   local q = Queue.new()
+   local q = ds.Queue.new()
    assert(q:is_empty() == true)
    q:enqueue("not important")
    assert(q:is_empty() == false)

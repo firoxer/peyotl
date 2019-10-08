@@ -1,7 +1,5 @@
-local CircularBuffer = require("../game/data_structures/circular_buffer")
-
 do
-   local b = CircularBuffer.new(4)
+   local b = ds.CircularBuffer.new(4)
    b:write("a")
    b:write("b")
    b:write("c")
@@ -16,7 +14,7 @@ do
 end
 
 do
-   local b = CircularBuffer.new(3)
+   local b = ds.CircularBuffer.new(3)
    b:write("a")
    b:write("b")
    b:write("c")
@@ -25,7 +23,7 @@ do
 end
 
 do
-   local b = CircularBuffer.new(4)
+   local b = ds.CircularBuffer.new(4)
    b:write("a")
    b:write("b")
    b:write("c")

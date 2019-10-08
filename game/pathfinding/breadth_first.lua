@@ -1,5 +1,3 @@
-local Queue = require("game.data_structures.queue")
-
 local sqrt2 = math.sqrt(2)
 local function calculate_distance(a, b)
    local diagonal_move = a.x ~= b.x and a.y ~= b.y
@@ -21,7 +19,7 @@ function BreadthFirst:_traverse_from(origin_point)
    local parents = self._parents
    local distances = self._distances
 
-   local open_queue = Queue.new()
+   local open_queue = ds.Queue.new()
    open_queue:enqueue(origin_point)
 
    while not open_queue:is_empty() do

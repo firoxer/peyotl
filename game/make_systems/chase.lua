@@ -1,15 +1,15 @@
 local BreadthFirst = require("game.pathfinding.breadth_first")
-local Matrix = require("game.data_structures.matrix")
-local Point = require("game.data_structures.point")
 local component_names = require("game.entity.component_names")
+
+local chebyshev_distance = ds.Point.chebyshev_distance
 
 local function create_collision_matrices(levels_config)
    local collision_matrices = {}
    for level_name, level_config in pairs(levels_config) do
-      local matrix = Matrix.new()
+      local matrix = ds.Matrix.new()
       for y = 1, level_config.height do
          for x = 1, level_config.width do
-            matrix:set(Point.new(x, y), false)
+            matrix:set(ds.Point.new(x, y), false)
          end
       end
       collision_matrices[level_name] = matrix
@@ -89,7 +89,7 @@ return function(levels_config, entity_manager)
          end
 
          local aggro_range = levels_config[position_c.level].monsters.aggro_range
-         if Point.chebyshev_distance(position_c.point, chase_position_c.point) > aggro_range then
+         if chebyshev_distance(position_c.point, chase_position_c.point) > aggro_range then
             goto continue
          end
 

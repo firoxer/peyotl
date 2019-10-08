@@ -1,10 +1,9 @@
-local Matrix = require("game.data_structures.matrix")
-local Point = require("game.data_structures.point")
-local Queue = require("game.data_structures.queue")
 local component_names = require("game.entity.component_names")
 local events = require("game.event.events")
 
-local function offset(event)
+local offset = ds.Point.offset
+
+local function offset_by_event(event)
    if event == events.move_n then
       return 0, -1
    elseif event == events.move_ne then
@@ -27,10 +26,10 @@ end
 return function(levels_config, entity_manager, player_input)
    local collision_matrices = {}
    for level_name, level_config in pairs(levels_config) do
-      local matrix = Matrix.new()
+      local matrix = ds.Matrix.new()
       for y = 1, level_config.height do
          for x = 1, level_config.width do
-            matrix:set(Point.new(x, y), false)
+            matrix:set(ds.Point.new(x, y), false)
          end
       end
       collision_matrices[level_name] = matrix
@@ -53,7 +52,7 @@ return function(levels_config, entity_manager, player_input)
       end
    end)
 
-   local pending_events = Queue.new()
+   local pending_events = ds.Queue.new()
    player_input.subject:subscribe(function(event)
       pending_events:enqueue(event)
    end)
@@ -62,7 +61,7 @@ return function(levels_config, entity_manager, player_input)
       while not pending_events:is_empty() do
          local event = pending_events:dequeue()
          for entity_id, _, position_c in entity_manager:iterate(component_names.input, component_names.position) do
-            local point_diff_x, point_diff_y = offset(event)
+            local point_diff_x, point_diff_y = offset_by_event(event)
 
             if not point_diff_x or not point_diff_y then
                -- Event matched no movement
@@ -73,9 +72,9 @@ return function(levels_config, entity_manager, player_input)
 
             -- Orthogonal movement
             if point_diff_x == 0 or point_diff_y == 0 then
-               if collision_matrix:get(Point.offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
+               if collision_matrix:get(offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
                   entity_manager:update_component(entity_id, position_c, {
-                     point = Point.offset(position_c.point, point_diff_x, point_diff_y)
+                     point = offset(position_c.point, point_diff_x, point_diff_y)
                   })
                end
 
@@ -83,17 +82,17 @@ return function(levels_config, entity_manager, player_input)
             end
 
             -- Diagonal movement, allowing sticking to a wall when one axis collides
-            if collision_matrix:get(Point.offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
+            if collision_matrix:get(offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
                entity_manager:update_component(entity_id, position_c, {
-                  point = Point.offset(position_c.point, point_diff_x, point_diff_y)
+                  point = offset(position_c.point, point_diff_x, point_diff_y)
                })
-            elseif collision_matrix:get(Point.offset(position_c.point, point_diff_x, 0)) ~= true then
+            elseif collision_matrix:get(offset(position_c.point, point_diff_x, 0)) ~= true then
                entity_manager:update_component(entity_id, position_c, {
-                  point = Point.offset(position_c.point, point_diff_x, 0)
+                  point = offset(position_c.point, point_diff_x, 0)
                })
-            elseif collision_matrix:get(Point.offset(position_c.point, 0, point_diff_y)) ~= true then
+            elseif collision_matrix:get(offset(position_c.point, 0, point_diff_y)) ~= true then
                entity_manager:update_component(entity_id, position_c, {
-                  point = Point.offset(position_c.point, 0, point_diff_y)
+                  point = offset(position_c.point, 0, point_diff_y)
                })
             end
 

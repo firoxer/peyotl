@@ -6,6 +6,8 @@ globals = {
    "table",
    "math",
 
+   "ds",
+   "game_debug",
    "hsl",
    "instantiate",
    "log",

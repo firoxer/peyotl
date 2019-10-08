@@ -1,6 +1,4 @@
-local Matrix = require("game.data_structures.matrix")
-local Point = require("game.data_structures.point")
-local Queue = require("game.data_structures.queue")
+local bresenham_line = ds.Point.bresenham_line
 
 local almost_sqrt2 = math.sqrt(2)
 local function calculate_distance(a, b)
@@ -12,8 +10,8 @@ local function breadth_first(level_config, illuminabilities, camera_entity_posit
    local max_distance = level_config.lighting_settings.lighting_range
    local camera_point = camera_entity_position_c.point
 
-   local distances = Matrix.new()
-   local open_queue = Queue.new()
+   local distances = ds.Matrix.new()
+   local open_queue = ds.Queue.new()
 
    open_queue:enqueue(camera_point)
    distances:set(camera_point, 0)
@@ -29,7 +27,7 @@ local function breadth_first(level_config, illuminabilities, camera_entity_posit
          end
 
          local visible_from_camera =
-            Point.bresenham_line(camera_point, neighbor_point, illuminabilities.bind("get"))
+            bresenham_line(camera_point, neighbor_point, illuminabilities.bind("get"))
          if not visible_from_camera then
             goto continue
          end

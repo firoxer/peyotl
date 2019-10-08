@@ -1,4 +1,3 @@
-local CircularBuffer = require("game.data_structures.circular_buffer")
 local profiler = require("lib.profiler")
 
 local profiler_reporting_on = false
@@ -43,7 +42,7 @@ local function _report_low_fps()
 end
 
 local last_memory_usage = math.huge
-local memory_usages = CircularBuffer.new(60)
+local memory_usages = ds.CircularBuffer.new(60)
 local function _report_memory_usage()
    local memory_usage = collectgarbage("count")
    if memory_usage > last_memory_usage then

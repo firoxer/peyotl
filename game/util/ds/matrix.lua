@@ -1,6 +1,7 @@
-local yield = coroutine.yield
+-- This file is required before ds is defined so we have to require Point manually
+local Point = require("game.util.ds.point")
 
-local Point = require("game.data_structures.point")
+local yield = coroutine.yield
 
 local Matrix = {}
 

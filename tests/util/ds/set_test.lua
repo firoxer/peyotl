@@ -1,7 +1,5 @@
-local Set = require("../game/data_structures/set")
-
 do
-   local s = Set.new()
+   local s = ds.Set.new()
    s:add('a')
    s:add('b')
    s:add('c')
@@ -11,7 +9,7 @@ do
 end
 
 do
-   local s = Set.new()
+   local s = ds.Set.new()
    s:add('a')
    s:add('b')
    s:add('c')
@@ -20,7 +18,7 @@ do
 end
 
 do
-   local s = Set.new()
+   local s = ds.Set.new()
    s:add('a')
    s:remove('a')
    s:add('a')
@@ -28,7 +26,7 @@ do
 end
 
 do
-   local s = Set.new()
+   local s = ds.Set.new()
    s:add('a')
    s:add('a')
    s:add('a')

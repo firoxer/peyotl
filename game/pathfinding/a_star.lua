@@ -1,7 +1,6 @@
-local Matrix = require("game.data_structures.matrix")
 local Node = require("game.pathfinding.node")
-local Point = require("game.data_structures.point")
-local PriorityQueue = require("game.data_structures.priority_queue")
+
+local Point = ds.Point
 
 local function backtrace(node) -- TODO: Return a linked list?
    local path = {}
@@ -59,7 +58,7 @@ function Pathfinder:find_path(a, b)
    origin_node.opened = true
    origin_node.cost = 0
 
-   local open_queue = PriorityQueue.new()
+   local open_queue = ds.PriorityQueue.new()
    open_queue:enqueue(origin_node, 0)
 
    while not open_queue:is_empty() do
@@ -115,7 +114,7 @@ return {
 
          _prefer_orthogonal = options and options.prefer_orthogonal or false,
 
-         _node_matrix = Matrix.new(),
+         _node_matrix = ds.Matrix.new(),
       })
 
       return instance

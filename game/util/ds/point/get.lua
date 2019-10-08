@@ -14,7 +14,7 @@ return function(x, y)
          end
       })
 
-      p.type = "data_structures.Point" -- So that the code can assume this is a prototype
+      p.type = "ds.Point" -- So that the code can assume this is a prototype
 
       points[y][x] = table.readonly(p)
    end
