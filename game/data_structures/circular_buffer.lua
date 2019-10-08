@@ -1,8 +1,11 @@
 local CircularBuffer = {}
 
 function CircularBuffer:read()
+   -- Faster than modulo
    self._read_index = self._read_index + 1
-
+   if self._read_index == self._write_index + 1 then
+      error("trying to read an empty buffer")
+   end
    if self._read_index > self.size then
       self._read_index = 1
    end
@@ -11,8 +14,11 @@ function CircularBuffer:read()
 end
 
 function CircularBuffer:write(elem)
+   -- Faster than modulo
    self._write_index = self._write_index + 1
-
+   if self._write_index == self._read_index then
+      error("trying to write to a full buffer")
+   end
    if self._write_index > self.size then
       self._write_index = 1
    end
@@ -33,8 +39,8 @@ return {
          size = size,
 
          _contents = {},
-         _read_index = 0,
-         _write_index = 0,
+         _read_index = size + 1,
+         _write_index = size + 1,
       })
       return instance
    end

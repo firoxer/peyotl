@@ -3,9 +3,9 @@
 local Queue = {}
 
 function Queue:enqueue(e)
-   local last = self._last + 1
-   self._last = last
-   self._contents[last] = e
+   local last_index = self._last_index + 1
+   self._last_index = last_index
+   self._contents[last_index] = e
 end
 
 function Queue:dequeue()
@@ -13,28 +13,28 @@ function Queue:dequeue()
       error("trying to dequeue an empty queue")
    end
 
-   local first = self._first
-   local e = self._contents[first]
-   self._contents[first] = nil -- For GC
-   self._first = first + 1
+   local first_index = self._first_index
+   local element = self._contents[first_index]
+   self._contents[first_index] = nil -- For GC
+   self._first_index = first_index + 1
 
-   return e
+   return element
 end
 
 function Queue:peek()
-   return self._contents[self._first]
+   return self._contents[self._first_index]
 end
 
 function Queue:is_empty()
-   return self._first > self._last
+   return self._first_index > self._last_index
 end
 
 return {
    new = function()
       local instance = instantiate(Queue, {
          _contents = {},
-         _first = 0,
-         _last = -1,
+         _first_index = 0,
+         _last_index = -1,
       })
       return instance
    end
