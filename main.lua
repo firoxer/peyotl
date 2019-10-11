@@ -5,6 +5,7 @@ local seed = require("seed")
 
 local EntityManager = require("game.entity.entity_manager")
 local PlayerInput = require("game.player_input")
+local Subject = require("game.event.subject")
 local make_render = require("game.make_render")
 local make_update = require("game.make_update")
 local config = require("game.config")
@@ -41,6 +42,7 @@ end
 function love.load(arg)
    if table.contains(arg, "--help") then
       print([[usage: ./run [options]
+    --log-events
     --profile
     --report-memory-usage
     --report-low-fps
@@ -54,7 +56,9 @@ function love.load(arg)
    end
 
    for i = 1, #arg do
-      if arg[i] == "--profile" then
+      if arg[i] == "--log-events" then
+         Subject.enable_event_logging()
+      elseif arg[i] == "--profile" then
          devtools.enable_profiler_reports()
       elseif arg[i] == "--report-memory-usage" then
          devtools.enable_memory_usage_reports()
