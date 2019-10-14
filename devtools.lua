@@ -26,7 +26,7 @@ end
 local frame = 0
 local function _report_profiling()
    frame = frame + 1
-   if frame % 10 == 0 then
+   if frame % 100 == 0 then
       print(profiler.report("time", 20))
       profiler.reset()
    end
