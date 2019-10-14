@@ -119,6 +119,25 @@ function Matrix:pairs()
    end)
 end
 
+-- TODO: Check if this can be optimized
+function Matrix:submatrix_pairs(nw_x, nw_y, se_x, se_y)
+   local function iter(tbl)
+      for y, row in pairs(tbl) do
+         if y >= nw_y and y <= se_y then
+            for x, elem in pairs(row) do
+               if x >= nw_x and x <= se_x then
+                  yield(Point.new(x, y), elem)
+               end
+            end
+         end
+      end
+   end
+
+   return coroutine.wrap(function()
+      iter(self._contents)
+   end)
+end
+
 function Matrix:bounds()
    if not self._bounds_up_to_date then
       local nw_x = math.huge

@@ -6,6 +6,49 @@ local component_names = require("game.entity.component_names")
 local create_calculate_alpha = require("game.render.create_calculate_alpha")
 local make_render_background = require("game.render.make_render_background")
 
+local function create_render_layers(matrix_iterator)
+   local layer_ids = {}
+   local layers_by_id = {}
+
+   for point, layer in matrix_iterator do
+      for _, render_c in pairs(layer) do
+         if not layers_by_id[render_c.layer] then
+            layers_by_id[render_c.layer] = ds.Matrix.new()
+            table.insert(layer_ids, render_c.layer)
+         end
+
+         layers_by_id[render_c.layer]:set(point, render_c)
+      end
+   end
+
+   return layer_ids, layers_by_id
+end
+
+local function create_illuminabilities(render_matrix_iterator, opaque_matrix)
+   local illuminabilities = ds.Matrix.new()
+
+   for point in render_matrix_iterator do
+      local opaque_c_n = opaque_matrix:get(point) or 0
+      illuminabilities:set(point, opaque_c_n == 0)
+   end
+
+   for point in illuminabilities:pairs() do
+      local has_illuminable_neighbor = false
+      for neighbor_point in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
+         if illuminabilities:get(neighbor_point) == true then
+            has_illuminable_neighbor = true
+            break
+         end
+      end
+
+      if not has_illuminable_neighbor then
+         illuminabilities:remove(point)
+      end
+   end
+
+   return illuminabilities
+end
+
 return function(rendering_config, levels_config, entity_manager, tileset)
    local camera_rigidness = rendering_config.camera_rigidness
    local window_width = rendering_config.window_width
@@ -16,13 +59,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
 
    local current_camera_x = 0
    local current_camera_y = 0
-
-   local is_out_of_view = function(render_pos_c)
-      return render_pos_c.point.x < current_camera_x - (window_width / 2) - 1
-         or render_pos_c.point.x > current_camera_x + (window_width / 2)
-         or render_pos_c.point.y < current_camera_y - (window_height / 2) - 1
-         or render_pos_c.point.y > current_camera_y + (window_height / 2)
-   end
+   local current_camera_level = nil
 
    -- Canvas is used so that everything can be rendered 1x and then scaled up
    local canvas = love.graphics.newCanvas(window_width * tile_size, window_height * tile_size)
@@ -32,60 +69,93 @@ return function(rendering_config, levels_config, entity_manager, tileset)
 
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
 
+   local render_matrices = {}
+   for level_name in pairs(levels_config) do
+      render_matrices[level_name] = ds.Matrix.new()
+   end
+   entity_manager.subject:subscribe_to_any_change_of(
+      { component_names.render, component_names.position },
+      function(event_data, render_c, position_c)
+         if event_data.updated_fields and event_data.updated_fields.point then
+            render_matrices[position_c.level]:get(position_c.point)[render_c.layer] = nil
+            local updated_layer = render_matrices[position_c.level]:get(event_data.updated_fields.point)
+            if not updated_layer then
+               updated_layer = {}
+            end
+            updated_layer[render_c.layer] = render_c
+            render_matrices[position_c.level]:set(event_data.updated_fields.point, updated_layer)
+         else
+            local updated_layer = render_matrices[position_c.level]:get(position_c.point)
+            if not updated_layer then
+               updated_layer = {}
+            end
+            updated_layer[render_c.layer] = render_c
+            render_matrices[position_c.level]:set(position_c.point, updated_layer)
+         end
+      end
+   )
+
+   local opaque_matrices = {}
+   for level_name in pairs(levels_config) do
+      opaque_matrices[level_name] = ds.Matrix.new()
+   end
+   entity_manager.subject:subscribe_to_any_change_of(
+      { component_names.opaque, component_names.position },
+      function(event_data, _, position_c)
+         if event_data.updated_fields and event_data.updated_fields.point then
+            opaque_matrices[position_c.level]:set(
+               position_c.point,
+               opaque_matrices[position_c.level]:get(position_c.point) - 1
+            )
+            opaque_matrices[position_c.level]:set(
+               event_data.updated_fields.point,
+               opaque_matrices[position_c.level]:get(event_data.updated_fields.point) + 1
+            )
+         else
+            opaque_matrices[position_c.level]:set(
+               position_c.point,
+               (opaque_matrices[position_c.level]:get(position_c.point) or 0) + 1
+            )
+         end
+      end
+   )
+
    return function()
-      local camera_entity_position_c = entity_manager:get_component(
-         entity_manager:get_unique_component(component_names.camera),
-         component_names.position
-      )
+      local camera_entity_position_c =
+         entity_manager:get_component(
+            entity_manager:get_unique_component(component_names.camera),
+            component_names.position
+         )
 
       -- By moving the camera only a bit at a time, it gets nice and sticky
       -- and it follows its target more naturally
       local camera_entity_position_point = camera_entity_position_c.point
       current_camera_x = current_camera_x + (camera_entity_position_point.x - current_camera_x) * camera_rigidness
       current_camera_y = current_camera_y + (camera_entity_position_point.y - current_camera_y) * camera_rigidness
+      current_camera_level = camera_entity_position_c.level
 
-      local renderables_by_layer = {}
-      local renderable_layer_ids = {}
-      local illuminabilities = ds.Matrix.new()
-      -- TODO: Keep track of render_c's per position in a matrix and iterate its submatrix
-      -- instead of going to the entity manager every frame
-      for id, render_c, position_c in entity_manager:iterate(component_names.render, component_names.position) do
-         if position_c.level ~= camera_entity_position_c.level or is_out_of_view(position_c) then
-            goto continue
-         end
+      local level_config = levels_config[current_camera_level]
 
-         if not renderables_by_layer[render_c.layer] then
-            renderables_by_layer[render_c.layer] = ds.Matrix.new()
-            table.insert(renderable_layer_ids, render_c.layer)
-         end
+      local visible_nw_se_corners = {
+         current_camera_x - (window_width / 2) - 1,
+         current_camera_y - (window_height / 2) - 1,
+         current_camera_x + (window_width / 2),
+         current_camera_y + (window_height / 2)
+      }
+      local visible_render_matrix_iterator =
+         render_matrices[current_camera_level]:submatrix_pairs(unpack(visible_nw_se_corners))
+      local layer_ids, layers_by_id =
+         create_render_layers(visible_render_matrix_iterator)
 
-         renderables_by_layer[render_c.layer]:set(position_c.point, render_c)
+      table.sort(layer_ids)
 
-         if entity_manager:get_component(id, component_names.opaque) == nil then
-            illuminabilities:set(position_c.point, true)
-         else
-            illuminabilities:set(position_c.point, false)
-         end
+      visible_render_matrix_iterator =
+         render_matrices[current_camera_level]:submatrix_pairs(unpack(visible_nw_se_corners))
+      local illuminabilities =
+         create_illuminabilities(visible_render_matrix_iterator, opaque_matrices[current_camera_level])
 
-         ::continue::
-      end
-
-      for point in illuminabilities:pairs() do
-         local has_illuminable_neighbor = false
-         for neighbor_point in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
-            if illuminabilities:get(neighbor_point) == true then
-               has_illuminable_neighbor = true
-            end
-         end
-
-         if not has_illuminable_neighbor then
-            illuminabilities:remove(point)
-         end
-      end
-
-      local level_config = levels_config[camera_entity_position_c.level]
       local calculate_alpha =
-         create_calculate_alpha(level_config, illuminabilities, camera_entity_position_c)
+         create_calculate_alpha(level_config, illuminabilities, camera_entity_position_c.point)
 
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
@@ -94,9 +164,8 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       -- go nicely on top of it
       render_background()
 
-      table.sort(renderable_layer_ids)
-      for _, layer_id in ipairs(renderable_layer_ids) do
-         local renderables = renderables_by_layer[layer_id]
+      for _, layer_id in ipairs(layer_ids) do
+         local renderables = layers_by_id[layer_id]
 
          tileset_batch:clear()
          for point, render_c in renderables:pairs() do
