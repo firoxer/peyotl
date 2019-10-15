@@ -40,7 +40,7 @@ local function reset()
 end
 
 function love.load(arg)
-   if table.contains(arg, "--help") then
+   if table.contains(arg, "-h") or table.contains(arg, "--help") then
       print([[usage: ./run [options]
     --log-events
     --profile
