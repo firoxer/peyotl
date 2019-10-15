@@ -16,7 +16,7 @@ end
 function CircularBuffer:write(elem)
    -- Faster than modulo
    self._write_index = self._write_index + 1
-   if self._write_index == self._read_index then
+   if not self._allow_overwrite and self._write_index == self._read_index then
       error("trying to write to a full buffer")
    end
    if self._write_index > self.size then
@@ -32,7 +32,7 @@ end
 
 local create_object = prototypify(CircularBuffer)
 return {
-   new = function(size)
+   new = function(size, options)
       assert(type(size) == "number")
       assert(size >= 1, "buffer size must be one or more")
 
@@ -42,6 +42,8 @@ return {
          _contents = {},
          _read_index = size + 1,
          _write_index = size + 1,
+
+         _allow_overwrite = options.allow_overwrite or false,
       })
    end
 }
