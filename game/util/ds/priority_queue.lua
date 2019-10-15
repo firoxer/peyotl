@@ -71,13 +71,13 @@ function PriorityQueue:_min_child(i)
    end
 end
 
+local create_object = prototypify(PriorityQueue)
 return {
    new = function()
-      local instance = instantiate(PriorityQueue, {
+      return create_object({
          _elem_heap = {},
          _priority_heap = {},
          _size = 0,
       })
-      return instance
    end
 }

@@ -30,18 +30,18 @@ function CircularBuffer:ipairs()
    return ipairs(self._contents)
 end
 
+local create_object = prototypify(CircularBuffer)
 return {
    new = function(size)
       assert(type(size) == "number")
       assert(size >= 1, "buffer size must be one or more")
 
-      local instance = instantiate(CircularBuffer, {
+      return create_object({
          size = size,
 
          _contents = {},
          _read_index = size + 1,
          _write_index = size + 1,
       })
-      return instance
    end
 }

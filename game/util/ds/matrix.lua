@@ -140,14 +140,14 @@ function Matrix:bounds()
    return self._nw_bound, self._se_bound
 end
 
+local create_object = prototypify(Matrix)
 return {
    new = function()
-      local instance = instantiate(Matrix, {
+      return create_object({
          _contents = {},
          _bounds_up_to_date = true,
          _nw_bound = nil,
          _se_bound = nil,
       })
-      return instance
    end
 }

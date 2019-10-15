@@ -7,16 +7,17 @@ function Node:reset()
    self.cost = nil
 end
 
+local create_object = prototypify(Node)
 return {
    new = function(point)
       assert(type(point.x) == "number")
       assert(type(point.y) == "number")
 
-      local instance = instantiate(Node, {
+      local self = create_object({
          x = point.x,
          y = point.y,
       })
-      instance:reset()
-      return instance
+      self:reset()
+      return self
    end
 }

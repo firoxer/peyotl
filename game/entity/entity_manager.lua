@@ -94,6 +94,7 @@ function EntityManager:iterate(...)
    end)
 end
 
+local create_object = prototypify(EntityManager)
 return {
    new = function()
       local components = {}
@@ -101,47 +102,47 @@ return {
          components[name] = {}
       end
 
-      local instance = instantiate(EntityManager, {
+      local em = create_object({
          subject = Subject.new(),
 
          _components = components,
          _entity_id = 0,
       })
 
-      instance.subject.subscribe_to_any_change_of = function(self, names, callback)
+      em.subject.subscribe_to_any_change_of = function(subject, names, callback)
          if #names ~= 2 then
             error("not implemented")
          end
 
-         self:subscribe(function(event, data)
+         subject:subscribe(function(event, data)
             if event == events.component_added
                and (names[1] == data.component_name or names[2] == data.component_name)
-               and instance:has_component(data.entity_id, names[1])
-               and instance:has_component(data.entity_id, names[2])
+               and em:has_component(data.entity_id, names[1])
+               and em:has_component(data.entity_id, names[2])
             then
                callback(
                   data,
-                  instance:get_component(data.entity_id, names[1]),
-                  instance:get_component(data.entity_id, names[2])
+                  em:get_component(data.entity_id, names[1]),
+                  em:get_component(data.entity_id, names[2])
                )
             end
          end)
 
-         self:subscribe(function(event, data)
+         subject:subscribe(function(event, data)
             if event == events.component_to_be_updated
                and (names[1] == data.component_name or names[2] == data.component_name)
-               and instance:has_component(data.entity_id, names[1])
-               and instance:has_component(data.entity_id, names[2])
+               and em:has_component(data.entity_id, names[1])
+               and em:has_component(data.entity_id, names[2])
             then
                callback(
                   data,
-                  instance:get_component(data.entity_id, names[1]),
-                  instance:get_component(data.entity_id, names[2])
+                  em:get_component(data.entity_id, names[1]),
+                  em:get_component(data.entity_id, names[2])
                )
             end
          end)
       end
 
-      return instance
+      return em
    end
 }

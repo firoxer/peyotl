@@ -9,6 +9,6 @@ globals = {
    "ds",
    "game_debug",
    "hsl",
-   "instantiate",
    "log",
+   "prototypify",
 }

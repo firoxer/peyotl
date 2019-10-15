@@ -30,21 +30,22 @@ function Set:pairs()
    return pairs(self._contents)
 end
 
+local create_object = prototypify(Set)
 return {
    new = function(values)
       assert(type(values) == "table" or values == nil, "initial values must be a table or omitted altogether")
 
-      local instance = instantiate(Set, {
+      local self = create_object({
          _contents = {},
          _size = 0,
       })
 
       if values ~= nil then
          for _, elem in ipairs(values) do
-            instance:add(elem)
+            self:add(elem)
          end
       end
 
-      return instance
+      return self
    end
 }

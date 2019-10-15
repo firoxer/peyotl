@@ -1,5 +1,5 @@
 return function(tbl)
-   local mt = getmetatable(tbl) or {}
+   local mt = table.clone(getmetatable(tbl)) or {}
 
    mt.__index = tbl
 

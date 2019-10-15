@@ -28,12 +28,12 @@ function Subject:notify(event, data)
    end
 end
 
+local create_object = prototypify(Subject)
 return {
    new = function()
-      local instance = instantiate(Subject, {
+      return create_object({
          _observers = {},
       })
-      return instance
    end,
 
    enable_event_logging = function()

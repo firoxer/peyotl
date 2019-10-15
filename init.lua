@@ -1,6 +1,15 @@
 --- Set globals to make development and testing nicer
 
+-- This ought to be #1 because it may be used anywhere
 game_debug = {}
+
+-- This has to come before `prototypify`
+string.camelcasify =
+   require("game.util.string.camelcasify")
+
+-- This has to come before `ds`
+prototypify =
+   require("game.util.prototypify")
 
 ds =
    require("game.util.ds")
@@ -8,14 +17,8 @@ ds =
 hsl =
    require("game.util.hsl")
 
-instantiate =
-   require("game.util.instantiate")
-
 log =
    require("game.util.log")
-
-string.camelcasify =
-   require("game.util.string.camelcasify")
 
 table.clone =
    require("game.util.table.clone")

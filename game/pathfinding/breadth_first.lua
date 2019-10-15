@@ -81,9 +81,10 @@ function BreadthFirst:find_next_step(point)
    return self._parents[point]
 end
 
+local create_object = prototypify(BreadthFirst)
 return {
    new = function(collision_matrix, level, max_distance)
-      local instance = instantiate(BreadthFirst, {
+      return create_object({
          level = level,
 
          _max_distance = max_distance,
@@ -91,6 +92,5 @@ return {
          _parents = {},
          _distances = {},
       })
-      return instance
    end
 }

@@ -73,12 +73,13 @@ function PlayerInput:tick(dt)
    end
 end
 
+local create_object = prototypify(PlayerInput)
 return {
    new = function(player_input_config)
       local short_tick = player_input_config.keyboard_short_tick_s
       local long_tick = player_input_config.keyboard_long_tick_s
 
-      local instance = instantiate(PlayerInput, {
+      local self = create_object({
          subject = Subject.new(),
 
          _key_cooldowns = {
@@ -99,8 +100,8 @@ return {
          _pressed_keys = ds.Set.new(),
       })
 
-      instance:_bind_to_love()
+      self:_bind_to_love()
 
-      return instance
+      return self
    end
 }

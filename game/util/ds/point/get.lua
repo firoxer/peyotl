@@ -1,5 +1,10 @@
 local points = {}
 
+local metatable = {
+   __tostring = function(p)
+      return "{ x = " .. p.x .. ", y = " .. p.y .. " }"
+   end
+}
 return function(x, y)
    if points[y] == nil then
       points[y] = {}
@@ -8,11 +13,7 @@ return function(x, y)
    if points[y][x] == nil then
       local p = { x = x, y = y }
 
-      setmetatable(p, {
-         __tostring = function()
-            return "{ x = " .. x .. ", y = " .. y .. " }"
-         end
-      })
+      setmetatable(p, metatable)
 
       p.type = "ds.Point" -- So that the code can assume this is a prototype
 

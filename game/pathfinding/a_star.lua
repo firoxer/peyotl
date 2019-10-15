@@ -98,6 +98,7 @@ function Pathfinder:find_path(a, b)
    return nil
 end
 
+local create_object = prototypify(Pathfinder)
 return {
    new = function(is_walkable_at, nw_bound, se_bound, options)
       assert(type(is_walkable_at) == "function")
@@ -107,7 +108,7 @@ return {
       assert(type(se_bound.y) == "number")
       assert(type(options) == "table" or options == nil)
 
-      local instance = instantiate(Pathfinder, {
+      return create_object({
          _is_walkable_at = is_walkable_at,
          _nw_bound = nw_bound,
          _se_bound = se_bound,
@@ -116,7 +117,5 @@ return {
 
          _node_matrix = ds.Matrix.new(),
       })
-
-      return instance
    end
 }

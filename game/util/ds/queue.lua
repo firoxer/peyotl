@@ -29,13 +29,13 @@ function Queue:is_empty()
    return self._first_index > self._last_index
 end
 
+local create_object = prototypify(Queue)
 return {
    new = function()
-      local instance = instantiate(Queue, {
+      return create_object({
          _contents = {},
          _first_index = 0,
          _last_index = -1,
       })
-      return instance
    end
 }

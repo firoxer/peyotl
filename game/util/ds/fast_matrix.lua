@@ -74,6 +74,7 @@ function FastMatrix:get_immediate_neighbors(point)
    return neighbors
 end
 
+local create_object = prototypify(FastMatrix)
 return {
    new = function(width, height)
       assert(type(width) == "number")
@@ -84,11 +85,10 @@ return {
          contents[i] = false
       end
 
-      local instance = instantiate(FastMatrix, {
+      return create_object({
          _width = width,
          _height = height,
          _contents = contents,
       })
-      return instance
    end
 }
