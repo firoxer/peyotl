@@ -42,7 +42,7 @@ local function _report_low_fps()
 end
 
 local last_memory_usage = math.huge
-local memory_usages = ds.CircularBuffer.new(60, { allow_overwrite = true })
+local memory_usages = ds.CircularBuffer.new(10, { allow_overwrite = true })
 local function _report_memory_usage()
    local memory_usage = collectgarbage("count")
    if memory_usage > last_memory_usage then
@@ -51,10 +51,19 @@ local function _report_memory_usage()
    last_memory_usage = memory_usage
 
    local memory_usage_rate = 0
+   local memory_usage_n = 0
    for _, usage in memory_usages:ipairs() do
       memory_usage_rate = memory_usage_rate + usage
+      memory_usage_n = memory_usage_n + 1
    end
-   log.debug(string.format("mem rate: %.2f, total mem %5d", memory_usage_rate, memory_usage))
+
+   if memory_usage_n == 0 then
+      return
+   end
+
+   memory_usage_rate = memory_usage_rate / memory_usage_n
+
+   log.debug(string.format("avg mem rate: %6.2fkb/frame; total mem: %5dkb", memory_usage_rate, memory_usage))
 end
 
 local time_to_sleep = 0.0148 -- Three fourths of a frame
