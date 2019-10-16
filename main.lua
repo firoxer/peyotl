@@ -6,17 +6,62 @@ local seed = require("seed")
 local EntityManager = require("game.entity.entity_manager")
 local PlayerInput = require("game.player_input")
 local Subject = require("game.event.subject")
-local make_render = require("game.make_render")
-local make_update = require("game.make_update")
 local config = require("game.config")
 local events = require("game.event.events")
 local generate = require("game.generate")
+local make_render = require("game.make_render")
+local make_update = require("game.make_update")
+
+local function parse_args(raw_args)
+   local args = {}
+   for _, arg in ipairs(raw_args) do
+      args[arg:gsub("^-+", ""):gsub("-", "_")] = true
+   end
+
+   if args.h or args.help then
+      print([[usage: ./run [options]
+    --log-events
+    --production
+    --profile
+    --report-memory-usage
+    --report-low-fps
+    --retard-performance]])
+      love.event.quit()
+      return
+   end
+
+   if not args.production then
+      -- Default flags for development
+      args.report_low_fps = true
+      args.retard_performance = true
+   end
+
+   if args.log_events then
+      Subject.enable_event_logging()
+      log.debug("enabled event logging")
+   end
+   if args.profile then
+      devtools.enable_profiler_reports()
+      log.debug("enabled profiling")
+   end
+   if args.report_memory_usage then
+      devtools.enable_memory_usage_reports()
+      log.debug("enabled memory usage reports")
+   end
+   if args.report_low_fps then
+      devtools.enable_low_fps_reports()
+      log.debug("enabled low FPS reports")
+   end
+   if args.retard_performance then
+      devtools.enable_performance_retardation()
+      log.debug("enabled performance retardation")
+   end
+end
 
 local game_paused = false
 local game_terminating = false
 local game_restarting = false
 
-local entity_manager = EntityManager.new()
 local player_input = PlayerInput.new(config.player_input)
 
 player_input.subject:subscribe(function(event)
@@ -30,6 +75,7 @@ end)
 local update
 local render
 
+local entity_manager = EntityManager.new()
 local function reset()
    seed()
 
@@ -39,36 +85,8 @@ local function reset()
    generate(entity_manager, config)
 end
 
-function love.load(arg)
-   if table.contains(arg, "-h") or table.contains(arg, "--help") then
-      print([[usage: ./run [options]
-    --log-events
-    --profile
-    --report-memory-usage
-    --report-low-fps
-    --retard-performance]])
-      love.event.quit()
-   end
-   if table.contains(arg, "--dev") then
-      -- Default flags for dev
-      table.insert(arg, "--report-low-fps")
-      table.insert(arg, "--retard-performance")
-   end
-
-   for i = 1, #arg do
-      if arg[i] == "--log-events" then
-         Subject.enable_event_logging()
-      elseif arg[i] == "--profile" then
-         devtools.enable_profiler_reports()
-      elseif arg[i] == "--report-memory-usage" then
-         devtools.enable_memory_usage_reports()
-      elseif arg[i] == "--report-low-fps" then
-         devtools.enable_low_fps_reports()
-      elseif arg[i] == "--retard-performance" then
-         devtools.enable_performance_retardation()
-      end
-   end
-
+function love.load(args)
+   parse_args(args)
    reset()
 end
 
