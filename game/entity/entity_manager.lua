@@ -11,6 +11,16 @@ function EntityManager:new_entity_id()
    return self._entity_id
 end
 
+function EntityManager:remove_entity(entity_id)
+   for _, component in pairs(self._components) do
+      component[entity_id] = nil
+   end
+
+   self.subject:notify(events.entity_removed, {
+      entity_id = entity_id
+   })
+end
+
 function EntityManager:get_component(entity_id, component_name)
    return self._components[component_name][entity_id]
 end

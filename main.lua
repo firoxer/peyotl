@@ -60,9 +60,12 @@ end
 
 local game_paused = false
 local game_terminating = false
-local game_restarting = false
+local game_resetting = false
 
 local player_input = PlayerInput.new(config.player_input)
+
+local entity_manager
+local player_id
 
 player_input.subject:subscribe(function(event)
    if event == events.quit_game then
@@ -75,14 +78,25 @@ end)
 local update
 local render
 
-local entity_manager = EntityManager.new()
 local function reset()
    seed()
+
+   entity_manager = EntityManager.new()
+
+   entity_manager.subject:subscribe(function(event, data)
+      if event == events.entity_removed and data.entity_id == player_id then
+         game_resetting = true
+      end
+   end)
 
    update = make_update(config.levels, entity_manager, player_input)
    render = make_render(config.rendering, config.levels, entity_manager)
 
-   generate(entity_manager, config)
+   local generation_data = generate(entity_manager, config)
+
+   player_id = generation_data.player_id
+
+   game_resetting = false
 end
 
 function love.load(args)
@@ -94,7 +108,7 @@ function love.update(dt)
    if game_terminating then
       love.event.quit()
    end
-   if game_restarting then
+   if game_resetting then
       reset()
    end
    if game_paused then
@@ -108,5 +122,8 @@ function love.update(dt)
 end
 
 function love.draw()
+   if game_resetting then
+      return
+   end
    render()
 end

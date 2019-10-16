@@ -16,4 +16,5 @@ return table.uptight({
 
    component_added = "component_added",
    component_to_be_updated = "component_to_be_updated",
+   entity_removed = "entity_removed",
 })
