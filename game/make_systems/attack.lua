@@ -8,8 +8,8 @@ local ATTACK_RANGE = 1
 return function(_, entity_manager)
    local attackable_positions = nil
 
-   entity_manager.subject:subscribe(function(event, data)
-      if event == events.component_added and data.component_name == component_names.collision then
+   entity_manager.subject:subscribe(events.component_added, function(event_data)
+      if event_data.component_name == component_names.collision then
          attackable_positions = {}
          for entity_id, _, position_c in entity_manager:iterate(component_names.health, component_names.position) do
             attackable_positions[entity_id] = position_c

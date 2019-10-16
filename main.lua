@@ -67,13 +67,15 @@ local player_input = PlayerInput.new(config.player_input)
 local entity_manager
 local player_id
 
-player_input.subject:subscribe(function(event)
-   if event == events.quit_game then
+player_input.subject:subscribe_many({
+   [events.quit_game] = function()
       game_terminating = true
-   elseif event == events.toggle_game_pause then
+   end,
+
+   [events.toggle_game_pause] = function()
       game_paused = not game_paused
    end
-end)
+})
 
 local update
 local render
@@ -83,8 +85,8 @@ local function reset()
 
    entity_manager = EntityManager.new()
 
-   entity_manager.subject:subscribe(function(event, data)
-      if event == events.entity_removed and data.entity_id == player_id then
+   entity_manager.subject:subscribe(events.entity_removed, function(event_data)
+      if event_data.entity_id == player_id then
          game_resetting = true
       end
    end)

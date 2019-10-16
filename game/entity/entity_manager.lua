@@ -124,30 +124,28 @@ return {
             error("not implemented")
          end
 
-         subject:subscribe(function(event, data)
-            if event == events.component_added
-               and (names[1] == data.component_name or names[2] == data.component_name)
-               and em:has_component(data.entity_id, names[1])
-               and em:has_component(data.entity_id, names[2])
+         subject:subscribe(events.component_added, function(event_data)
+            if (names[1] == event_data.component_name or names[2] == event_data.component_name)
+               and em:has_component(event_data.entity_id, names[1])
+               and em:has_component(event_data.entity_id, names[2])
             then
                callback(
-                  data,
-                  em:get_component(data.entity_id, names[1]),
-                  em:get_component(data.entity_id, names[2])
+                  event_data,
+                  em:get_component(event_data.entity_id, names[1]),
+                  em:get_component(event_data.entity_id, names[2])
                )
             end
          end)
 
-         subject:subscribe(function(event, data)
-            if event == events.component_to_be_updated
-               and (names[1] == data.component_name or names[2] == data.component_name)
-               and em:has_component(data.entity_id, names[1])
-               and em:has_component(data.entity_id, names[2])
+         subject:subscribe(events.component_to_be_updated, function(event_data)
+            if (names[1] == event_data.component_name or names[2] == event_data.component_name)
+               and em:has_component(event_data.entity_id, names[1])
+               and em:has_component(event_data.entity_id, names[2])
             then
                callback(
-                  data,
-                  em:get_component(data.entity_id, names[1]),
-                  em:get_component(data.entity_id, names[2])
+                  event_data,
+                  em:get_component(event_data.entity_id, names[1]),
+                  em:get_component(event_data.entity_id, names[2])
                )
             end
          end)

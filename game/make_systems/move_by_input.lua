@@ -35,25 +35,24 @@ return function(levels_config, entity_manager, player_input)
       collision_matrices[level_name] = matrix
    end
 
-   entity_manager.subject:subscribe(function(event, data)
-      if event == events.component_added and data.component_name == component_names.collision then
-         local position_c = entity_manager:get_component(data.entity_id, component_names.position)
+   entity_manager.subject:subscribe(events.component_added, function(event_data)
+      if event_data.component_name == component_names.collision then
+         local position_c = entity_manager:get_component(event_data.entity_id, component_names.position)
          collision_matrices[position_c.level]:set(position_c.point, true)
       end
    end)
 
-   entity_manager.subject:subscribe(function(event, data)
-      if event == events.component_to_be_updated and data.component_name == component_names.position then
-         if entity_manager:has_component(data.entity_id, component_names.collision) then
-            local position_c = entity_manager:get_component(data.entity_id, component_names.position)
-            collision_matrices[position_c.level]:set(position_c.point, false)
-            collision_matrices[position_c.level]:set(data.updated_fields.point, true)
-         end
+   entity_manager.subject:subscribe(events.component_to_be_updated, function(event_data)
+      if event_data.component_name == component_names.position and
+            entity_manager:has_component(event_data.entity_id, component_names.collision) then
+         local position_c = entity_manager:get_component(event_data.entity_id, component_names.position)
+         collision_matrices[position_c.level]:set(position_c.point, false)
+         collision_matrices[position_c.level]:set(event_data.updated_fields.point, true)
       end
    end)
 
    local pending_events = ds.Queue.new()
-   player_input.subject:subscribe(function(event)
+   player_input.subject:subscribe_all(function(event)
       pending_events:enqueue(event)
    end)
 
