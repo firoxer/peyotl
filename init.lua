@@ -14,9 +14,6 @@ prototypify =
 ds =
    require("game.util.ds")
 
-hsl =
-   require("game.util.hsl")
-
 log =
    require("game.util.log")
 
