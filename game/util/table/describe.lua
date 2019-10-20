@@ -1,4 +1,6 @@
 return function(tbl)
+   assert(type(tbl) == "table")
+
    local size = #tbl
    local is_hash
 

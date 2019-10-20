@@ -4,6 +4,8 @@ local metatable = {
    end
 }
 local function uptight(tbl)
+   assert(type(tbl) == "table")
+
    for _, value in pairs(tbl) do
       if type(value) == "table" then
          uptight(value)

@@ -1,4 +1,6 @@
 return function(tbl)
+   assert(type(tbl) == "table")
+
    local cloned = {}
 
    for k, v in ipairs(tbl) do

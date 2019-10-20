@@ -1,4 +1,6 @@
 return function(prototype)
+   assert(type(prototype) == "table")
+
    local metatable = { __index = prototype }
 
    local object_type = nil

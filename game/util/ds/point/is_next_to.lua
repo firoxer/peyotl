@@ -1,4 +1,7 @@
 return function(a, b)
+   assert(a.type == "ds.Point")
+   assert(b.type == "ds.Point")
+
    local ax, ay = a.x, a.y
    local bx, by = b.x, b.y
 

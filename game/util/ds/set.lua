@@ -10,11 +10,11 @@ function Set:add(elem)
 end
 
 function Set:contains(elem)
-   return self._contents[elem] ~= nil
+   return self._contents[elem] == elem
 end
 
 function Set:remove(elem)
-   if self._contents[elem] == nil then
+   if not self:contains(elem) then
       return
    end
 
