@@ -1,4 +1,7 @@
 return function(a, b)
+   assert(type(a) == "table")
+   assert(type(b) == "table")
+
    local new = {}
 
    for _, elem in ipairs(a) do

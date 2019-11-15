@@ -33,7 +33,7 @@ return function(rendering_config, entity_manager)
       local input_entity_id = entity_manager:get_unique_component(component_names.input)
       local input_entity_health_c = entity_manager:get_component(input_entity_id, component_names.health)
 
-      love.graphics.setColor(hsl(0.05, 0.8, 0.5, 1))
+      love.graphics.setColor(0.9, 0.34, 0.1)
       love.graphics.rectangle(
          "fill",
          ui_unit,

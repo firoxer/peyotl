@@ -3,10 +3,8 @@ local events = require("game.event.events")
 
 return function(_, entity_manager, player_input)
    local do_warp = false
-   player_input.subject:subscribe(function(event)
-      if event == events.warp then
-         do_warp = true
-      end
+   player_input.subject:subscribe(events.warp, function()
+      do_warp = true
    end)
 
    return function()

@@ -10,21 +10,42 @@ local totally_ignored_events = ds.Set.new({
    events.component_to_be_updated,
 })
 
-function Subject:subscribe(observer)
+function Subject:subscribe_all(observer)
+   assert(type(observer) == "function")
+
    self._observers[observer] = observer
+end
+
+function Subject:subscribe(event, observer)
+   assert(type(event) == "string")
+   assert(type(observer) == "function")
+
+   self._observers[observer] = function(ev, ...)
+      if event == ev then
+         observer(...)
+      end
+   end
+end
+
+function Subject:subscribe_many(observers)
+   assert(type(observers) == "table")
+
+   for event, observer in pairs(observers) do
+      self:subscribe(event, observer)
+   end
 end
 
 function Subject:unsubscribe(observer)
    self._observers[observer] = nil
 end
 
-function Subject:notify(event, data)
+function Subject:notify(event, event_data)
    if log_events and not totally_ignored_events:contains(event) then
-      log.debug("event: " .. event, data)
+      log.debug("event: " .. event, event_data)
    end
 
    for _, observer in pairs(self._observers) do
-      observer(event, data)
+      observer(event, event_data)
    end
 end
 

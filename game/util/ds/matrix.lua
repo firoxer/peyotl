@@ -6,10 +6,15 @@ local yield = coroutine.yield
 local Matrix = {}
 
 function Matrix:get(point)
+   assert(point.type == "ds.Point")
+
    return self:_raw_get(point.x, point.y)
 end
 
 function Matrix:_raw_get(x, y)
+   assert(type(x) == "number")
+   assert(type(y) == "number")
+
    if self._contents[y] == nil then
       return nil
    end
@@ -18,6 +23,8 @@ function Matrix:_raw_get(x, y)
 end
 
 function Matrix:set(point, elem)
+   assert(point.type == "ds.Point")
+
    if self._contents[point.y] == nil then
       self._contents[point.y] = {}
    end
@@ -28,6 +35,8 @@ function Matrix:set(point, elem)
 end
 
 function Matrix:remove(point)
+   assert(point.type == "ds.Point")
+
    if self:has(point) then
       self._contents[point.y][point.x] = nil
    end
@@ -36,10 +45,15 @@ function Matrix:remove(point)
 end
 
 function Matrix:has(point)
+   assert(point.type == "ds.Point")
+
    return self._contents[point.y] ~= nil and self._contents[point.y][point.x] ~= nil
 end
 
 function Matrix:get_immediate_neighbors(point, von_neumann_only)
+   assert(point.type == "ds.Point")
+   assert(von_neumann_only == nil or type(von_neumann_only) == "boolean")
+
    local x, y = point.x, point.y
 
    local neighbors = {}
@@ -92,6 +106,9 @@ function Matrix:get_immediate_neighbors(point, von_neumann_only)
 end
 
 function Matrix:get_neighbors(point, range)
+   assert(point.type == "ds.Point")
+   assert(type(range) == "number")
+
    local neighbors = {}
 
    for offset_y = -range, range do
@@ -121,6 +138,11 @@ end
 
 -- TODO: Check if this can be optimized
 function Matrix:submatrix_pairs(nw_x, nw_y, se_x, se_y)
+   assert(type(nw_x) == "number")
+   assert(type(nw_y) == "number")
+   assert(type(se_x) == "number")
+   assert(type(se_y) == "number")
+
    local function iter(tbl)
       for y, row in pairs(tbl) do
          if y >= nw_y and y <= se_y then

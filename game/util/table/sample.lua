@@ -1,4 +1,6 @@
 return function(tbl)
+   assert(type(tbl) == "table")
+
    local is_hash_table, table_size = table.describe(tbl)
 
    if table_size == 0 then

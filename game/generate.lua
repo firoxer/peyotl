@@ -5,7 +5,11 @@ local generate_tiles = require("game.generate.generate_tiles")
 
 return function(entity_manager, config)
    generate_tiles(entity_manager, config.levels)
-   generate_player(entity_manager, config.player)
+   local player_id = generate_player(entity_manager, config.player)
    generate_monsters(entity_manager, config.levels)
    generate_gems(entity_manager, config.levels)
+
+   return {
+      player_id = player_id
+   }
 end

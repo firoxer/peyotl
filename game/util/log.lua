@@ -1,4 +1,7 @@
 local function log(level, message, data)
+   assert(type(level) == "string")
+   assert(type(message) == "string")
+
    if data == nil then
       print(string.format("%s: %s", level, message))
    else

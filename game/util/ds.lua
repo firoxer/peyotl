@@ -1,8 +1,6 @@
 return {
    CircularBuffer =
       require("game.util.ds.circular_buffer"),
-   FastMatrix =
-      require("game.util.ds.fast_matrix"),
    Matrix =
       require("game.util.ds.matrix"),
    Point =

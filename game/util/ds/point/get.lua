@@ -6,6 +6,9 @@ local metatable = {
    end
 }
 return function(x, y)
+   assert(type(x) == "number")
+   assert(type(y) == "number")
+
    if points[y] == nil then
       points[y] = {}
    end

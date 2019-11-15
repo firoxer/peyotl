@@ -1,4 +1,7 @@
 return function(str, pascal_case)
+   assert(type(str) == "string")
+   assert(pascal_case == nil or type(pascal_case) == "boolean")
+
    local camelcasified = {}
    for word in str:gmatch("([^_]+)_?") do
       table.insert(camelcasified, word:sub(1, 1):upper())

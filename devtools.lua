@@ -1,12 +1,12 @@
 local profiler = require("lib.profiler")
 
-local profiler_reporting_on = false
+local profiling_on = false
 local memory_usage_reporting_on = false
 local low_fps_reporting_on = false
 local performance_retardation_on = false
 
-local function enable_profiler_reports()
-   profiler_reporting_on = true
+local function enable_profiling()
+   profiling_on = true
    profiler.hookall("Lua")
    profiler.start()
 end
@@ -75,7 +75,7 @@ local function _retard_performance()
 end
 
 local function tick()
-   if profiler_reporting_on then
+   if profiling_on then
       _report_profiling()
    end
 
@@ -93,7 +93,7 @@ local function tick()
 end
 
 return {
-   enable_profiler_reports = enable_profiler_reports,
+   enable_profiling = enable_profiling,
    enable_low_fps_reports = enable_low_fps_reports,
    enable_memory_usage_reports = enable_memory_usage_reports,
    enable_performance_retardation = enable_performance_retardation,
