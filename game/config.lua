@@ -10,7 +10,7 @@ return table.uptight({
    },
 
    levels = {
-      aboveground = {
+      temple = {
          gems = false,
 
          width = 32,
@@ -22,7 +22,7 @@ return table.uptight({
 
          monsters = false,
 
-         generation_algorithm =  "preset_aboveground",
+         generation_algorithm =  "preset_temple",
          generation_algorithm_settings = {
             square_size_min = 2,
             square_size_max = 15,
@@ -30,7 +30,7 @@ return table.uptight({
          },
       },
 
-      underground = {
+      dungeon = {
          width = 64,
          height = 64,
 

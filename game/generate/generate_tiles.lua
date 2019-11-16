@@ -1,4 +1,4 @@
-local carve_into_preset_aboveground = require("game.generate.tiles.carve_into_preset_aboveground")
+local carve_into_preset_temple = require("game.generate.tiles.carve_into_preset_temple")
 local carve_with_cellular_automatons = require("game.generate.tiles.carve_with_cellular_automatons")
 local carve_with_random_squares = require("game.generate.tiles.carve_with_random_squares")
 local carve_with_simplex_noise = require("game.generate.tiles.carve_with_simplex_noise")
@@ -15,39 +15,39 @@ return function(entity_manager, levels_config)
          matrix = carve_with_random_squares(level_config)
       elseif level_config.generation_algorithm == "cellular_automatons" then
          matrix = carve_with_cellular_automatons(level_config)
-      elseif level_config.generation_algorithm == "preset_aboveground" then
-         matrix = carve_into_preset_aboveground(level_config)
+      elseif level_config.generation_algorithm == "preset_temple" then
+         matrix = carve_into_preset_temple(level_config)
       else
          error("unknown map generation algorithm: " .. level_config.generation_algorithm)
       end
       for point, tile_kind in matrix:pairs() do
          local tileset_quad_name
          if tile_kind == tile_kinds.wall then
-            if level_name == "aboveground" then
-               tileset_quad_name = "aboveground_wall"
+            if level_name == "temple" then
+               tileset_quad_name = "temple_wall"
             else
-               tileset_quad_name = "underground_wall"
+               tileset_quad_name = "dungeon_wall"
             end
          else
-            if level_name == "aboveground" then
+            if level_name == "temple" then
                tileset_quad_name = table.sample({
-                  tileset_quad_names.aboveground_empty,
-                  tileset_quad_names.aboveground_empty,
-                  tileset_quad_names.aboveground_empty,
-                  tileset_quad_names.aboveground_empty,
-                  tileset_quad_names.aboveground_empty,
-                  tileset_quad_names.aboveground_empty,
-                  tileset_quad_names.aboveground_empty2,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty2,
                })
             else
                tileset_quad_name = table.sample({
-                  tileset_quad_names.underground_empty,
-                  tileset_quad_names.underground_empty,
-                  tileset_quad_names.underground_empty,
-                  tileset_quad_names.underground_empty,
-                  tileset_quad_names.underground_empty,
-                  tileset_quad_names.underground_empty,
-                  tileset_quad_names.underground_empty2,
+                  tileset_quad_names.dungeon_empty,
+                  tileset_quad_names.dungeon_empty,
+                  tileset_quad_names.dungeon_empty,
+                  tileset_quad_names.dungeon_empty,
+                  tileset_quad_names.dungeon_empty,
+                  tileset_quad_names.dungeon_empty,
+                  tileset_quad_names.dungeon_empty2,
                })
             end
          end
@@ -59,6 +59,10 @@ return function(entity_manager, levels_config)
          if tile_kind == tile_kinds.wall then
             entity_manager:add_component(tile_id, create_component.collision())
             entity_manager:add_component(tile_id, create_component.opaque())
+         end
+
+         if level_name == "dungeon" then -- FIXME
+            --entity_manager:add_component(tile_id, create_component.fog_of_war())
          end
       end
    end
