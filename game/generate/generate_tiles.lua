@@ -1,4 +1,4 @@
-local carve_into_staircase_maze = require("game.generate.tiles.carve_into_staircase_maze")
+local carve_into_preset_aboveground = require("game.generate.tiles.carve_into_preset_aboveground")
 local carve_with_cellular_automatons = require("game.generate.tiles.carve_with_cellular_automatons")
 local carve_with_random_squares = require("game.generate.tiles.carve_with_random_squares")
 local carve_with_simplex_noise = require("game.generate.tiles.carve_with_simplex_noise")
@@ -15,8 +15,8 @@ return function(entity_manager, levels_config)
          matrix = carve_with_random_squares(level_config)
       elseif level_config.generation_algorithm == "cellular_automatons" then
          matrix = carve_with_cellular_automatons(level_config)
-      elseif level_config.generation_algorithm == "staircase_maze" then
-         matrix = carve_into_staircase_maze(level_config)
+      elseif level_config.generation_algorithm == "preset_aboveground" then
+         matrix = carve_into_preset_aboveground(level_config)
       else
          error("unknown map generation algorithm: " .. level_config.generation_algorithm)
       end

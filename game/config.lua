@@ -13,8 +13,8 @@ return table.uptight({
       aboveground = {
          gems = false,
 
-         width = 64,
-         height = 64,
+         width = 32,
+         height = 32,
 
          background_color = { 195 / 256, 163 / 256, 138 / 256 },
 
@@ -22,7 +22,7 @@ return table.uptight({
 
          monsters = false,
 
-         generation_algorithm =  "random_squares",
+         generation_algorithm =  "preset_aboveground",
          generation_algorithm_settings = {
             square_size_min = 2,
             square_size_max = 15,
