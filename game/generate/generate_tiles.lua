@@ -22,7 +22,7 @@ return function(entity_manager, levels_config)
       for point, is_wall in matrix:pairs() do
          local tileset_quad_name
          if is_wall then
-            if level_name == "temple" then
+            if level_name == "temple" then -- TODO: Dehardcore "temple"
                tileset_quad_name = "temple_wall"
             else
                tileset_quad_name = "dungeon_wall"
