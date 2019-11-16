@@ -3,19 +3,8 @@
 -- This ought to be #1 because it may be used anywhere
 game_debug = {}
 
--- This has to come before `prototypify`
 string.camelcasify =
    require("game.util.string.camelcasify")
-
--- This has to come before `ds`
-prototypify =
-   require("game.util.prototypify")
-
-ds =
-   require("game.util.ds")
-
-log =
-   require("game.util.log")
 
 table.clone =
    require("game.util.table.clone")
@@ -25,6 +14,9 @@ table.contains =
 
 table.describe =
    require("game.util.table.describe")
+
+table.mappairs =
+   require("game.util.table.mappairs")
 
 table.merge =
    require("game.util.table.merge")
@@ -43,6 +35,16 @@ table.shuffle =
 
 table.uptight =
    require("game.util.table.uptight")
+
+-- This has to come before `ds`
+prototypify =
+   require("game.util.prototypify")
+
+ds =
+   require("game.util.ds")
+
+log =
+   require("game.util.log")
 
 math.round =
    function(n, multiple)
