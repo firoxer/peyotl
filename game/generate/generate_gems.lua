@@ -1,12 +1,11 @@
-local component_names = require("game.entity.component_names")
 local create_component = require("game.entity.create_component")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 local function generate_gems(entity_manager, level_name, level_config)
    local walkable_points = {}
-   for position_id, position_c in entity_manager:iterate(component_names.position) do
+   for position_id, position_c in entity_manager:iterate("position") do
       if position_c.level == level_name
-            and not entity_manager:has_component(position_id, component_names.collision) then
+            and not entity_manager:has_component(position_id, "collision") then
          table.insert(walkable_points, position_c.point)
       end
    end

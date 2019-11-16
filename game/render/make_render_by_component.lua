@@ -2,7 +2,6 @@
 
 local round = math.round
 
-local component_names = require("game.entity.component_names")
 local create_calculate_alpha = require("game.render.create_calculate_alpha")
 local make_render_background = require("game.render.make_render_background")
 
@@ -74,7 +73,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       render_matrices[level_name] = ds.Matrix.new()
    end
    entity_manager.subject:subscribe_to_any_change_of(
-      { component_names.render, component_names.position },
+      { "render", "position" },
       function(event_data, render_c, position_c)
          if event_data.updated_fields and event_data.updated_fields.point then
             render_matrices[position_c.level]:get(position_c.point)[render_c.layer] = nil
@@ -100,7 +99,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       opaque_matrices[level_name] = ds.Matrix.new()
    end
    entity_manager.subject:subscribe_to_any_change_of(
-      { component_names.opaque, component_names.position },
+      { "opaque", "position" },
       function(event_data, _, position_c)
          if event_data.updated_fields and event_data.updated_fields.point then
             opaque_matrices[position_c.level]:set(
@@ -122,10 +121,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
 
    return function()
       local camera_entity_position_c =
-         entity_manager:get_component(
-            entity_manager:get_unique_component(component_names.camera),
-            component_names.position
-         )
+         entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")
 
       -- By moving the camera only a bit at a time, it gets nice and sticky
       -- and it follows its target more naturally

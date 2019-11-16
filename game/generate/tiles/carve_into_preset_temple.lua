@@ -1,5 +1,3 @@
-local tile_kinds = require("game.generate.tiles.kinds")
-
 return function(level_config)
    if level_config.width ~= 32 or level_config.height ~= 32 then
       error("this generation works only a size 32x32 level")
@@ -50,9 +48,9 @@ return function(level_config)
       for char in line:gmatch("%S") do
          x = x + 1
          if char == "." then
-            matrix:set(ds.Point.new(x, y), tile_kinds.empty)
+            matrix:set(ds.Point.new(x, y), false)
          elseif char == "#" then
-            matrix:set(ds.Point.new(x, y), tile_kinds.wall)
+            matrix:set(ds.Point.new(x, y), true)
          else
             error("unknown character in preset map")
          end

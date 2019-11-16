@@ -1,66 +1,64 @@
-local component_names = require("game.entity.component_names")
-
 return {
-   [component_names.attack] = function(amount, time_between_attacks, time_since_last_attack)
+   attack = function(amount, time_between_attacks, time_since_last_attack)
       return {
-         name = component_names.attack,
+         name = "attack",
          amount = amount,
          time_between_attacks = time_between_attacks,
          time_since_last_attack = time_since_last_attack,
       }
    end,
 
-   [component_names.camera] = function()
+   camera = function()
       return {
-         name = component_names.camera,
+         name = "camera"
       }
    end,
 
-   [component_names.chase] = function(target_id)
+   chase = function(target_id)
       return {
-         name = component_names.chase,
+         name = "chase",
          target_id = target_id,
          time_at_last_movement = 0,
       }
    end,
 
-   [component_names.collision] = function()
+   collision = function()
       return {
-         name = component_names.collision,
+         name = "collision",
       }
    end,
 
-   [component_names.health] = function(amount, max_amount)
+   health = function(amount, max_amount)
       return {
-         name = component_names.health,
+         name = "health",
          amount = amount,
          max_amount = max_amount,
       }
    end,
 
-   [component_names.input] = function()
+   input = function()
       return {
-         name = component_names.input,
+         name = "input",
       }
    end,
 
-   [component_names.opaque] = function()
+   opaque = function()
       return {
-         name = component_names.opaque,
+         name = "opaque",
       }
    end,
 
-   [component_names.position] = function(level, point)
+   position = function(level, point)
       return {
-         name = component_names.position,
+         name = "position",
          level = level,
          point = point,
       }
    end,
 
-   [component_names.render] = function(tileset_quad_name, layer)
+   render = function(tileset_quad_name, layer)
       return {
-         name = component_names.render,
+         name = "render",
          tileset_quad_name = tileset_quad_name,
          layer = layer,
       }

@@ -1,5 +1,3 @@
-local component_names = require("game.entity.component_names")
-
 return function(rendering_config, entity_manager)
    local window_width = rendering_config.window_width
    local window_height = rendering_config.window_height
@@ -8,10 +6,8 @@ return function(rendering_config, entity_manager)
 
 
    return function()
-      local camera_entity_position_c = entity_manager:get_component(
-         entity_manager:get_unique_component(component_names.camera),
-         component_names.position
-      )
+      local camera_entity_position_c =
+         entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")
       local current_camera_x = camera_entity_position_c.point.x
       local current_camera_y = camera_entity_position_c.point.y
 

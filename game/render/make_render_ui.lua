@@ -1,7 +1,5 @@
 --- Technically this should go under systems/ but this way it just makes more sense
 
-local component_names = require("game.entity.component_names")
-
 --[[
 --local PAUSE_SCREEN_COLOR = { 22, 22, 29 } -- Eigengrau
 local function _render_pause_screen()
@@ -30,8 +28,8 @@ return function(rendering_config, entity_manager)
       love.graphics.print(tostring(love.timer.getFPS()), 0, 0)
 
       -- Render input entity (player) stats
-      local input_entity_id = entity_manager:get_unique_component(component_names.input)
-      local input_entity_health_c = entity_manager:get_component(input_entity_id, component_names.health)
+      local input_entity_id = entity_manager:get_unique_component("input")
+      local input_entity_health_c = entity_manager:get_component(input_entity_id, "health")
 
       love.graphics.setColor(0.9, 0.34, 0.1)
       love.graphics.rectangle(

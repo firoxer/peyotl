@@ -1,5 +1,3 @@
-local tile_kinds = require("game.generate.tiles.kinds")
-
 return function(level_config)
    local algo = level_config.generation_algorithm_settings
 
@@ -9,11 +7,11 @@ return function(level_config)
       local wall_n = 0
       local empty_n = 0
 
-      for _, tile_kind in matrix:pairs() do
-         if tile_kind == tile_kinds.empty then
-            empty_n = empty_n + 1
-         else
+      for _, is_wall in matrix:pairs() do
+         if is_wall then
             wall_n = wall_n + 1
+         else
+            empty_n = empty_n + 1
          end
       end
 
@@ -26,7 +24,7 @@ return function(level_config)
 
    for y = 1, level_config.height do
       for x = 1, level_config.width do
-         matrix:set(ds.Point.new(x, y), tile_kinds.empty)
+         matrix:set(ds.Point.new(x, y), false)
       end
    end
 
@@ -39,7 +37,7 @@ return function(level_config)
 
       for y = random_nw_y, random_se_y do
          for x = random_nw_x, random_se_x do
-            matrix:set(ds.Point.new(x, y), tile_kinds.wall)
+            matrix:set(ds.Point.new(x, y), true)
          end
       end
    end

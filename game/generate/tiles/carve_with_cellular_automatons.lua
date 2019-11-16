@@ -1,5 +1,3 @@
-local tile_kinds = require("game.generate.tiles.kinds")
-
 return function(level_config)
    local algo = level_config.generation_algorithm_settings
    local matrix = ds.Matrix.new()
@@ -7,9 +5,9 @@ return function(level_config)
    for y = 1, level_config.height do
       for x = 1, level_config.width do
          if love.math.random() < algo.initial_wall_chance then
-            matrix:set(ds.Point.new(x, y), tile_kinds.wall)
+            matrix:set(ds.Point.new(x, y), true)
          else
-            matrix:set(ds.Point.new(x, y), tile_kinds.empty)
+            matrix:set(ds.Point.new(x, y), false)
          end
       end
    end
@@ -20,27 +18,27 @@ return function(level_config)
       for y = 1, level_config.height do
          for x = 1, level_config.width do
             local point = ds.Point.new(x, y)
-            local tile = matrix:get(point)
+            local is_wall = matrix:get(point)
 
             local neighbors = matrix:get_immediate_neighbors(point)
 
             local alive_neighbors_n = 8
-            for _, neighbor in pairs(neighbors) do
-               if neighbor == tile_kinds.empty then
+            for _, neighbor_is_wall in pairs(neighbors) do
+               if not neighbor_is_wall then
                   alive_neighbors_n = alive_neighbors_n - 1
                end
             end
 
-            if tile == tile_kinds.empty then
-               if alive_neighbors_n >= algo.birth_threshold then
+            if is_wall then
+               if alive_neighbors_n < algo.survival_threshold then
                   table.insert(updates, function()
-                     matrix:set(point, tile_kinds.wall)
+                     matrix:set(point, false)
                   end)
                end
             else
-               if alive_neighbors_n < algo.survival_threshold then
+               if alive_neighbors_n >= algo.birth_threshold then
                   table.insert(updates, function()
-                     matrix:set(point, tile_kinds.empty)
+                     matrix:set(point, true)
                   end)
                end
             end
