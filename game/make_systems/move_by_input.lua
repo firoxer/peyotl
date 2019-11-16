@@ -55,6 +55,14 @@ return function(levels_config, entity_manager, player_input)
       pending_events:enqueue(event)
    end)
 
+   local within_bounds = function(point, level_name)
+      return
+         point.x >= 1
+         and point.y >= 1
+         and point.x <= levels_config[level_name].width
+         and point.y <= levels_config[level_name].height
+   end
+
    return function()
       while not pending_events:is_empty() do
          local event = pending_events:dequeue()
@@ -68,31 +76,27 @@ return function(levels_config, entity_manager, player_input)
 
             local collision_matrix = collision_matrices[position_c.level]
 
+            local new_point = nil
+
             -- Orthogonal movement
             if point_diff_x == 0 or point_diff_y == 0 then
                if collision_matrix:get(offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
-                  entity_manager:update_component(entity_id, position_c, {
-                     point = offset(position_c.point, point_diff_x, point_diff_y)
-                  })
+                  new_point = offset(position_c.point, point_diff_x, point_diff_y)
                end
+            -- Diagonal movement, allowing sticking to a wall when one axis collides
+            elseif collision_matrix:get(offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
+               new_point = offset(position_c.point, point_diff_x, point_diff_y)
+            elseif collision_matrix:get(offset(position_c.point, point_diff_x, 0)) ~= true then
+               new_point = offset(position_c.point, point_diff_x, 0)
+            elseif collision_matrix:get(offset(position_c.point, 0, point_diff_y)) ~= true then
+               new_point = offset(position_c.point, 0, point_diff_y)
+            end
 
+            if new_point == nil or not within_bounds(new_point, position_c.level) then
                goto continue
             end
 
-            -- Diagonal movement, allowing sticking to a wall when one axis collides
-            if collision_matrix:get(offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
-               entity_manager:update_component(entity_id, position_c, {
-                  point = offset(position_c.point, point_diff_x, point_diff_y)
-               })
-            elseif collision_matrix:get(offset(position_c.point, point_diff_x, 0)) ~= true then
-               entity_manager:update_component(entity_id, position_c, {
-                  point = offset(position_c.point, point_diff_x, 0)
-               })
-            elseif collision_matrix:get(offset(position_c.point, 0, point_diff_y)) ~= true then
-               entity_manager:update_component(entity_id, position_c, {
-                  point = offset(position_c.point, 0, point_diff_y)
-               })
-            end
+            entity_manager:update_component(entity_id, position_c, { point = new_point })
 
             ::continue::
          end
