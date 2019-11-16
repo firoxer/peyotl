@@ -28,13 +28,13 @@ return function(rendering_config)
          [tileset_quad_names.gem1] = quad(2, 0),
          [tileset_quad_names.gem2] = quad(3, 0),
 
-         [tileset_quad_names.underground_wall] = quad(4, 0),
-         [tileset_quad_names.underground_empty] = quad(4, 2),
-         [tileset_quad_names.underground_empty2] = quad(4, 1),
+         [tileset_quad_names.dungeon_wall] = quad(4, 0),
+         [tileset_quad_names.dungeon_empty] = quad(4, 2),
+         [tileset_quad_names.dungeon_empty2] = quad(4, 1),
 
-         [tileset_quad_names.aboveground_wall] = quad(5, 0),
-         [tileset_quad_names.aboveground_empty] = quad(5, 2),
-         [tileset_quad_names.aboveground_empty2] = quad(5, 1),
+         [tileset_quad_names.temple_wall] = quad(5, 0),
+         [tileset_quad_names.temple_empty] = quad(5, 2),
+         [tileset_quad_names.temple_empty2] = quad(5, 1),
       }),
    }
 end

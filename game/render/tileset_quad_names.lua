@@ -4,11 +4,11 @@ return table.uptight({
    gem1 = "gem1",
    gem2 = "gem2",
 
-   aboveground_wall = "aboveground_wall",
-   aboveground_empty = "aboveground_empty",
-   aboveground_empty2 = "aboveground_empty2",
+   temple_wall = "temple_wall",
+   temple_empty = "temple_empty",
+   temple_empty2 = "temple_empty2",
 
-   underground_wall = "underground_wall",
-   underground_empty = "underground_empty",
-   underground_empty2 = "underground_empty2",
+   dungeon_wall = "dungeon_wall",
+   dungeon_empty = "dungeon_empty",
+   dungeon_empty2 = "dungeon_empty2",
 })
