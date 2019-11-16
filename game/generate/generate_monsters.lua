@@ -1,10 +1,9 @@
-local component_names = require("game.entity.component_names")
 local create_component = require("game.entity.create_component")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 local function generate_monsters(entity_manager, level_name, level_config)
    local walkable_points = {}
-   for _, position_c in entity_manager:iterate(component_names.position) do
+   for _, position_c in entity_manager:iterate("position") do
       table.insert(walkable_points, position_c.point)
    end
 
@@ -14,7 +13,7 @@ local function generate_monsters(entity_manager, level_name, level_config)
       error("too few walkable tiles for monsters")
    end
 
-   local player_entity_id = entity_manager:get_unique_component(component_names.input)
+   local player_entity_id = entity_manager:get_unique_component("input")
 
    for i = 1, level_config.monsters.n do
       local point = walkable_points[i % #walkable_points]

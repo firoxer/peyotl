@@ -1,6 +1,6 @@
 local yield = coroutine.yield
 
-local component_names = require("game.entity.component_names")
+local create_component = require("game.entity.create_component")
 local events = require("game.event.events")
 local Subject = require("game.event.subject")
 
@@ -108,7 +108,7 @@ local create_object = prototypify(EntityManager)
 return {
    new = function()
       local components = {}
-      for name in pairs(component_names) do
+      for name in pairs(create_component) do
          components[name] = {}
       end
 

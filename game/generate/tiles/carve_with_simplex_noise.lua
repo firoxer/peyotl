@@ -1,5 +1,3 @@
-local tile_kinds = require("game.generate.tiles.kinds")
-
 -- Using math.ceil ensures that the jaggedness matches with the map's edges
 return function(level_config)
    local algo = level_config.generation_algorithm_settings
@@ -8,7 +6,7 @@ return function(level_config)
 
    for y = 1, level_config.height do
       for x = 1, level_config.width do
-         matrix:set(ds.Point.new(x, y), tile_kinds.wall)
+         matrix:set(ds.Point.new(x, y), true)
       end
    end
 
@@ -30,7 +28,7 @@ return function(level_config)
          if noise < algo.a_noise_threshold then
             local point = ds.Point.new(x, y)
             if matrix:has(point) then
-               matrix:set(point, tile_kinds.empty)
+               matrix:set(point, false)
             end
          end
       end
@@ -53,7 +51,7 @@ return function(level_config)
          if noise > algo.b_noise_threshold_low and noise < algo.b_noise_threshold_high then
             local point = ds.Point.new(x, y)
             if matrix:has(point) then
-               matrix:set(point, tile_kinds.empty)
+               matrix:set(point, false)
             end
          end
       end

@@ -3,7 +3,6 @@ local carve_with_cellular_automatons = require("game.generate.tiles.carve_with_c
 local carve_with_random_squares = require("game.generate.tiles.carve_with_random_squares")
 local carve_with_simplex_noise = require("game.generate.tiles.carve_with_simplex_noise")
 local create_component = require("game.entity.create_component")
-local tile_kinds = require("game.generate.tiles.kinds")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 return function(entity_manager, levels_config)
@@ -20,9 +19,9 @@ return function(entity_manager, levels_config)
       else
          error("unknown map generation algorithm: " .. level_config.generation_algorithm)
       end
-      for point, tile_kind in matrix:pairs() do
+      for point, is_wall in matrix:pairs() do
          local tileset_quad_name
-         if tile_kind == tile_kinds.wall then
+         if is_wall then
             if level_name == "temple" then
                tileset_quad_name = "temple_wall"
             else
@@ -56,7 +55,7 @@ return function(entity_manager, levels_config)
          entity_manager:add_component(tile_id, create_component.position(level_name, point))
          entity_manager:add_component(tile_id, create_component.render(tileset_quad_name, 0))
 
-         if tile_kind == tile_kinds.wall then
+         if is_wall then
             entity_manager:add_component(tile_id, create_component.collision())
             entity_manager:add_component(tile_id, create_component.opaque())
          end

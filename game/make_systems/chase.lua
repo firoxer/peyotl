@@ -1,5 +1,4 @@
 local BreadthFirst = require("game.pathfinding.breadth_first")
-local component_names = require("game.entity.component_names")
 
 local chebyshev_distance = ds.Point.chebyshev_distance
 
@@ -23,7 +22,7 @@ return function(levels_config, entity_manager)
    local pathfinders_by_chase_target = {}
 
    entity_manager.subject:subscribe_to_any_change_of(
-      { component_names.position, component_names.collision },
+      { "position", "collision" },
       function(event_data, position_c)
          if event_data.updated_fields and event_data.updated_fields.point then
             collision_matrices[position_c.level]:set(position_c.point, false)
@@ -43,7 +42,7 @@ return function(levels_config, entity_manager)
    )
 
    entity_manager.subject:subscribe_to_any_change_of(
-      { component_names.position, component_names.input },
+      { "position", "input" },
       function(event_data)
          if not event_data.updated_fields
                or (not event_data.updated_fields.point and not event_data.updated_fields.level) then
@@ -58,7 +57,7 @@ return function(levels_config, entity_manager)
 
          local chase_target_level =
             event_data.updated_fields.level
-            or entity_manager:get_component(event_data.entity_id, component_names.position).level
+            or entity_manager:get_component(event_data.entity_id, "position").level
          if pathfinder.level ~= chase_target_level then
             return
          end
@@ -67,7 +66,7 @@ return function(levels_config, entity_manager)
 
          local chase_target_point =
             event_data.updated_fields.point
-            or entity_manager:get_component(event_data.entity_id, component_names.position).point
+            or entity_manager:get_component(event_data.entity_id, "position").point
 
          pathfinder:update_origin(chase_target_point)
       end
@@ -76,13 +75,13 @@ return function(levels_config, entity_manager)
    return function()
       local current_time = love.timer.getTime()
       for entity_id, chase_c, position_c
-            in entity_manager:iterate(component_names.chase, component_names.position) do
+            in entity_manager:iterate("chase", "position") do
          if current_time - chase_c.time_at_last_movement < 1 then
             goto continue
          end
 
          local chase_position_c =
-            entity_manager:get_component(chase_c.target_id, component_names.position)
+            entity_manager:get_component(chase_c.target_id, "position")
 
          if position_c.level ~= chase_position_c.level then
             goto continue
