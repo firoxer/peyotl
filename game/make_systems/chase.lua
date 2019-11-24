@@ -19,7 +19,7 @@ end
 
 return function(levels_config, entity_manager)
    local collision_matrices = create_collision_matrices(levels_config)
-   local pathfinders_by_chase_target = {}
+   local pathfinders_by_chase_target_id = {}
 
    entity_manager.subject:subscribe_to_any_change_of(
       { "position", "collision" },
@@ -31,7 +31,7 @@ return function(levels_config, entity_manager)
             collision_matrices[position_c.level]:set(position_c.point, true)
          end
 
-         for _, pathfinder in pairs(pathfinders_by_chase_target) do
+         for _, pathfinder in pairs(pathfinders_by_chase_target_id) do
             pathfinder:update_point(position_c.point)
 
             if event_data.updated_fields and event_data.updated_fields.point then
@@ -49,7 +49,7 @@ return function(levels_config, entity_manager)
             return
          end
 
-         local pathfinder = pathfinders_by_chase_target[event_data.entity_id]
+         local pathfinder = pathfinders_by_chase_target_id[event_data.entity_id]
 
          if not pathfinder then
             return
@@ -92,10 +92,10 @@ return function(levels_config, entity_manager)
             goto continue
          end
 
-         local pathfinder = pathfinders_by_chase_target[chase_c.target_id]
+         local pathfinder = pathfinders_by_chase_target_id[chase_c.target_id]
          if not pathfinder then
             pathfinder = BreadthFirst.new(collision_matrices[position_c.level], position_c.level, aggro_range)
-            pathfinders_by_chase_target[chase_c.target_id] = pathfinder
+            pathfinders_by_chase_target_id[chase_c.target_id] = pathfinder
             pathfinder:update_origin(chase_position_c.point)
          end
          local next_point = pathfinder:find_next_step(position_c.point)

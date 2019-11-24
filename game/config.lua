@@ -45,7 +45,13 @@ return table.uptight({
          },
 
          monsters = {
-            n = 100,
+            max_n = 100,
+
+            spawning = {
+               location = "everywhere"
+            },
+
+            chase_target = "player",
 
             batches_n = 8,
             update_interval_s = 1 / 8,

@@ -51,6 +51,15 @@ return {
       }
    end,
 
+   monster_spawning = function(chase_target_id)
+      assert(type(chase_target_id) == "number")
+
+      return {
+         name = "monster_spawning",
+         chase_target_id = chase_target_id,
+      }
+   end,
+
    opaque = function()
       return {
          name = "opaque",

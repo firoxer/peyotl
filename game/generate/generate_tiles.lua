@@ -63,6 +63,29 @@ return function(entity_manager, levels_config)
          if level_name == "dungeon" then -- FIXME
             --entity_manager:add_component(tile_id, create_component.fog_of_war())
          end
+
+         if -- TODO: Refactor
+            level_config.monsters.spawning
+            and
+               (level_config.monsters.spawning.location == "bottom_edge" and point.y == level_config.height)
+               or (level_config.monsters.spawning.location == "everywhere" and not is_wall)
+         then
+            local chase_target_id
+            if level_config.monsters.chase_target == "player" then
+               chase_target_id = entity_manager:get_registered_entity_id("player")
+            elseif level_config.monsters.chase_target == "altar" then
+               chase_target_id = table.sample({ -- FIXME
+                  entity_manager:get_registered_entity_id("altar_1"),
+                  entity_manager:get_registered_entity_id("altar_2"),
+                  entity_manager:get_registered_entity_id("altar_3"),
+                  entity_manager:get_registered_entity_id("altar_4"),
+               })
+            else
+               error("unknown monster chase target: " .. level_config.monsters.chase_target)
+            end
+
+            entity_manager:add_component(tile_id, create_component.monster_spawning(chase_target_id))
+         end
       end
    end
 end
