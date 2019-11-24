@@ -16,7 +16,7 @@ return table.uptight({
          width = 32,
          height = 32,
 
-         background_color = { 195 / 256, 163 / 256, 138 / 256 },
+         background_color = { 187 / 256, 187 / 256, 187 / 256 },
 
          lighting = "full",
 
@@ -34,7 +34,7 @@ return table.uptight({
          width = 64,
          height = 64,
 
-         background_color = { 6 / 256, 15 / 256, 23 / 256 },
+         background_color = { 0 / 256, 0 / 256, 0 / 256 },
 
          lighting = "fog_of_war",
          lighting_settings = {
