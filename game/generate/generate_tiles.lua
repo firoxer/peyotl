@@ -65,10 +65,11 @@ return function(entity_manager, levels_config)
          end
 
          if -- TODO: Refactor
-            level_config.monsters.spawning
-            and
+            level_config.monsters
+            and (
                (level_config.monsters.spawning.location == "bottom_edge" and point.y == level_config.height)
                or (level_config.monsters.spawning.location == "everywhere" and not is_wall)
+            )
          then
             local chase_target_id
             if level_config.monsters.chase_target == "player" then
