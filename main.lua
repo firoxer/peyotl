@@ -65,7 +65,6 @@ local game_resetting = false
 local player_input = PlayerInput.new(config.player_input)
 
 local entity_manager
-local player_id
 
 player_input.subject:subscribe_many({
    [events.quit_game] = function()
@@ -86,17 +85,17 @@ local function reset()
    entity_manager = EntityManager.new()
 
    entity_manager.subject:subscribe(events.entity_removed, function(event_data)
-      if event_data.entity_id == player_id then
+      if event_data.entity_id == entity_manager:get_registered_entity_id("player") then
          game_resetting = true
       end
    end)
 
+   entity_manager:register_entity_id(entity_manager:new_entity_id(), "player")
+
    update = make_update(config.levels, entity_manager, player_input)
    render = make_render(config.rendering, config.levels, entity_manager)
 
-   local generation_data = generate(entity_manager, config)
-
-   player_id = generation_data.player_id
+   generate(entity_manager, config)
 
    game_resetting = false
 end

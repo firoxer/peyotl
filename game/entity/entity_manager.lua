@@ -11,6 +11,14 @@ function EntityManager:new_entity_id()
    return self._entity_id
 end
 
+function EntityManager:register_entity_id(entity_id, name)
+   self._registered_ids[name] = entity_id
+end
+
+function EntityManager:get_registered_entity_id(name)
+   return self._registered_ids[name]
+end
+
 function EntityManager:remove_entity(entity_id)
    for _, component in pairs(self._components) do
       component[entity_id] = nil
@@ -117,6 +125,8 @@ return {
 
          _components = components,
          _entity_id = 0,
+
+         _registered_ids = {},
       })
 
       em.subject.subscribe_to_any_change_of = function(subject, names, callback)

@@ -22,7 +22,9 @@ return function(rendering_config)
    return {
       image = image,
       quads = table.uptight({
-         [tileset_quad_names.player] = quad(0, 0),
+         [tileset_quad_names.player_temple] = quad(0, 0),
+         [tileset_quad_names.player_dungeon] = quad(0, 1),
+
          [tileset_quad_names.monster] = quad(1, 0),
 
          [tileset_quad_names.gem1] = quad(2, 0),
@@ -32,6 +34,7 @@ return function(rendering_config)
          [tileset_quad_names.dungeon_empty] = quad(4, 2),
          [tileset_quad_names.dungeon_empty2] = quad(4, 1),
 
+         [tileset_quad_names.temple_altar] = quad(2, 1),
          [tileset_quad_names.temple_wall] = quad(5, 0),
          [tileset_quad_names.temple_empty] = quad(5, 2),
          [tileset_quad_names.temple_empty2] = quad(5, 1),

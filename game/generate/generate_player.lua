@@ -21,12 +21,10 @@ end
 return function(entity_manager, player_config)
    local position_c = find_free_position_c(entity_manager, "temple") -- TODO: Dehardcore "temple"
 
-   local id = entity_manager:new_entity_id()
+   local id = entity_manager:get_registered_entity_id("player")
    entity_manager:add_component(id, position_c)
    entity_manager:add_component(id, create_component.health(player_config.initial_health, player_config.max_health))
    entity_manager:add_component(id, create_component.input())
    entity_manager:add_component(id, create_component.camera())
-   entity_manager:add_component(id, create_component.render(tileset_quad_names.player, 2))
-
-   return id
+   entity_manager:add_component(id, create_component.render(tileset_quad_names.player_temple, 2))
 end
