@@ -1,5 +1,9 @@
 return {
    attack = function(amount, time_between_attacks, time_since_last_attack)
+      assert(type(amount) == "number")
+      assert(type(time_between_attacks) == "number")
+      assert(type(time_since_last_attack) == "number")
+
       return {
          name = "attack",
          amount = amount,
@@ -15,6 +19,8 @@ return {
    end,
 
    chase = function(target_id)
+      assert(type(target_id) == "number")
+
       return {
          name = "chase",
          target_id = target_id,
@@ -29,6 +35,9 @@ return {
    end,
 
    health = function(amount, max_amount)
+      assert(type(amount) == "number")
+      assert(type(max_amount) == "number")
+
       return {
          name = "health",
          amount = amount,
@@ -49,6 +58,9 @@ return {
    end,
 
    position = function(level, point)
+      assert(type(level) == "string")
+      assert(point.type == "ds.Point")
+
       return {
          name = "position",
          level = level,
@@ -57,6 +69,9 @@ return {
    end,
 
    render = function(tileset_quad_name, layer)
+      assert(type(tileset_quad_name) == "string")
+      assert(type(layer) == "number")
+
       return {
          name = "render",
          tileset_quad_name = tileset_quad_name,
