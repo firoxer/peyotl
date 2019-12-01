@@ -15,7 +15,13 @@ local make_update = require("game.make_update")
 local function parse_args(raw_args)
    local args = {}
    for _, arg in ipairs(raw_args) do
-      args[arg:gsub("^-+", ""):gsub("-", "_")] = true
+      local key = arg:match("^%-%-([%w%-]+)=?")
+      local value = arg:match("=(%w*)$")
+      if not key then
+         log.error("invalid argument: " .. arg)
+         love.event.quit()
+      end
+      args[key:gsub("-", "_")] = value or true
    end
 
    if args.h or args.help then
