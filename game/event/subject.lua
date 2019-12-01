@@ -27,14 +27,6 @@ function Subject:subscribe(event, observer)
    end
 end
 
-function Subject:subscribe_many(observers)
-   assertx.is_table(observers)
-
-   for event, observer in pairs(observers) do
-      self:subscribe(event, observer)
-   end
-end
-
 function Subject:unsubscribe(observer)
    assertx.is_function(observer)
 

@@ -95,15 +95,12 @@ local player_input = PlayerInput.new(config.player_input)
 
 local entity_manager
 
-player_input.subject:subscribe_many({
-   [events.quit_game] = function()
-      game_terminating = true
-   end,
-
-   [events.toggle_game_pause] = function()
-      game_paused = not game_paused
-   end
-})
+player_input.subject:subscribe(events.quit_game, function()
+   game_terminating = true
+end)
+player_input.subject:subscribe(events.toggle_game_pause, function()
+   game_paused = not game_paused
+end)
 
 local update
 local render
