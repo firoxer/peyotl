@@ -97,6 +97,10 @@ local function reset()
    end)
 
    entity_manager:register_entity_id(entity_manager:new_entity_id(), "player")
+   entity_manager:register_entity_id(entity_manager:new_entity_id(), "altar_1")
+   entity_manager:register_entity_id(entity_manager:new_entity_id(), "altar_2")
+   entity_manager:register_entity_id(entity_manager:new_entity_id(), "altar_3")
+   entity_manager:register_entity_id(entity_manager:new_entity_id(), "altar_4")
 
    update = make_update(config.levels, entity_manager, player_input)
    render = make_render(config.rendering, config.levels, entity_manager)

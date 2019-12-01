@@ -11,8 +11,6 @@ return table.uptight({
 
    levels = {
       temple = {
-         gems = false,
-
          width = 32,
          height = 32,
 
@@ -20,7 +18,27 @@ return table.uptight({
 
          lighting = "full",
 
-         monsters = false,
+         monsters = {
+            max_n = 50,
+
+            spawning = {
+               seconds_per_spawn = 30,
+               location = "bottom_edge",
+            },
+
+            chase_target = "altar",
+
+            batches_n = 8,
+            update_interval_s = 1 / 8,
+
+            movement_erraticness = 0.1,
+            damage = 3,
+            aggro_range = false,
+         },
+
+         gems = false,
+
+         altar = true,
 
          generation_algorithm =  "preset_temple",
          generation_algorithm_settings = {
@@ -48,6 +66,7 @@ return table.uptight({
             max_n = 100,
 
             spawning = {
+               seconds_per_spawn = 100,
                location = "everywhere"
             },
 
@@ -64,6 +83,8 @@ return table.uptight({
          gems = {
             density = 0.01,
          },
+
+         altar = false,
 
          generation_algorithm = "cellular_automatons",
          generation_algorithm_settings = {
