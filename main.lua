@@ -139,6 +139,8 @@ function love.load(args)
 end
 
 function love.update(dt)
+   player_input:tick(dt)
+
    if game_terminating then
       love.event.quit()
    end
@@ -149,7 +151,6 @@ function love.update(dt)
       return
    end
 
-   player_input:tick(dt)
    update(dt)
 
    devtools.tick()
