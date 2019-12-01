@@ -19,6 +19,6 @@ return function(levels_config, entity_manager, player_input)
       death()
       move_by_input()
       warp_by_input()
-      spawn_monsters()
+      spawn_monsters(dt)
    end
 end

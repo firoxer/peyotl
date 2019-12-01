@@ -51,12 +51,13 @@ return {
       }
    end,
 
-   monster_spawning = function(chase_target_id)
+   monster_spawning = function(chase_target_id, time_since_last_spawn)
       assert(type(chase_target_id) == "number")
 
       return {
          name = "monster_spawning",
          chase_target_id = chase_target_id,
+         time_since_last_spawn = time_since_last_spawn or 0,
       }
    end,
 

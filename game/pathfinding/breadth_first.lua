@@ -1,78 +1,77 @@
 local sqrt2 = math.sqrt(2)
-local function calculate_distance(a, b)
+local function calculate_distance(a, b) -- Optimized for only one step movements
    local diagonal_move = a.x ~= b.x and a.y ~= b.y
    return (diagonal_move and sqrt2 or 1)
 end
 
 local BreadthFirst = {}
 
-function BreadthFirst:update_origin(origin_point)
-   self._parents = {}
-   self._distances = {}
-   self._distances[origin_point] = 0
-
-   self:_traverse_from(origin_point)
-end
-
-function BreadthFirst:_traverse_from(origin_point)
+function BreadthFirst:_recalculate_from(start_point)
    local max_distance = self._max_distance
    local parents = self._parents
+   local children = self._children
    local distances = self._distances
 
    local open_queue = ds.Queue.new()
-   open_queue:enqueue(origin_point)
+   open_queue:enqueue(start_point)
 
+   -- No gotos in this while to buy performance with readability
    while not open_queue:is_empty() do
       local point = open_queue:dequeue()
 
-      local neighbor_distance = distances[point] + 1
-      if neighbor_distance > max_distance then
-         goto continue
-      end
+      if distances[point] + 1 <= max_distance then
+         for neighbor_point, collides in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
+            local actual_neighbor_distance = distances[point] + calculate_distance(point, neighbor_point)
+            if distances[neighbor_point] == nil or actual_neighbor_distance < distances[neighbor_point] then
+               distances[neighbor_point] = actual_neighbor_distance
+               parents[neighbor_point] = point
 
-      for neighbor_point, collides in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
-         if distances[neighbor_point] == nil or neighbor_distance < distances[neighbor_point] then
-            distances[neighbor_point] = distances[point] + calculate_distance(point, neighbor_point)
-            parents[neighbor_point] = point
+               if not children[point] then
+                  children[point] = {}
+               end
+               table.insert(children[point], neighbor_point)
 
-            if not collides then
-               open_queue:enqueue(neighbor_point)
+               if not collides then
+                  open_queue:enqueue(neighbor_point)
+               end
             end
          end
       end
-
-      ::continue::
    end
-
-   self._parents = parents
-   self._distances = distances
 end
 
-function BreadthFirst:update_point(point)
-   local lowest_neighbor_distance = math.huge
-   local lowest_neighbor_point = nil
-   for neighbor_point in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
-      local neighbor_distance = self._distances[neighbor_point]
-      if neighbor_distance ~= nil and neighbor_distance < lowest_neighbor_distance then
-         lowest_neighbor_distance = neighbor_distance
-         lowest_neighbor_point = neighbor_point
-      end
-   end
+function BreadthFirst:change_destination_to(origin_point)
+   self._parents = {}
+   self._children = {}
+   self._distances = {}
+   self._distances[origin_point] = 0
 
-   if lowest_neighbor_point ~= nil and self._collision_matrix:get(point) == false then
-      self._distances[point] = lowest_neighbor_distance + calculate_distance(point, lowest_neighbor_point)
-   else
-      self:_reset_lineage(point)
-   end
-
-   self:_traverse_from(point)
+   self:_recalculate_from(origin_point)
 end
 
 function BreadthFirst:_reset_lineage(point)
-   for child_point, parent in pairs(self._parents) do
-      if point == parent then
-         self._parents[child_point] = nil
-         self:_reset_lineage(child_point)
+   self._parents[point] = nil
+   self._distances[point] = nil
+
+   if self._children[point] ~= nil then
+      for _, child_point in ipairs(self._children[point]) do
+         if self._distances[child_point] ~= nil then
+            self:_reset_lineage(child_point)
+         end
+      end
+
+      self._children[point] = nil
+   end
+end
+
+function BreadthFirst:recalculate_at(point)
+   self:_reset_lineage(point)
+
+   for neighbor_point, collides in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
+      -- This `not collides` prevents monsters from colliding into one another.
+      -- I don't understand why and I think it would be better to move it to  `_recalculate_from`.
+      if not collides and self._distances[neighbor_point] ~= nil then
+         self:_recalculate_from(neighbor_point)
       end
    end
 end
@@ -84,12 +83,15 @@ end
 local create_object = prototypify(BreadthFirst)
 return {
    new = function(collision_matrix, level, max_distance)
+      max_distance = max_distance or math.huge
+
       return create_object({
          level = level,
 
          _max_distance = max_distance,
          _collision_matrix = collision_matrix,
          _parents = {},
+         _children = {},
          _distances = {},
       })
    end

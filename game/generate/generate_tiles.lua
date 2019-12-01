@@ -85,7 +85,11 @@ return function(entity_manager, levels_config)
                error("unknown monster chase target: " .. level_config.monsters.chase_target)
             end
 
-            entity_manager:add_component(tile_id, create_component.monster_spawning(chase_target_id))
+            local preloaded_spawn_time = love.math.random() * level_config.monsters.spawning.seconds_per_spawn
+            entity_manager:add_component(
+               tile_id,
+               create_component.monster_spawning(chase_target_id, preloaded_spawn_time)
+            )
          end
       end
    end
