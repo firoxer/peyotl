@@ -11,21 +11,25 @@ return function(rendering_config, entity_manager)
       local current_camera_x = camera_entity_position_c.point.x
       local current_camera_y = camera_entity_position_c.point.y
 
-      local matrix = _G.game_debug.overlay
+      local overlay = _G.game_debug.overlay
 
-      if not matrix then
+      if not overlay then
          log.debug("no debug overlay found")
          return
       end
 
-      for point, val in matrix:pairs() do
+      local draw = function(point, val)
          local offset_x = point.x - current_camera_x + (window_width / 2)
          local offset_y = point.y - current_camera_y + (window_height / 2)
 
-         if val then
-            love.graphics.setColor(0, 1, 0, 0.2)
-         else
-            love.graphics.setColor(1, 0, 0, 0.2)
+         if type(val) == "number" then
+            love.graphics.setColor(1 - val / 16, 0, 0, 0.2)
+         elseif type(val) == "boolean" then
+            if val == true then
+               love.graphics.setColor(0, 1, 0, 0.2)
+            else
+               love.graphics.setColor(0, 0, 1, 0.2)
+            end
          end
          love.graphics.rectangle(
             "fill",
@@ -34,6 +38,16 @@ return function(rendering_config, entity_manager)
             tile_size * scale,
             tile_size * scale
          )
+      end
+
+      if overlay.pairs then
+         for point, val in overlay:pairs() do
+            draw(point, val)
+         end
+      else
+         for point, val in pairs(overlay) do
+            draw(point, val)
+         end
       end
    end
 end
