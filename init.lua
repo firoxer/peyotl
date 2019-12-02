@@ -30,7 +30,7 @@ if love == nil then
          getOS = function()
             return nil
          end
-      },
+      }
    }
 end
 
