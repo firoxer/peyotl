@@ -1,6 +1,6 @@
 --- Technically this should go under systems/ but this way it just makes more sense
 
-local round = math.round
+local round = mathx.round
 
 local create_calculate_alpha = require("game.render.create_calculate_alpha")
 local make_render_background = require("game.render.make_render_background")

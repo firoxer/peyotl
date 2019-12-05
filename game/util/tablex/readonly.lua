@@ -1,7 +1,7 @@
 return function(tbl)
    assert(type(tbl) == "table")
 
-   local mt = table.clone(getmetatable(tbl)) or {}
+   local mt = tablex.clone(getmetatable(tbl)) or {}
 
    mt.__index = tbl
 

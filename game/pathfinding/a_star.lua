@@ -13,7 +13,7 @@ local function backtrace(node) -- TODO: Return a linked list?
       table.insert(path, current_node)
    end
 
-   table.reverse(path)
+   tablex.reverse(path)
 
    return path
 end

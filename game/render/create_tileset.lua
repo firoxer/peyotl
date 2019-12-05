@@ -21,7 +21,7 @@ return function(rendering_config)
 
    return {
       image = image,
-      quads = table.uptight({
+      quads = tablex.uptight({
          [tileset_quad_names.player_temple] = quad(0, 0),
          [tileset_quad_names.player_dungeon] = quad(0, 1),
 

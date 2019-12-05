@@ -29,7 +29,7 @@ return function(entity_manager, levels_config)
             end
          else
             if level_name == "temple" then
-               tileset_quad_name = table.sample({
+               tileset_quad_name = tablex.sample({
                   tileset_quad_names.temple_empty,
                   tileset_quad_names.temple_empty,
                   tileset_quad_names.temple_empty,
@@ -39,7 +39,7 @@ return function(entity_manager, levels_config)
                   tileset_quad_names.temple_empty2,
                })
             else
-               tileset_quad_name = table.sample({
+               tileset_quad_name = tablex.sample({
                   tileset_quad_names.dungeon_empty,
                   tileset_quad_names.dungeon_empty,
                   tileset_quad_names.dungeon_empty,
@@ -75,7 +75,7 @@ return function(entity_manager, levels_config)
             if level_config.monsters.chase_target == "player" then
                chase_target_id = entity_manager:get_registered_entity_id("player")
             elseif level_config.monsters.chase_target == "altar" then
-               chase_target_id = table.sample({ -- FIXME
+               chase_target_id = tablex.sample({ -- FIXME
                   entity_manager:get_registered_entity_id("altar_1"),
                   entity_manager:get_registered_entity_id("altar_2"),
                   entity_manager:get_registered_entity_id("altar_3"),

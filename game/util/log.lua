@@ -24,7 +24,7 @@ local level_headers = love.system.getOS() == "Linux"
          "   [fatal]",
    }
 
-return table.mappairs(level_headers, function(_, header)
+return tablex.mappairs(level_headers, function(_, header)
    return function(message, data)
       assert(type(message) == "string")
 

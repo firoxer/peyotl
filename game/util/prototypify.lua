@@ -7,7 +7,7 @@ return function(prototype)
    local caller_src = debug.getinfo(2, "S").short_src
    if caller_src ~= nil then
       local namespace, prototype_name = caller_src:match("game/([%l_/]-)([%l_]+)%.lua")
-      object_type = (namespace .. string.camelcasify(prototype_name, true)):gsub("/", ".")
+      object_type = (namespace .. stringx.camelcasify(prototype_name, true)):gsub("/", ".")
    end
 
    return function(object)

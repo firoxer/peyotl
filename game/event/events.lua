@@ -1,4 +1,4 @@
-return table.uptight({
+return tablex.uptight({
    move_n = "move_n",
    move_ne = "move_ne",
    move_e = "move_e",
