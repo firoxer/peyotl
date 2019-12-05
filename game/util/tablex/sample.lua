@@ -1,7 +1,7 @@
 return function(tbl)
    assert(type(tbl) == "table")
 
-   local is_hash_table, table_size = table.describe(tbl)
+   local is_hash_table, table_size = tablex.describe(tbl)
 
    if table_size == 0 then
       error("trying to get sample from empty table")

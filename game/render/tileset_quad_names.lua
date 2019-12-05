@@ -1,4 +1,4 @@
-return table.uptight({
+return tablex.uptight({
    player_temple = "player_temple",
    player_dungeon = "player_dungeon",
    monster = "monster",

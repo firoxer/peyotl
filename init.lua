@@ -3,38 +3,42 @@
 -- This ought to be #1 because it may be used anywhere
 game_debug = {}
 
-string.camelcasify =
-   require("game.util.string.camelcasify")
+stringx = {}
 
-table.clone =
-   require("game.util.table.clone")
+stringx.camelcasify =
+   require("game.util.stringx.camelcasify")
 
-table.contains =
-   require("game.util.table.contains")
+tablex = {}
 
-table.describe =
-   require("game.util.table.describe")
+tablex.clone =
+   require("game.util.tablex.clone")
 
-table.mappairs =
-   require("game.util.table.mappairs")
+tablex.contains =
+   require("game.util.tablex.contains")
 
-table.merge =
-   require("game.util.table.merge")
+tablex.describe =
+   require("game.util.tablex.describe")
 
-table.readonly =
-   require("game.util.table.readonly")
+tablex.mappairs =
+   require("game.util.tablex.mappairs")
 
-table.reverse =
-   require("game.util.table.reverse")
+tablex.merge =
+   require("game.util.tablex.merge")
 
-table.sample =
-   require("game.util.table.sample")
+tablex.readonly =
+   require("game.util.tablex.readonly")
 
-table.shuffle =
-   require("game.util.table.shuffle")
+tablex.reverse =
+   require("game.util.tablex.reverse")
 
-table.uptight =
-   require("game.util.table.uptight")
+tablex.sample =
+   require("game.util.tablex.sample")
+
+tablex.shuffle =
+   require("game.util.tablex.shuffle")
+
+tablex.uptight =
+   require("game.util.tablex.uptight")
 
 -- This has to come before `ds`
 prototypify =
@@ -46,10 +50,10 @@ ds =
 log =
    require("game.util.log")
 
-math.round =
-   function(n, multiple)
-      return math.floor(n / multiple + 0.5) * multiple
-   end
+mathx = {}
+
+mathx.round =
+   require("game.util.mathx.round")
 
 if love == nil then
    -- For tests

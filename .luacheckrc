@@ -2,9 +2,9 @@ std = "lua51"
 globals = {
    "love",
 
-   "string",
-   "table",
-   "math",
+   "stringx",
+   "tablex",
+   "mathx",
 
    "ds",
    "game_debug",

@@ -1,4 +1,4 @@
-return table.uptight({
+return tablex.uptight({
    player_input = {
       keyboard_short_tick_s = 0.125,
       keyboard_long_tick_s = 0.50,

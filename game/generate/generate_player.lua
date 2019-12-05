@@ -15,7 +15,7 @@ local function find_free_position_c(entity_manager, level)
       error("no position to place player on")
    end
 
-   return table.clone(table.sample(free_positions))
+   return tablex.clone(tablex.sample(free_positions))
 end
 
 return function(entity_manager, player_config)

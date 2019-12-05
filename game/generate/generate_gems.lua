@@ -10,7 +10,7 @@ local function generate_gems(entity_manager, level_name, level_config)
       end
    end
 
-   table.shuffle(walkable_points)
+   tablex.shuffle(walkable_points)
 
    local gems_to_generate = math.floor(#walkable_points * level_config.gems.density)
 

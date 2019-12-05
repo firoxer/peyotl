@@ -20,7 +20,7 @@ return function(x, y)
 
       p.type = "ds.Point" -- So that the code can assume this is a prototype
 
-      points[y][x] = table.readonly(p)
+      points[y][x] = tablex.readonly(p)
    end
 
    return points[y][x]
