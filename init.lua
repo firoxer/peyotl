@@ -3,6 +3,47 @@
 -- This ought to be #1 because it may be used anywhere
 game_debug = {}
 
+assertx = {}
+
+assertx.is_boolean =
+   require("game.util.assertx.is_boolean")
+
+assertx.is_boolean_or_nil =
+   require("game.util.assertx.is_boolean_or_nil")
+
+assertx.is_function =
+   require("game.util.assertx.is_function")
+
+assertx.is_function_or_nil =
+   require("game.util.assertx.is_function_or_nil")
+
+assertx.is_instance_of =
+   require("game.util.assertx.is_instance_of")
+
+assertx.is_instance_of_or_nil =
+   require("game.util.assertx.is_instance_of_or_nil")
+
+assertx.is_number =
+   require("game.util.assertx.is_number")
+
+assertx.is_number_or_nil =
+   require("game.util.assertx.is_number_or_nil")
+
+assertx.is_string =
+   require("game.util.assertx.is_string")
+
+assertx.is_string_or_nil =
+   require("game.util.assertx.is_string_or_nil")
+
+assertx.is_table =
+   require("game.util.assertx.is_table")
+
+assertx.is_table_or_nil =
+   require("game.util.assertx.is_table_or_nil")
+
+assertx.is_true =
+   require("game.util.assertx.is_true")
+
 stringx = {}
 
 stringx.camelcasify =

@@ -1,6 +1,6 @@
 return function(str, pascal_case)
-   assert(type(str) == "string")
-   assert(pascal_case == nil or type(pascal_case) == "boolean")
+   assertx.is_string(str)
+   assertx.is_boolean_or_nil(pascal_case)
 
    local camelcasified = {}
    for word in str:gmatch("([^_]+)_?") do

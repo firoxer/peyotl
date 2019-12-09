@@ -1,6 +1,6 @@
 return function(a, b)
-   assert(a.type == "ds.Point")
-   assert(b.type == "ds.Point")
+   assertx.is_instance_of("ds.Point", a)
+   assertx.is_instance_of("ds.Point", b)
 
    return math.max(math.abs(a.x - b.x), math.abs(a.y - b.y))
 end

@@ -1,8 +1,8 @@
 return {
    attack = function(amount, time_between_attacks, time_since_last_attack)
-      assert(type(amount) == "number")
-      assert(type(time_between_attacks) == "number")
-      assert(type(time_since_last_attack) == "number")
+      assertx.is_number(amount)
+      assertx.is_number(time_between_attacks)
+      assertx.is_number(time_since_last_attack)
 
       return {
          name = "attack",
@@ -19,7 +19,7 @@ return {
    end,
 
    chase = function(target_id)
-      assert(type(target_id) == "number")
+      assertx.is_number(target_id)
 
       return {
          name = "chase",
@@ -35,8 +35,8 @@ return {
    end,
 
    health = function(amount, max_amount)
-      assert(type(amount) == "number")
-      assert(type(max_amount) == "number")
+      assertx.is_number(amount)
+      assertx.is_number(max_amount)
 
       return {
          name = "health",
@@ -52,7 +52,7 @@ return {
    end,
 
    monster_spawning = function(chase_target_id, time_since_last_spawn)
-      assert(type(chase_target_id) == "number")
+      assertx.is_number(chase_target_id)
 
       return {
          name = "monster_spawning",
@@ -68,8 +68,8 @@ return {
    end,
 
    position = function(level, point)
-      assert(type(level) == "string")
-      assert(point.type == "ds.Point")
+      assertx.is_string(level)
+      assertx.is_instance_of("ds.Point", point)
 
       return {
          name = "position",
@@ -79,8 +79,8 @@ return {
    end,
 
    render = function(tileset_quad_name, layer)
-      assert(type(tileset_quad_name) == "string")
-      assert(type(layer) == "number")
+      assertx.is_string(tileset_quad_name)
+      assertx.is_number(layer)
 
       return {
          name = "render",

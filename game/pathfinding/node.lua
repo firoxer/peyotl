@@ -10,8 +10,8 @@ end
 local create_object = prototypify(Node)
 return {
    new = function(point)
-      assert(type(point.x) == "number")
-      assert(type(point.y) == "number")
+      assertx.is_number(point.x)
+      assertx.is_number(point.y)
 
       local self = create_object({
          x = point.x,

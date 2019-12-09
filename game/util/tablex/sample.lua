@@ -1,5 +1,5 @@
 return function(tbl)
-   assert(type(tbl) == "table")
+   assertx.is_table(tbl)
 
    local is_hash_table, table_size = tablex.describe(tbl)
 

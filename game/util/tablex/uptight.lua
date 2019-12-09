@@ -4,7 +4,7 @@ local metatable = {
    end
 }
 local function uptight(tbl)
-   assert(type(tbl) == "table")
+   assertx.is_table(tbl)
 
    for _, value in pairs(tbl) do
       if type(value) == "table" then

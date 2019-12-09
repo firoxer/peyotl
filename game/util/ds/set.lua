@@ -33,7 +33,7 @@ end
 local create_object = prototypify(Set)
 return {
    new = function(values)
-      assert(type(values) == "table" or values == nil, "initial values must be a table or omitted altogether")
+      assertx.is_table_or_nil(values)
 
       local self = create_object({
          _contents = {},

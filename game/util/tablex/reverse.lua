@@ -1,6 +1,6 @@
 -- Taken from https://forums.coronalabs.com/topic/61784-function-for-reversing-table-order/
 return function(tbl)
-   assert(type(tbl) == "table")
+   assertx.is_table(tbl)
 
    local i = 1
    local j = #tbl
