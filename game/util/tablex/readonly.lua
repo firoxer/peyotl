@@ -1,5 +1,5 @@
 return function(tbl)
-   assert(type(tbl) == "table")
+   assertx.is_table(tbl)
 
    local mt = tablex.clone(getmetatable(tbl)) or {}
 

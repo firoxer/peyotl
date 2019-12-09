@@ -101,12 +101,12 @@ end
 local create_object = prototypify(Pathfinder)
 return {
    new = function(is_walkable_at, nw_bound, se_bound, options)
-      assert(type(is_walkable_at) == "function")
-      assert(type(nw_bound.x) == "number")
-      assert(type(nw_bound.y) == "number")
-      assert(type(se_bound.x) == "number")
-      assert(type(se_bound.y) == "number")
-      assert(type(options) == "table" or options == nil)
+      assertx.is_function(is_walkable_at)
+      assertx.is_number(nw_bound.x)
+      assertx.is_number(nw_bound.y)
+      assertx.is_number(se_bound.x)
+      assertx.is_number(se_bound.y)
+      assertx.is_table_or_nil(options)
 
       return create_object({
          _is_walkable_at = is_walkable_at,

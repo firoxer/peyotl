@@ -1,6 +1,6 @@
 return function(a, b)
-   assert(type(a) == "number")
-   assert(type(b) == "number")
+   assertx.is_number(a)
+   assertx.is_number(b)
 
    local xd = math.abs(a.x - b.x)
    local yd = math.abs(a.y - b.y)

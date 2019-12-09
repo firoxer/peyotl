@@ -2,7 +2,7 @@ local seed = nil
 
 return function(value)
    if value ~= nil then
-      assert(type(value) == "number")
+      assertx.is_number(value)
       seed = value
    end
 

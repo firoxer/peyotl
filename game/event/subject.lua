@@ -11,14 +11,14 @@ local totally_ignored_events = ds.Set.new({
 })
 
 function Subject:subscribe_all(observer)
-   assert(type(observer) == "function")
+   assertx.is_function(observer)
 
    self._observers[observer] = observer
 end
 
 function Subject:subscribe(event, observer)
-   assert(type(event) == "string")
-   assert(type(observer) == "function")
+   assertx.is_string(event)
+   assertx.is_function(observer)
 
    self._observers[observer] = function(ev, ...)
       if event == ev then
@@ -28,7 +28,7 @@ function Subject:subscribe(event, observer)
 end
 
 function Subject:subscribe_many(observers)
-   assert(type(observers) == "table")
+   assertx.is_table(observers)
 
    for event, observer in pairs(observers) do
       self:subscribe(event, observer)

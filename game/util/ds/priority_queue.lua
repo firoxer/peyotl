@@ -4,7 +4,7 @@
 local PriorityQueue = {}
 
 function PriorityQueue:enqueue(elem, priority)
-   assert(type(priority) == "number")
+   assertx.is_number(priority)
 
    self._elem_heap[self._size + 1] = elem
    self._priority_heap[self._size + 1] = priority

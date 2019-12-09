@@ -33,8 +33,8 @@ end
 local create_object = prototypify(CircularBuffer)
 return {
    new = function(size, options)
-      assert(type(size) == "number")
-      assert(size >= 1, "buffer size must be one or more")
+      assertx.is_number(size)
+      assertx.is_true(size >= 1)
 
       return create_object({
          size = size,

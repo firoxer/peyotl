@@ -1,6 +1,6 @@
 return function(a, b)
-   assert(type(a) == "table")
-   assert(type(b) == "table")
+   assertx.is_table(a)
+   assertx.is_table(b)
 
    local new = {}
 

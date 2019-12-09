@@ -26,7 +26,7 @@ local level_headers = love.system.getOS() == "Linux"
 
 return tablex.mappairs(level_headers, function(_, header)
    return function(message, data)
-      assert(type(message) == "string")
+      assertx.is_string(message)
 
       if data == nil then
          print(string.format("%s: %s", header, message))

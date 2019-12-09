@@ -6,8 +6,8 @@ local metatable = {
    end
 }
 return function(x, y)
-   assert(type(x) == "number")
-   assert(type(y) == "number")
+   assertx.is_number(x)
+   assertx.is_number(y)
 
    if points[y] == nil then
       points[y] = {}

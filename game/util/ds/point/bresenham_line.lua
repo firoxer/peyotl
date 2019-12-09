@@ -5,9 +5,9 @@ local get = require("game.util.ds.point.get")
 --
 -- Calls the callback for every position, carries on if the callback returns true
 return function(a, b, callback)
-   assert(a.type == "ds.Point")
-   assert(b.type == "ds.Point")
-   assert(type(callback) == "function")
+   assertx.is_instance_of("ds.Point", a)
+   assertx.is_instance_of("ds.Point", b)
+   assertx.is_function(callback)
 
    local ax, ay = a.x, a.y
    local bx, by = b.x, b.y

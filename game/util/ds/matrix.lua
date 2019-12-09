@@ -6,14 +6,14 @@ local yield = coroutine.yield
 local Matrix = {}
 
 function Matrix:get(point)
-   assert(point.type == "ds.Point")
+   assertx.is_instance_of("ds.Point", point)
 
    return self:_raw_get(point.x, point.y)
 end
 
 function Matrix:_raw_get(x, y)
-   assert(type(x) == "number")
-   assert(type(y) == "number")
+   assertx.is_number(x)
+   assertx.is_number(y)
 
    if self._contents[y] == nil then
       return nil
@@ -23,7 +23,7 @@ function Matrix:_raw_get(x, y)
 end
 
 function Matrix:set(point, elem)
-   assert(point.type == "ds.Point")
+   assertx.is_instance_of("ds.Point", point)
 
    if self._contents[point.y] == nil then
       self._contents[point.y] = {}
@@ -35,7 +35,7 @@ function Matrix:set(point, elem)
 end
 
 function Matrix:remove(point)
-   assert(point.type == "ds.Point")
+   assertx.is_instance_of("ds.Point", point)
 
    if self:has(point) then
       self._contents[point.y][point.x] = nil
@@ -45,14 +45,14 @@ function Matrix:remove(point)
 end
 
 function Matrix:has(point)
-   assert(point.type == "ds.Point")
+   assertx.is_instance_of("ds.Point", point)
 
    return self._contents[point.y] ~= nil and self._contents[point.y][point.x] ~= nil
 end
 
 function Matrix:get_immediate_neighbors(point, von_neumann_only)
-   assert(point.type == "ds.Point")
-   assert(von_neumann_only == nil or type(von_neumann_only) == "boolean")
+   assertx.is_instance_of("ds.Point", point)
+   assertx.is_boolean_or_nil(von_neumann_only)
 
    local x, y = point.x, point.y
 
@@ -106,8 +106,8 @@ function Matrix:get_immediate_neighbors(point, von_neumann_only)
 end
 
 function Matrix:get_neighbors(point, range)
-   assert(point.type == "ds.Point")
-   assert(type(range) == "number")
+   assertx.is_instance_of("ds.Point", point)
+   assertx.is_number(range)
 
    local neighbors = {}
 

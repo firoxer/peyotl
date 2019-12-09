@@ -1,5 +1,5 @@
 return function(prototype)
-   assert(type(prototype) == "table")
+   assertx.is_table(prototype)
 
    local metatable = { __index = prototype }
 
