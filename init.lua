@@ -1,5 +1,20 @@
 --- Set globals to make development and testing nicer
 
+-- For tests
+if love == nil then
+   love = {
+      math = {
+         random = math.random
+      },
+
+      system = {
+         getOS = function()
+            return nil
+         end
+      },
+   }
+end
+
 -- This ought to be #1 because it may be used anywhere
 game_debug = {}
 
@@ -12,12 +27,3 @@ mathx = require("game.util.mathx")
 prototypify = require("game.util.prototypify") -- This has to come before `ds`
 ds = require("game.util.ds")
 log = require("game.util.log")
-
-if love == nil then
-   -- For tests
-   love = {
-      math = {
-         random = math.random
-      }
-   }
-end
