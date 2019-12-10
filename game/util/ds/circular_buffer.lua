@@ -43,7 +43,7 @@ return {
          _read_index = size + 1,
          _write_index = size + 1,
 
-         _allow_overwrite = options.allow_overwrite or false,
+         _allow_overwrite = options and options.allow_overwrite or false,
       })
    end
 }

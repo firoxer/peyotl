@@ -75,21 +75,27 @@ return function(entity_manager, levels_config)
             if level_config.monsters.chase_target == "player" then
                chase_target_id = entity_manager:get_registered_entity_id("player")
             elseif level_config.monsters.chase_target == "altar" then
-               chase_target_id = tablex.sample({ -- FIXME
-                  entity_manager:get_registered_entity_id("altar_1"),
-                  entity_manager:get_registered_entity_id("altar_2"),
-                  entity_manager:get_registered_entity_id("altar_3"),
-                  entity_manager:get_registered_entity_id("altar_4"),
-               })
+               -- FIXME
+               local altar_1_id = entity_manager:get_registered_entity_id("altar_1")
+               local altar_2_id = entity_manager:get_registered_entity_id("altar_2")
+               local altar_3_id = entity_manager:get_registered_entity_id("altar_3")
+               local altar_4_id = entity_manager:get_registered_entity_id("altar_4")
+               if altar_1_id == nil or altar_2_id == nil or altar_3_id == nil or altar_4_id == nil then
+                  log.warn("one or more altars not set, skipping monster spawning")
+               else
+                  chase_target_id = tablex.sample({ altar_1_id, altar_2_id, altar_3_id, altar_4_id })
+               end
             else
                error("unknown monster chase target: " .. level_config.monsters.chase_target)
             end
 
-            local preloaded_spawn_time = love.math.random() * level_config.monsters.spawning.seconds_per_spawn
-            entity_manager:add_component(
-               tile_id,
-               create_component.monster_spawning(chase_target_id, preloaded_spawn_time)
-            )
+            if chase_target_id then
+               local preloaded_spawn_time = love.math.random() * level_config.monsters.spawning.seconds_per_spawn
+               entity_manager:add_component(
+                  tile_id,
+                  create_component.monster_spawning(chase_target_id, preloaded_spawn_time)
+               )
+            end
          end
       end
    end
