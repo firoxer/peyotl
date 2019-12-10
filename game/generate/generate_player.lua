@@ -22,6 +22,12 @@ return function(entity_manager, player_config)
    local position_c = find_free_position_c(entity_manager, "temple") -- TODO: Dehardcore "temple"
 
    local id = entity_manager:get_registered_entity_id("player")
+
+   if id == nil then
+      log.error("could not get entity ID for player, skipping player generation")
+      return
+   end
+
    entity_manager:add_component(id, position_c)
    entity_manager:add_component(id, create_component.health(player_config.initial_health, player_config.max_health))
    entity_manager:add_component(id, create_component.input())
