@@ -1,4 +1,6 @@
 return function(x)
-   assert(type(x) == "table", "argument should be table, was " .. type(x))
+   if type(x) ~= "table" then
+      error("value should be table, was " .. type(x), 2)
+   end
 end
 

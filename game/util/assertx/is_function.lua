@@ -1,3 +1,5 @@
 return function(x)
-   assert(type(x) == "function", "argument should be function, was " .. type(x))
+   if type(x) ~= "function" then
+      error("value should be function, was " .. type(x), 2)
+   end
 end
