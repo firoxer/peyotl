@@ -1,3 +1,5 @@
 return function(x)
-   assert(x == nil or type(x) == "function", "argument should be function or nil, was " .. type(x))
+   if x ~= nil and type(x) ~= "function" then
+      error("value should be function or nil, was " .. type(x), 2)
+   end
 end
