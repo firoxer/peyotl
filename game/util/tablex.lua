@@ -1,4 +1,7 @@
 return {
+   build =
+      require("game.util.tablex.build"),
+
    clone =
       require("game.util.tablex.clone"),
 
