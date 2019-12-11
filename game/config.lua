@@ -16,7 +16,9 @@ return tablex.uptight({
 
          background_color = { 187 / 256, 187 / 256, 187 / 256 },
 
-         lighting = "full",
+         lighting = {
+            algorithm = "full",
+         },
 
          monsters = {
             max_n = 50,
@@ -54,8 +56,9 @@ return tablex.uptight({
 
          background_color = { 0 / 256, 0 / 256, 0 / 256 },
 
-         lighting = "fog_of_war",
-         lighting_settings = {
+         lighting = {
+            algorithm = "fog_of_war",
+
             lighting_range = 7.8, -- Nice and round
 
             unexplored_alpha = 0.0,

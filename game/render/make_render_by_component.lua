@@ -151,7 +151,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
          create_illuminabilities(visible_render_matrix_iterator, opaque_matrices[current_camera_level])
 
       local calculate_alpha =
-         create_calculate_alpha(level_config, illuminabilities, camera_entity_position_c.point)
+         create_calculate_alpha(level_config.lighting, illuminabilities, camera_entity_position_c.point)
 
       love.graphics.setCanvas(canvas)
       love.graphics.clear()

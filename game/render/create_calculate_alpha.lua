@@ -6,8 +6,9 @@ local function calculate_distance(a, b)
    return (diagonal_move and almost_sqrt2 or 1)
 end
 
-local function breadth_first(level_config, illuminabilities, camera_point)
-   local max_distance = level_config.lighting_settings.lighting_range
+local function breadth_first(lighting_settings, illuminabilities, camera_point)
+   local max_distance = lighting_settings.lighting_range
+   assertx.is_number(max_distance)
 
    local distances = ds.Matrix.new()
    local open_queue = ds.Queue.new()
@@ -62,15 +63,19 @@ local function breadth_first(level_config, illuminabilities, camera_point)
    end
 end
 
-return function(level_config, illuminabilities, camera_point)
-   if level_config.lighting == "full" then
+return function(settings, illuminabilities, camera_point)
+   assertx.is_table(settings)
+   assertx.is_instance_of("ds.Matrix", illuminabilities)
+   assertx.is_instance_of("ds.Point", camera_point)
+
+   if settings.algorithm == "full" then
       return function()
          return 1
       end
-   elseif level_config.lighting == "fog_of_war" then
-      return breadth_first(level_config, illuminabilities, camera_point)
+   elseif settings.algorithm == "fog_of_war" then
+      return breadth_first(settings, illuminabilities, camera_point)
    else
-      error("unknown lighting config: " .. level_config.lighting)
+      error("unknown lighting type: " .. settings.algorithm)
    end
 end
 
