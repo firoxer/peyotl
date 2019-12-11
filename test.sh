@@ -2,15 +2,26 @@
 
 cd $(dirname $BASH_SOURCE[0])
 
-files=`find tests/ -name "*_test.lua"`
+if [ $# -eq 0 ]; then
+  files=`find tests/ -name "*_test.lua"`
 
-for file in $files; do
-    echo "testing $file"
-    lua5.1 -l init $file
+  for file in $files; do
+      echo "testing $file"
+      lua5.3 -l init $file
+      if [ $? -ne 0 ]; then
+          echo "error"
+          exit 1
+      fi
+  done
+
+  echo "all tests passed"
+elif [ $# -eq 1 ]; then
+    echo "testing $1"
+    lua5.3 -l init $1
     if [ $? -ne 0 ]; then
         echo "error"
         exit 1
     fi
-done
 
-echo "all tests passed"
+  echo "tests passed for $1"
+fi
