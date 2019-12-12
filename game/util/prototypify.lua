@@ -27,15 +27,7 @@ return function(prototype)
 
    return function(object)
       setmetatable(object, metatable)
-
-      object.bind = function(fn)
-         return function(a, b, c, d, e, f)
-            return object[fn](object, a, b, c, d, e, f)
-         end
-      end
-
       object.type = object_type
-
       return object
    end
 end
