@@ -4,9 +4,9 @@ return function(prototype)
    local metatable = { __index = prototype }
 
    local object_type = nil
-   local caller_src = debug.getinfo(2, "S").short_src
+   local caller_src = debug.getinfo(2, "S").source
    if caller_src ~= nil then
-      local parts = tablex.build(caller_src:gmatch("([%l_]+)/?"))
+      local parts = tablex.build(caller_src:gmatch("([%l_]+)"))
 
       -- Sanity checks
       assertx.is_true(parts[1] == "game")
