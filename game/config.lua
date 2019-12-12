@@ -5,6 +5,7 @@ return tablex.uptight({
    },
 
    player = {
+      initial_level = "temple",
       initial_health = 100,
       max_health = 100,
    },
@@ -42,8 +43,9 @@ return tablex.uptight({
 
          altar = true,
 
-         generation_algorithm =  "preset_temple",
-         generation_algorithm_settings = {
+         generation = {
+            algorithm = "preset_temple",
+
             square_size_min = 2,
             square_size_max = 15,
             minimum_wall_density = 0.3,
@@ -89,12 +91,11 @@ return tablex.uptight({
 
          altar = false,
 
-         generation_algorithm = "cellular_automatons",
-         generation_algorithm_settings = {
+         generation = {
+            algorithm = "cellular_automatons",
+
             initial_wall_chance = 0.45,
-
             iterations = 8,
-
             birth_threshold = 5,
             survival_threshold = 4,
          },
@@ -102,12 +103,15 @@ return tablex.uptight({
    },
 
    rendering = {
-      scale = 3,
+      tiles = {
+         scale = 3,
+         size = 16,
+      },
 
-      tile_size = 16,
-
-      window_width = 20,
-      window_height = 20,
+      window = {
+         width = 20,
+         height = 20,
+      },
 
       camera_rigidness = 0.05,
 

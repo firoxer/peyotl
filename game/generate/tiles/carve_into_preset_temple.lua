@@ -1,5 +1,5 @@
-return function(level_config)
-   if level_config.width ~= 32 or level_config.height ~= 32 then
+return function(_, level_width, level_height)
+   if level_width ~= 32 or level_height ~= 32 then
       error("this generation works only a size 32x32 level")
    end
 

@@ -4,18 +4,16 @@ local make_render_ui = require("game.render.make_render_ui")
 local create_tileset = require("game.render.create_tileset")
 
 return function(rendering_config, levels_config, entity_manager)
-   local window_width = rendering_config.window_width
-   local window_height = rendering_config.window_height
-   local tile_size = rendering_config.tile_size
-   local scale = rendering_config.scale
+   local tile_size = rendering_config.tiles.size
+   local tile_scale = rendering_config.tiles.scale
 
    love.window.setMode(
-      window_width * tile_size * scale,
-      window_height * tile_size * scale,
+      rendering_config.window.width * tile_size * tile_scale,
+      rendering_config.window.height * tile_size * tile_scale,
       { vsync = false }
    )
 
-   local tileset = create_tileset(rendering_config)
+   local tileset = create_tileset(tile_size)
 
    local render_by_component =
       make_render_by_component(rendering_config, levels_config, entity_manager, tileset)

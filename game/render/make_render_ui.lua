@@ -18,9 +18,12 @@ end
 --]]
 
 return function(rendering_config, entity_manager)
-   local ui_unit = rendering_config.window_width / 10
-   local window_real_width = rendering_config.window_width * rendering_config.tile_size * rendering_config.scale
-   local window_real_height = rendering_config.window_height * rendering_config.tile_size * rendering_config.scale
+   local ui_unit =
+      rendering_config.window.width / 10
+   local window_real_width =
+      rendering_config.window.width * rendering_config.tiles.size * rendering_config.tiles.scale
+   local window_real_height =
+      rendering_config.window.height * rendering_config.tiles.size * rendering_config.tiles.scale
 
    return function()
       -- Render FPS

@@ -5,20 +5,20 @@ local carve_with_simplex_noise = require("game.generate.tiles.carve_with_simplex
 local create_component = require("game.entity.create_component")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
+local carves_by_algorithm_name = {
+   simplex = carve_with_simplex_noise,
+   random_squares = carve_with_random_squares,
+   cellular_automatons = carve_with_cellular_automatons,
+   preset_temple = carve_into_preset_temple,
+}
+
 return function(entity_manager, levels_config)
    for level_name, level_config in pairs(levels_config) do
-      local matrix
-      if level_config.generation_algorithm == "simplex" then
-         matrix = carve_with_simplex_noise(level_config)
-      elseif level_config.generation_algorithm == "random_squares" then
-         matrix = carve_with_random_squares(level_config)
-      elseif level_config.generation_algorithm == "cellular_automatons" then
-         matrix = carve_with_cellular_automatons(level_config)
-      elseif level_config.generation_algorithm == "preset_temple" then
-         matrix = carve_into_preset_temple(level_config)
-      else
-         error("unknown map generation algorithm: " .. level_config.generation_algorithm)
+      local carve = carves_by_algorithm_name[level_config.generation.algorithm]
+      if carve == nil then
+         error("unknown map generation algorithm: " .. level_config.generation.algorithm)
       end
+      local matrix = carve(level_config.generation, level_config.width, level_config.height)
       for point, is_wall in matrix:pairs() do
          local tileset_quad_name
          if is_wall then

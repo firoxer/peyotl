@@ -1,7 +1,7 @@
 local create_component = require("game.entity.create_component")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
-local function generate_gems(entity_manager, level_name, level_config)
+local function generate_gems(entity_manager, level_name, gem_config)
    local walkable_points = {}
    for position_id, position_c in entity_manager:iterate("position") do
       if position_c.level == level_name
@@ -12,7 +12,7 @@ local function generate_gems(entity_manager, level_name, level_config)
 
    tablex.shuffle(walkable_points)
 
-   local gems_to_generate = math.floor(#walkable_points * level_config.gems.density)
+   local gems_to_generate = math.floor(#walkable_points * gem_config.density)
 
    for i = 1, gems_to_generate do
       local point = walkable_points[i]
@@ -27,7 +27,7 @@ end
 return function(entity_manager, levels_config)
    for level_name, level_config in pairs(levels_config) do
       if level_config.gems then
-         generate_gems(entity_manager, level_name, level_config)
+         generate_gems(entity_manager, level_name, level_config.gems)
       end
     end
 end
