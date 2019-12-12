@@ -19,7 +19,7 @@ local function find_free_position_c(entity_manager, level)
 end
 
 return function(entity_manager, player_config)
-   local position_c = find_free_position_c(entity_manager, "temple") -- TODO: Dehardcore "temple"
+   local position_c = find_free_position_c(entity_manager, player_config.initial_level)
 
    local id = entity_manager:get_registered_entity_id("player")
 

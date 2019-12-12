@@ -1,10 +1,9 @@
-return function(level_config)
-   local algo = level_config.generation_algorithm_settings
+return function(algo_settings, level_width, level_height)
    local matrix = ds.Matrix.new()
 
-   for y = 1, level_config.height do
-      for x = 1, level_config.width do
-         if love.math.random() < algo.initial_wall_chance then
+   for y = 1, level_height do
+      for x = 1, level_width do
+         if love.math.random() < algo_settings.initial_wall_chance then
             matrix:set(ds.Point.new(x, y), true)
          else
             matrix:set(ds.Point.new(x, y), false)
@@ -12,11 +11,11 @@ return function(level_config)
       end
    end
 
-   for _ = 1, algo.iterations do
+   for _ = 1, algo_settings.iterations do
       local updates = {}
 
-      for y = 1, level_config.height do
-         for x = 1, level_config.width do
+      for y = 1, level_height do
+         for x = 1, level_width do
             local point = ds.Point.new(x, y)
             local is_wall = matrix:get(point)
 
@@ -30,13 +29,13 @@ return function(level_config)
             end
 
             if is_wall then
-               if alive_neighbors_n < algo.survival_threshold then
+               if alive_neighbors_n < algo_settings.survival_threshold then
                   table.insert(updates, function()
                      matrix:set(point, false)
                   end)
                end
             else
-               if alive_neighbors_n >= algo.birth_threshold then
+               if alive_neighbors_n >= algo_settings.birth_threshold then
                   table.insert(updates, function()
                      matrix:set(point, true)
                   end)

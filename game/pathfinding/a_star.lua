@@ -1,6 +1,24 @@
-local Node = require("game.pathfinding.node")
+local create_node = function(point)
+   local node
+   node = {
+      x = point.x,
+      y = point.y,
 
-local Point = ds.Point
+      opened = false,
+      closed = false,
+      parent = nil,
+      cost = nil,
+
+      reset = function()
+         node.opened = false
+         node.closed = false
+         node.parent = nil
+         node.cost = nil
+      end
+   }
+
+   return node
+end
 
 local function backtrace(node) -- TODO: Return a linked list?
    local path = {}
@@ -28,10 +46,10 @@ function Pathfinder:reset()
 
    for y = nw_bound_y, se_bound_y do
       for x = nw_bound_x, se_bound_x do
-         local point = Point.new(x, y)
+         local point = ds.Point.new(x, y)
          if is_walkable_at(point) then
             if not node_matrix:has(point) then
-               node_matrix:set(point, Node.new(point))
+               node_matrix:set(point, create_node(point))
             else
                node_matrix:get(point):reset()
             end
@@ -48,7 +66,7 @@ function Pathfinder:find_path(a, b)
 
    -- The origin node is always there because otherwise monsters would think
    -- they can't leave their own tile
-   local origin_node = Node.new(a)
+   local origin_node = create_node(a)
    local destination_node = self._node_matrix:get(b)
 
    if destination_node == nil then
@@ -65,7 +83,7 @@ function Pathfinder:find_path(a, b)
       local node = open_queue:dequeue()
       node.closed = true
 
-      if Point.overlaps(node, destination_node) then
+      if ds.Point.overlaps(node, destination_node) then
          return backtrace(node)
       end
 
@@ -87,7 +105,7 @@ function Pathfinder:find_path(a, b)
          neighbor.cost = new_cost
          neighbor.parent = node
 
-         local distance = Point.chebyshev_distance(neighbor, b)
+         local distance = ds.Point.chebyshev_distance(neighbor, b)
          local priority = neighbor.cost + distance
          open_queue:enqueue(neighbor, priority)
 

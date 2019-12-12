@@ -3,6 +3,25 @@
 -- For tests
 if love == nil then
    love = {
+      graphics = {
+         newImage = function()
+            return {
+               getWidth = function()
+                  return 1
+               end,
+               getHeight = function()
+                  return 1
+               end,
+               setFilter = function()
+               end,
+            }
+         end,
+
+         newQuad = function()
+            return nil
+         end,
+      },
+
       math = {
          random = math.random
       },

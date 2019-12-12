@@ -50,10 +50,9 @@ end
 
 return function(rendering_config, levels_config, entity_manager, tileset)
    local camera_rigidness = rendering_config.camera_rigidness
-   local window_width = rendering_config.window_width
-   local window_height = rendering_config.window_height
-   local scale = rendering_config.scale
-   local tile_size = rendering_config.tile_size
+   local window_width = rendering_config.window.width
+   local window_height = rendering_config.window.height
+   local tile_size = rendering_config.tiles.size
    local tileset_draw_rounding = 1 / tile_size
 
    local current_camera_x = 0
@@ -185,6 +184,6 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       end
 
       love.graphics.setCanvas()
-      love.graphics.draw(canvas, 0, 0, 0, scale)
+      love.graphics.draw(canvas, 0, 0, 0, rendering_config.tiles.scale)
    end
 end
