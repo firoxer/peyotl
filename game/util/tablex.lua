@@ -1,4 +1,7 @@
 return {
+   bind =
+      require("game.util.tablex.bind"),
+
    build =
       require("game.util.tablex.build"),
 

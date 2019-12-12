@@ -27,7 +27,7 @@ local function breadth_first(lighting_settings, illuminabilities, camera_point)
          end
 
          local visible_from_camera =
-            bresenham_line(camera_point, neighbor_point, illuminabilities.bind("get"))
+            bresenham_line(camera_point, neighbor_point, tablex.bind(illuminabilities, "get"))
          if not visible_from_camera then
             goto continue
          end
