@@ -6,19 +6,23 @@ local Subject = require("game.event.subject")
 
 local EntityManager = {}
 
+--s number
 function EntityManager:new_entity_id()
    self._entity_id = self._entity_id + 1
    return self._entity_id
 end
 
+--s number -> string -> nil
 function EntityManager:register_entity_id(entity_id, name)
    self._registered_ids[name] = entity_id
 end
 
+--s string -> number
 function EntityManager:get_registered_entity_id(name)
    return self._registered_ids[name]
 end
 
+--s number -> nil
 function EntityManager:remove_entity(entity_id)
    for _, component in pairs(self._components) do
       component[entity_id] = nil
@@ -29,14 +33,17 @@ function EntityManager:remove_entity(entity_id)
    })
 end
 
+--s number -> string -> number
 function EntityManager:get_component(entity_id, component_name)
    return self._components[component_name][entity_id]
 end
 
+--s number -> string -> boolean
 function EntityManager:has_component(entity_id, component_name)
    return self._components[component_name][entity_id] ~= nil
 end
 
+--s number -> table -> nil
 function EntityManager:add_component(entity_id, component)
    if self._components[component.name] == nil then
       local component_name_str =
@@ -54,6 +61,7 @@ function EntityManager:add_component(entity_id, component)
    })
 end
 
+--s string -> (number,table)
 function EntityManager:get_unique_component(component_name)
    local unique_entity_id, unique_component
    for entity_id, component in pairs(self._components[component_name]) do
@@ -72,6 +80,7 @@ function EntityManager:get_unique_component(component_name)
    return unique_entity_id, unique_component
 end
 
+--s number -> table -> table -> nil
 function EntityManager:update_component(entity_id, component, fields)
    self.subject:notify(events.component_to_be_updated, {
       component_name = component.name,
@@ -84,6 +93,7 @@ function EntityManager:update_component(entity_id, component, fields)
    end
 end
 
+--s table -> function
 function EntityManager:iterate(...)
    local arg_count = select('#', ...)
    local iterated_names = {...}
