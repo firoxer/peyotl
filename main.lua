@@ -12,8 +12,44 @@ local generate = require("game.generate")
 local make_render = require("game.make_render")
 local make_update = require("game.make_update")
 
+local arg_reactions = {
+   disable_vsync = function()
+      config.rendering.enable_vsync = false
+      log.debug("disabled vsync")
+   end,
+
+   log_events = function()
+      Subject.enable_event_logging()
+      log.debug("enabled event logging")
+   end,
+
+   profile = function()
+      devtools.enable_profiler_reports()
+      log.debug("enabled profiling")
+   end,
+
+   report_memory_usage = function()
+      devtools.enable_memory_usage_reports()
+      log.debug("enabled memory usage reports")
+   end,
+
+   report_low_fps = function()
+      devtools.enable_low_fps_reports()
+      log.debug("enabled low FPS reports")
+   end,
+
+   retard_performance = function()
+      devtools.enable_performance_retardation()
+      log.debug("enabled performance retardation")
+   end,
+}
 local function parse_args(raw_args)
-   local args = {}
+   local args = {
+      -- Defaults for development
+      report_low_fps = true,
+      retard_performance = true
+   }
+
    for _, arg in ipairs(raw_args) do
       local key = arg:match("^%-%-([%w%-]+)=?")
       local value = arg:match("=(%w*)$")
@@ -36,31 +72,18 @@ local function parse_args(raw_args)
       return
    end
 
-   if not args.production then
-      -- Default flags for development
-      args.report_low_fps = true
-      args.retard_performance = true
+   if args.production then
+      args.report_low_fps = nil
+      args.retard_performance = nil
+      args.production = nil
    end
 
-   if args.log_events then
-      Subject.enable_event_logging()
-      log.debug("enabled event logging")
-   end
-   if args.profile then
-      devtools.enable_profiler_reports()
-      log.debug("enabled profiling")
-   end
-   if args.report_memory_usage then
-      devtools.enable_memory_usage_reports()
-      log.debug("enabled memory usage reports")
-   end
-   if args.report_low_fps then
-      devtools.enable_low_fps_reports()
-      log.debug("enabled low FPS reports")
-   end
-   if args.retard_performance then
-      devtools.enable_performance_retardation()
-      log.debug("enabled performance retardation")
+   for key, value in pairs(args) do
+      if not arg_reactions[key] then
+         log.error("no reaction for CLI arg: " .. key)
+      else
+         arg_reactions[key](value)
+      end
    end
 end
 

@@ -10,7 +10,7 @@ return function(rendering_config, levels_config, entity_manager)
    love.window.setMode(
       rendering_config.window.width * tile_size * tile_scale,
       rendering_config.window.height * tile_size * tile_scale,
-      { vsync = false }
+      { vsync = rendering_config.enable_vsync }
    )
 
    local tileset = create_tileset(tile_size)

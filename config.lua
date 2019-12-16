@@ -116,5 +116,7 @@ return tablex.uptight({
       camera_rigidness = 0.05,
 
       debug_overlay_enabled = false,
+
+      enable_vsync = true,
    },
 })
