@@ -1,4 +1,7 @@
 return function(_, level_width, level_height)
+   assertx.is_number(level_width)
+   assertx.is_number(level_height)
+
    if level_width ~= 32 or level_height ~= 32 then
       error("this generation works only a size 32x32 level")
    end

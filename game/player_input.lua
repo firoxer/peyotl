@@ -19,6 +19,8 @@ function PlayerInput:_bind_to_love()
 end
 
 function PlayerInput:tick(dt)
+   assertx.is_number(dt)
+
    self._cooldown_left = self._cooldown_left - dt
 
    if self._cooldown_left > 0 or self._pressed_keys:is_empty() then

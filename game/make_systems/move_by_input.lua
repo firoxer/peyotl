@@ -23,6 +23,10 @@ local function offset_by_event(event)
 end
 
 return function(levels_config, entity_manager, player_input)
+   assertx.is_table(levels_config)
+   assertx.is_instance_of("entity.EntityManager", entity_manager)
+   assertx.is_instance_of("event.Subject", player_input.subject)
+
    local collision_matrices = {}
    for level_name, level_config in pairs(levels_config) do
       local matrix = ds.Matrix.new()

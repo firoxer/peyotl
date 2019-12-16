@@ -1,4 +1,8 @@
 return function(algo_settings, level_width, level_height)
+   assertx.is_table(algo_settings)
+   assertx.is_number(level_width)
+   assertx.is_number(level_height)
+
    local matrix = ds.Matrix.new()
 
    for y = 1, level_height do

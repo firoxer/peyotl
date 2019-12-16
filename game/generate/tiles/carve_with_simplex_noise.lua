@@ -1,5 +1,9 @@
 -- Using math.ceil ensures that the jaggedness matches with the map's edges
 return function(algo_settings, level_width, level_height)
+   assertx.is_table(algo_settings)
+   assertx.is_number(level_width)
+   assertx.is_number(level_height)
+
    local matrix = ds.Matrix.new()
    local random_offset = love.math.random(0, 1000)
 

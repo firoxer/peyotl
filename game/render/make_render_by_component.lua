@@ -49,6 +49,11 @@ local function create_illuminabilities(render_matrix_iterator, opaque_matrix)
 end
 
 return function(rendering_config, levels_config, entity_manager, tileset)
+   assertx.is_table(rendering_config)
+   assertx.is_table(levels_config)
+   assertx.is_instance_of("entity.EntityManager", entity_manager)
+   assertx.is_table(tileset)
+
    local camera_rigidness = rendering_config.camera_rigidness
    local window_width = rendering_config.window.width
    local window_height = rendering_config.window.height

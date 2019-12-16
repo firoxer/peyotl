@@ -12,14 +12,21 @@ function EntityManager:new_entity_id()
 end
 
 function EntityManager:register_entity_id(entity_id, name)
+   assertx.is_number(entity_id)
+   assertx.is_string(name)
+
    self._registered_ids[name] = entity_id
 end
 
 function EntityManager:get_registered_entity_id(name)
+   assertx.is_string(name)
+
    return self._registered_ids[name]
 end
 
 function EntityManager:remove_entity(entity_id)
+   assertx.is_number(entity_id)
+
    for _, component in pairs(self._components) do
       component[entity_id] = nil
    end
@@ -30,14 +37,23 @@ function EntityManager:remove_entity(entity_id)
 end
 
 function EntityManager:get_component(entity_id, component_name)
+   assertx.is_number(entity_id)
+   assertx.is_string(component_name)
+
    return self._components[component_name][entity_id]
 end
 
 function EntityManager:has_component(entity_id, component_name)
+   assertx.is_number(entity_id)
+   assertx.is_string(component_name)
+
    return self._components[component_name][entity_id] ~= nil
 end
 
 function EntityManager:add_component(entity_id, component)
+   assertx.is_number(entity_id)
+   assertx.is_table(component)
+
    if self._components[component.name] == nil then
       local component_name_str =
          type(component.name) == "string"
@@ -55,6 +71,8 @@ function EntityManager:add_component(entity_id, component)
 end
 
 function EntityManager:get_unique_component(component_name)
+   assertx.is_string(component_name)
+
    local unique_entity_id, unique_component
    for entity_id, component in pairs(self._components[component_name]) do
       if unique_component ~= nil then
@@ -73,6 +91,10 @@ function EntityManager:get_unique_component(component_name)
 end
 
 function EntityManager:update_component(entity_id, component, fields)
+   assertx.is_number(entity_id)
+   assertx.is_table(component)
+   assertx.is_table(fields)
+
    self.subject:notify(events.component_to_be_updated, {
       component_name = component.name,
       entity_id = entity_id,

@@ -41,6 +41,8 @@ function BreadthFirst:_recalculate_from(start_point)
 end
 
 function BreadthFirst:change_destination_to(origin_point)
+   assertx.is_instance_of("ds.Point", origin_point)
+
    self._parents = {}
    self._children = {}
    self._distances = {}
@@ -50,6 +52,8 @@ function BreadthFirst:change_destination_to(origin_point)
 end
 
 function BreadthFirst:_reset_lineage(point)
+   assertx.is_instance_of("ds.Point", point)
+
    self._parents[point] = nil
    self._distances[point] = nil
 
@@ -65,6 +69,8 @@ function BreadthFirst:_reset_lineage(point)
 end
 
 function BreadthFirst:recalculate_at(point)
+   assertx.is_instance_of("ds.Point", point)
+
    self:_reset_lineage(point)
 
    for neighbor_point, collides in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
@@ -77,12 +83,18 @@ function BreadthFirst:recalculate_at(point)
 end
 
 function BreadthFirst:find_next_step(point)
+   assertx.is_instance_of("ds.Point", point)
+
    return self._parents[point]
 end
 
 local create_object = prototypify(BreadthFirst)
 return {
    new = function(collision_matrix, level, max_distance)
+      assertx.is_instance_of("ds.Matrix", collision_matrix)
+      assertx.is_string(level)
+      assertx.is_number_or_nil(max_distance)
+
       max_distance = max_distance or math.huge
 
       return create_object({

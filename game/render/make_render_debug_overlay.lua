@@ -1,4 +1,7 @@
 return function(rendering_config, entity_manager)
+   assertx.is_table(rendering_config)
+   assertx.is_instance_of("entity.EntityManager", entity_manager)
+
    return function()
       local camera_entity_position_c =
          entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")

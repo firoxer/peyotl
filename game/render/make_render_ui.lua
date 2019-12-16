@@ -18,6 +18,9 @@ end
 --]]
 
 return function(rendering_config, entity_manager)
+   assertx.is_table(rendering_config)
+   assertx.is_instance_of("entity.EntityManager", entity_manager)
+
    local ui_unit =
       rendering_config.window.width / 10
    local window_real_width =

@@ -2,6 +2,8 @@ local create_component = require("game.entity.create_component")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 local function generate_gems(entity_manager, level_name, gem_config)
+   assertx.is_string(level_name)
+
    local walkable_points = {}
    for position_id, position_c in entity_manager:iterate("position") do
       if position_c.level == level_name

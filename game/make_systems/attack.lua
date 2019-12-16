@@ -5,6 +5,8 @@ local chebyshev_distance = ds.Point.chebyshev_distance
 local ATTACK_RANGE = 1
 
 return function(_, entity_manager)
+   assertx.is_instance_of("entity.EntityManager", entity_manager)
+
    local attackable_positions = nil
 
    entity_manager.subject:subscribe(events.component_added, function(event_data)

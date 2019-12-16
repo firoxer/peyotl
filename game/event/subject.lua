@@ -36,10 +36,15 @@ function Subject:subscribe_many(observers)
 end
 
 function Subject:unsubscribe(observer)
+   assertx.is_function(observer)
+
    self._observers[observer] = nil
 end
 
 function Subject:notify(event, event_data)
+   assertx.is_string(event)
+   assertx.is_table_or_nil(event_data)
+
    if log_events and not totally_ignored_events:contains(event) then
       log.debug("event: " .. event, event_data)
    end

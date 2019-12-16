@@ -36,7 +36,7 @@ return tablex.uptight({
 
             movement_erraticness = 0.1,
             damage = 3,
-            aggro_range = false,
+            aggro_range = math.huge,
          },
 
          gems = false,
