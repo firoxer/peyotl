@@ -1,12 +1,12 @@
 require("./init")
 
+local config = require("config")
 local devtools = require("devtools")
 local seed = require("seed")
 
 local EntityManager = require("game.entity.entity_manager")
 local PlayerInput = require("game.player_input")
 local Subject = require("game.event.subject")
-local config = require("game.config")
 local events = require("game.event.events")
 local generate = require("game.generate")
 local make_render = require("game.make_render")

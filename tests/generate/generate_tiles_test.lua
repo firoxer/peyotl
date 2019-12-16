@@ -1,5 +1,6 @@
+local config = require("config")
+
 local EntityManager = require("game.entity.entity_manager")
-local config = require("game.config")
 local generate_tiles = require("game.generate.generate_tiles")
 
 do
