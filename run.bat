@@ -1,1 +1,1 @@
-love . %*
+love . %* --disable-vsync
