@@ -23,13 +23,17 @@ if love == nil then
       },
 
       math = {
-         random = math.random
+         random = math.random,
+      },
+
+      timer = {
+         getTime = os.clock
       },
 
       system = {
          getOS = function()
             return nil
-         end
+         end,
       }
    }
 end
