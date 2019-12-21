@@ -24,7 +24,7 @@ local arg_reactions = {
    end,
 
    profile = function()
-      devtools.enable_profiler_reports()
+      devtools.enable_profiling()
       log.debug("enabled profiling")
    end,
 
