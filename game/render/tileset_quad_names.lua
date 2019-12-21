@@ -7,10 +7,12 @@ return tablex.uptight({
 
    temple_altar = "temple_altar",
    temple_wall = "temple_wall",
+   temple_wall_south = "temple_wall_south",
    temple_empty = "temple_empty",
    temple_empty2 = "temple_empty2",
 
    dungeon_wall = "dungeon_wall",
+   dungeon_wall_south = "dungeon_wall_south",
    dungeon_empty = "dungeon_empty",
    dungeon_empty2 = "dungeon_empty2",
 })

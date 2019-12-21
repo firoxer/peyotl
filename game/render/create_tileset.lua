@@ -31,13 +31,15 @@ return function(tile_size)
          [tileset_quad_names.gem2] = quad(3, 0),
 
          [tileset_quad_names.dungeon_wall] = quad(4, 0),
+         [tileset_quad_names.dungeon_wall_south] = quad(5, 0),
          [tileset_quad_names.dungeon_empty] = quad(4, 2),
          [tileset_quad_names.dungeon_empty2] = quad(4, 1),
 
          [tileset_quad_names.temple_altar] = quad(2, 1),
-         [tileset_quad_names.temple_wall] = quad(5, 0),
-         [tileset_quad_names.temple_empty] = quad(5, 2),
-         [tileset_quad_names.temple_empty2] = quad(5, 1),
+         [tileset_quad_names.temple_wall] = quad(6, 0),
+         [tileset_quad_names.temple_wall_south] = quad(7, 0),
+         [tileset_quad_names.temple_empty] = quad(6, 2),
+         [tileset_quad_names.temple_empty2] = quad(6, 1),
       }),
    }
 end

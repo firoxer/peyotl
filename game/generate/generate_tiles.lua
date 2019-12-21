@@ -12,9 +12,42 @@ local carves_by_algorithm_name = {
    preset_temple = carve_into_preset_temple,
 }
 
+local function change_south_wall_tiles_quad(entity_manager, render_cs)
+   for entity_id, position_c, render_c in entity_manager:iterate("position", "render") do
+      if render_c.tileset_quad_name == "temple_wall" then
+         local render_c_south = render_cs.temple:get(ds.Point.offset(position_c.point, 0, 1))
+         if
+            render_c_south.tileset_quad_name == tileset_quad_names.temple_empty
+            or render_c_south.tileset_quad_name == tileset_quad_names.temple_empty2
+         then
+            entity_manager:update_component(entity_id, "render", {
+               tileset_quad_name = tileset_quad_names.temple_wall_south
+            })
+         end
+      elseif render_c.tileset_quad_name == "dungeon_wall" then
+         local render_c_south = render_cs.dungeon:get(ds.Point.offset(position_c.point, 0, 1))
+         if
+            render_c_south
+            and (
+               render_c_south.tileset_quad_name == tileset_quad_names.dungeon_empty
+               or render_c_south.tileset_quad_name == tileset_quad_names.dungeon_empty2
+            )
+         then
+            entity_manager:update_component(entity_id, "render", {
+               tileset_quad_name = tileset_quad_names.dungeon_wall_south
+            })
+         end
+      end
+   end
+end
+
 return function(entity_manager, levels_config)
+   local render_cs = {}
+
    local current_time = love.timer.getTime()
    for level_name, level_config in pairs(levels_config) do
+      render_cs[level_name] = ds.Matrix.new()
+
       local carve = carves_by_algorithm_name[level_config.generation.algorithm]
       if carve == nil then
          error("unknown map generation algorithm: " .. level_config.generation.algorithm)
@@ -54,7 +87,9 @@ return function(entity_manager, levels_config)
 
          local tile_id = entity_manager:new_entity_id()
          entity_manager:add_component(tile_id, create_component.position(level_name, point))
-         entity_manager:add_component(tile_id, create_component.render(tileset_quad_name, 0))
+         local render_c = create_component.render(tileset_quad_name, 0)
+         entity_manager:add_component(tile_id, render_c)
+         render_cs[level_name]:set(point, render_c)
 
          if is_wall then
             entity_manager:add_component(tile_id, create_component.collision())
@@ -100,4 +135,6 @@ return function(entity_manager, levels_config)
          end
       end
    end
+
+   change_south_wall_tiles_quad(entity_manager, render_cs)
 end
