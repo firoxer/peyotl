@@ -77,18 +77,19 @@ return function(levels_config, entity_manager)
             goto continue
          end
 
-         local chased_position_c =
-            entity_manager:get_component(chase_c.target_id, "position")
+         local chased_position_c = entity_manager:get_component(chase_c.target_id, "position")
 
          if position_c.level ~= chased_position_c.level then
             goto continue
          end
 
-         local aggro_range = levels_config[position_c.level].monsters.aggro_range
-         if aggro_range then
-            if chebyshev_distance(position_c.point, chased_position_c.point) > aggro_range then
-               goto continue
-            end
+         local aggro_range = chase_c.aggro_range
+
+         if
+            aggro_range ~= math.huge
+            and chebyshev_distance(position_c.point, chased_position_c.point) > aggro_range
+         then
+            goto continue
          end
 
          local pathfinder = pathfinders_by_level_and_chase_target_id[position_c.level][chase_c.target_id]

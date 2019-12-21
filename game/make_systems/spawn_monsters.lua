@@ -4,12 +4,14 @@ local tileset_quad_names = require("game.render.tileset_quad_names")
 local function spawn_monster(entity_manager, level_name, level_config, spawning_tile_id, spawning_c)
    local position_c = entity_manager:get_component(spawning_tile_id, "position")
 
-   local monster_id = entity_manager:new_entity_id()
-   entity_manager:add_component(monster_id, create_component.attack(level_config.monsters.damage, 1, 0))
-   entity_manager:add_component(monster_id, create_component.position(level_name, position_c.point))
-   entity_manager:add_component(monster_id, create_component.collision())
-   entity_manager:add_component(monster_id, create_component.chase(spawning_c.chase_target_id))
-   entity_manager:add_component(monster_id, create_component.render(tileset_quad_names.monster, 2))
+   local id = entity_manager:new_entity_id()
+   entity_manager:add_component(id, create_component.attack(level_config.monsters.damage, 1, 0))
+   entity_manager:add_component(id, create_component.position(level_name, position_c.point))
+   entity_manager:add_component(id, create_component.collision())
+   entity_manager:add_component(id,
+      create_component.chase(spawning_c.chase_target_id, level_config.monsters.aggro_range)
+   )
+   entity_manager:add_component(id, create_component.render(tileset_quad_names.monster, 2))
 end
 
 return function(levels_config, entity_manager)

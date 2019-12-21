@@ -18,11 +18,12 @@ return {
       }
    end,
 
-   chase = function(target_id)
+   chase = function(target_id, aggro_range)
       assertx.is_number(target_id)
 
       return {
          name = "chase",
+         aggro_range = aggro_range,
          target_id = target_id,
          time_at_last_movement = 0,
       }
