@@ -13,6 +13,7 @@ local carves_by_algorithm_name = {
 }
 
 return function(entity_manager, levels_config)
+   local current_time = love.timer.getTime()
    for level_name, level_config in pairs(levels_config) do
       local carve = carves_by_algorithm_name[level_config.generation.algorithm]
       if carve == nil then
@@ -90,10 +91,10 @@ return function(entity_manager, levels_config)
             end
 
             if chase_target_id then
-               local preloaded_spawn_time = love.math.random() * level_config.monsters.spawning.seconds_per_spawn
+               local spawn_offset = current_time - (love.math.random() * level_config.monsters.spawning.seconds_per_spawn)
                entity_manager:add_component(
                   tile_id,
-                  create_component.monster_spawning(chase_target_id, preloaded_spawn_time)
+                  create_component.monster_spawning(chase_target_id, spawn_offset)
                )
             end
          end

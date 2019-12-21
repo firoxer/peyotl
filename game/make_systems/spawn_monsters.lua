@@ -5,7 +5,7 @@ local function spawn_monster(entity_manager, level_name, level_config, spawning_
    local position_c = entity_manager:get_component(spawning_tile_id, "position")
 
    local id = entity_manager:new_entity_id()
-   entity_manager:add_component(id, create_component.attack(level_config.monsters.damage, 1, 0))
+   entity_manager:add_component(id, create_component.attack(level_config.monsters.damage, 1))
    entity_manager:add_component(id, create_component.position(level_name, position_c.point))
    entity_manager:add_component(id, create_component.collision())
    entity_manager:add_component(id,
@@ -15,7 +15,7 @@ local function spawn_monster(entity_manager, level_name, level_config, spawning_
 end
 
 return function(levels_config, entity_manager)
-   return function(dt)
+   return function()
       local spawning_cs_by_id_by_level = {} -- TODO: Use caching
 
       for level_name in pairs(levels_config) do
@@ -25,6 +25,7 @@ return function(levels_config, entity_manager)
          spawning_cs_by_id_by_level[position_c.level][spawning_tile_id] = spawning_c
       end
 
+      local current_time = love.timer.getTime()
       for level_name, level_config in pairs(levels_config) do
          if not level_config.monsters or not level_config.monsters.spawning then
             goto continue
@@ -38,11 +39,11 @@ return function(levels_config, entity_manager)
          end
 
          for tile_id, spawning_c in pairs(spawning_cs_by_id) do
-            spawning_c.time_since_last_spawn = spawning_c.time_since_last_spawn + dt
-
-            if spawning_c.time_since_last_spawn > level_config.monsters.spawning.seconds_per_spawn then
+            if spawning_c.time_at_last_spawn + level_config.monsters.spawning.seconds_per_spawn < current_time then
                spawn_monster(entity_manager, level_name, level_config, tile_id, spawning_c)
-               spawning_c.time_since_last_spawn = 0
+               entity_manager:update_component(tile_id, "monster_spawning", {
+                  time_at_last_spawn = current_time
+               })
             end
          end
 

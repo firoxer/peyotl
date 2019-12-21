@@ -1,14 +1,17 @@
 return {
-   attack = function(amount, time_between_attacks, time_since_last_attack)
+   attack = function(amount, time_between_attacks, time_at_last_attack)
       assertx.is_number(amount)
       assertx.is_number(time_between_attacks)
-      assertx.is_number(time_since_last_attack)
+      assertx.is_number_or_nil(time_at_last_attack)
+
+      time_at_last_attack = time_at_last_attack or 0
 
       return {
          name = "attack",
          amount = amount,
+         range = 1,
+         time_at_last_attack = time_at_last_attack,
          time_between_attacks = time_between_attacks,
-         time_since_last_attack = time_since_last_attack,
       }
    end,
 
@@ -20,12 +23,20 @@ return {
 
    chase = function(target_id, aggro_range)
       assertx.is_number(target_id)
+      assertx.is_number(aggro_range)
 
       return {
          name = "chase",
          aggro_range = aggro_range,
          target_id = target_id,
          time_at_last_movement = 0,
+         time_between_movements = 1,
+      }
+   end,
+
+   chaseable = function()
+      return {
+         name = "chaseable"
       }
    end,
 
@@ -52,13 +63,14 @@ return {
       }
    end,
 
-   monster_spawning = function(chase_target_id, time_since_last_spawn)
+   monster_spawning = function(chase_target_id, time_at_last_spawn)
       assertx.is_number(chase_target_id)
+      assertx.is_number_or_nil(time_at_last_spawn)
 
       return {
          name = "monster_spawning",
          chase_target_id = chase_target_id,
-         time_since_last_spawn = time_since_last_spawn or 0,
+         time_at_last_spawn = time_at_last_spawn or 0,
       }
    end,
 

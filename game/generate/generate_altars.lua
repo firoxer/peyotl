@@ -22,15 +22,19 @@ return function(entity_manager, levels_config)
 
          entity_manager:add_component(altar_1_id, create_component.position(level_name, ds.Point.new(15, 4)))
          entity_manager:add_component(altar_1_id, create_component.render(tileset_quad_names.temple_altar, 1))
+         entity_manager:add_component(altar_1_id, create_component.chaseable())
 
          entity_manager:add_component(altar_2_id, create_component.position(level_name, ds.Point.new(15, 5)))
          entity_manager:add_component(altar_2_id, create_component.render(tileset_quad_names.temple_altar, 1))
+         entity_manager:add_component(altar_2_id, create_component.chaseable())
 
          entity_manager:add_component(altar_3_id, create_component.position(level_name, ds.Point.new(16, 4)))
          entity_manager:add_component(altar_3_id, create_component.render(tileset_quad_names.temple_altar, 1))
+         entity_manager:add_component(altar_3_id, create_component.chaseable())
 
          entity_manager:add_component(altar_4_id, create_component.position(level_name, ds.Point.new(16, 5)))
          entity_manager:add_component(altar_4_id, create_component.render(tileset_quad_names.temple_altar, 1))
+         entity_manager:add_component(altar_4_id, create_component.chaseable())
       end
    end
 end

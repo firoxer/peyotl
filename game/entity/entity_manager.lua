@@ -90,19 +90,19 @@ function EntityManager:get_unique_component(component_name)
    return unique_entity_id, unique_component
 end
 
-function EntityManager:update_component(entity_id, component, fields)
+function EntityManager:update_component(entity_id, component_name, fields)
    assertx.is_number(entity_id)
-   assertx.is_table(component)
+   assertx.is_string(component_name)
    assertx.is_table(fields)
 
    self.subject:notify(events.component_to_be_updated, {
-      component_name = component.name,
+      component_name = component_name,
       entity_id = entity_id,
       updated_fields = fields,
    })
 
    for key, value in pairs(fields) do
-      self._components[component.name][entity_id][key] = value
+      self._components[component_name][entity_id][key] = value
    end
 end
 
