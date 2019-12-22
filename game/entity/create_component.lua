@@ -46,6 +46,17 @@ return {
       }
    end,
 
+   fog_of_war = function(explored)
+      assertx.is_boolean_or_nil(explored)
+
+      explored = explored or false
+
+      return {
+         name = "fog_of_war",
+         explored = explored,
+      }
+   end,
+
    health = function(amount, max_amount)
       assertx.is_number(amount)
       assertx.is_number(max_amount)

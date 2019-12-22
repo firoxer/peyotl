@@ -123,6 +123,14 @@ return function(rendering_config, levels_config, entity_manager, tileset)
       end
    )
 
+   local entity_ids_by_render_c = {}
+   entity_manager.subject:subscribe_to_any_change_of(
+      { "render" },
+      function(event_data, render_c)
+         entity_ids_by_render_c[render_c] = event_data.entity_id
+      end
+   )
+
    return function()
       local camera_entity_position_c =
          entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")
@@ -170,6 +178,17 @@ return function(rendering_config, levels_config, entity_manager, tileset)
          tileset_batch:clear()
          for point, render_c in renderables:pairs() do
             local alpha = calculate_alpha(point)
+
+            local entity_id = entity_ids_by_render_c[render_c]
+            if entity_manager:has_component(entity_id, "fog_of_war") then
+               local fow_c = entity_manager:get_component(entity_id, "fog_of_war")
+               if fow_c.explored and alpha < level_config.lighting.explored_alpha then
+                  alpha = level_config.lighting.explored_alpha
+               elseif alpha > 0 and not fow_c.explored then
+                  entity_manager:update_component(entity_id, "fog_of_war", { explored = true })
+               end
+            end
+
             if alpha > 0 then
                local offset_x = round(point.x - current_camera_x + (window_width / 2), tileset_draw_rounding)
                local offset_y = round(point.y - current_camera_y + (window_height / 2), tileset_draw_rounding)

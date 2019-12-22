@@ -96,8 +96,8 @@ return function(entity_manager, levels_config)
             entity_manager:add_component(tile_id, create_component.opaque())
          end
 
-         if level_name == "dungeon" then -- FIXME
-            --entity_manager:add_component(tile_id, create_component.fog_of_war())
+         if level_config.lighting.fog_of_war then
+            entity_manager:add_component(tile_id, create_component.fog_of_war())
          end
 
          if -- TODO: Refactor

@@ -53,6 +53,7 @@ local function breadth_first(lighting_settings, illuminabilities, camera_point)
          return 1
       end
 
+      -- Edges of lighted areas
       for neighbor_point in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
          if distances:has(neighbor_point) and illuminabilities:get(neighbor_point) == true then
             return 0.5

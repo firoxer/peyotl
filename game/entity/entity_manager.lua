@@ -152,35 +152,53 @@ return {
       })
 
       em.subject.subscribe_to_any_change_of = function(subject, names, callback)
-         if #names ~= 2 then
+         if #names ~= 1 and #names ~= 2 then
             error("not implemented")
          end
 
-         subject:subscribe(events.component_added, function(event_data)
-            if (names[1] == event_data.component_name or names[2] == event_data.component_name)
-               and em:has_component(event_data.entity_id, names[1])
-               and em:has_component(event_data.entity_id, names[2])
-            then
-               callback(
-                  event_data,
-                  em:get_component(event_data.entity_id, names[1]),
-                  em:get_component(event_data.entity_id, names[2])
-               )
-            end
-         end)
+         if #names == 1 then
+            subject:subscribe(events.component_added, function(event_data)
+               if names[1] == event_data.component_name
+                  and em:has_component(event_data.entity_id, names[1])
+               then
+                  callback(event_data, em:get_component(event_data.entity_id, names[1]))
+               end
+            end)
 
-         subject:subscribe(events.component_to_be_updated, function(event_data)
-            if (names[1] == event_data.component_name or names[2] == event_data.component_name)
-               and em:has_component(event_data.entity_id, names[1])
-               and em:has_component(event_data.entity_id, names[2])
-            then
-               callback(
-                  event_data,
-                  em:get_component(event_data.entity_id, names[1]),
-                  em:get_component(event_data.entity_id, names[2])
-               )
-            end
-         end)
+            subject:subscribe(events.component_to_be_updated, function(event_data)
+               if names[1] == event_data.component_name
+                  and em:has_component(event_data.entity_id, names[1])
+               then
+                  callback(event_data, em:get_component(event_data.entity_id, names[1]))
+               end
+            end)
+         elseif #names == 2 then
+            subject:subscribe(events.component_added, function(event_data)
+               if (names[1] == event_data.component_name or names[2] == event_data.component_name)
+                  and em:has_component(event_data.entity_id, names[1])
+                  and em:has_component(event_data.entity_id, names[2])
+               then
+                  callback(
+                     event_data,
+                     em:get_component(event_data.entity_id, names[1]),
+                     em:get_component(event_data.entity_id, names[2])
+                  )
+               end
+            end)
+
+            subject:subscribe(events.component_to_be_updated, function(event_data)
+               if (names[1] == event_data.component_name or names[2] == event_data.component_name)
+                  and em:has_component(event_data.entity_id, names[1])
+                  and em:has_component(event_data.entity_id, names[2])
+               then
+                  callback(
+                     event_data,
+                     em:get_component(event_data.entity_id, names[1]),
+                     em:get_component(event_data.entity_id, names[2])
+                  )
+               end
+            end)
+         end
       end
 
       return em
