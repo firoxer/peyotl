@@ -18,6 +18,10 @@ local arg_reactions = {
       log.debug("disabled vsync")
    end,
 
+   god_mode = function()
+      config.player.initial_health = math.huge
+   end,
+
    log_events = function()
       Subject.enable_event_logging()
       log.debug("enabled event logging")
