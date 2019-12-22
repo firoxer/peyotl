@@ -15,10 +15,14 @@ return function(_, entity_manager, player_input)
 
          if position_c.level == "temple" then
             entity_manager:update_component(player_entity_id, "position", { level = "dungeon" })
-            entity_manager:update_component(player_entity_id, "render", { tileset_quad_name = tileset_quad_names.player_dungeon, 2 })
+            entity_manager:update_component(player_entity_id, "render", {
+               tileset_quad_name = tileset_quad_names.dungeon_player
+            })
          elseif position_c.level == "dungeon" then
             entity_manager:update_component(player_entity_id, "position", { level = "temple" })
-            entity_manager:update_component(player_entity_id, "render", { tileset_quad_name = tileset_quad_names.player_temple, 2 })
+            entity_manager:update_component(player_entity_id, "render", {
+               tileset_quad_name = tileset_quad_names.temple_player
+            })
          else
             error("unknown level in player position component: " .. position_c.level)
          end

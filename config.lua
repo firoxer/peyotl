@@ -15,7 +15,7 @@ return tablex.uptight({
          width = 32,
          height = 32,
 
-         background_color = { 187 / 256, 187 / 256, 187 / 256 },
+         background_color = { 39 / 255, 59 / 255, 45 / 255 },
 
          lighting = {
             algorithm = "full",
@@ -57,7 +57,7 @@ return tablex.uptight({
          width = 64,
          height = 64,
 
-         background_color = { 0 / 256, 0 / 256, 0 / 256 },
+         background_color = { 3 / 255, 7 / 255, 16 / 255 },
 
          lighting = {
             algorithm = "fog_of_war",

@@ -70,6 +70,12 @@ return function(entity_manager, levels_config)
                   tileset_quad_names.temple_empty,
                   tileset_quad_names.temple_empty,
                   tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
+                  tileset_quad_names.temple_empty,
                   tileset_quad_names.temple_empty2,
                })
             else

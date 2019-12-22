@@ -21,7 +21,11 @@ local function generate_gems(entity_manager, level_name, gem_config)
 
       local gem_id = entity_manager:new_entity_id()
       entity_manager:add_component(gem_id, create_component.position(level_name, point))
-      local gem_quad_name = love.math.random() > 0.5 and tileset_quad_names.gem1 or tileset_quad_names.gem2
+      -- FIXME: Correct quad names, this is not necessarily a dungeon
+      local gem_quad_name =
+         love.math.random() > 0.5
+            and tileset_quad_names.dungeon_gem1
+            or tileset_quad_names.dungeon_gem2
       entity_manager:add_component(gem_id, create_component.render(gem_quad_name, 1))
    end
 end

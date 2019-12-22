@@ -33,5 +33,5 @@ return function(entity_manager, player_config)
    entity_manager:add_component(id, create_component.input())
    entity_manager:add_component(id, create_component.camera())
    entity_manager:add_component(id, create_component.chaseable())
-   entity_manager:add_component(id, create_component.render(tileset_quad_names.player_temple, 2))
+   entity_manager:add_component(id, create_component.render(tileset_quad_names.temple_player, 2))
 end

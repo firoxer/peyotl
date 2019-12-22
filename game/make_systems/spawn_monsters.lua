@@ -11,7 +11,14 @@ local function spawn_monster(entity_manager, level_name, level_config, spawning_
    entity_manager:add_component(id,
       create_component.chase(spawning_c.chase_target_id, level_config.monsters.aggro_range)
    )
-   entity_manager:add_component(id, create_component.render(tileset_quad_names.monster, 2))
+
+   local tileset_quad_name
+   if level_name == "dungeon" then
+      tileset_quad_name = tileset_quad_names.dungeon_monster
+   elseif level_name == "temple" then
+      tileset_quad_name = tileset_quad_names.temple_monster
+   end
+   entity_manager:add_component(id, create_component.render(tileset_quad_name, 2))
 end
 
 return function(levels_config, entity_manager)
