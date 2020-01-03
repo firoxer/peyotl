@@ -2,11 +2,13 @@ local EntityManager = require("game.entity.entity_manager")
 local generate_tiles = require("game.generate.generate_tiles")
 
 local config = {
-   level_1 = {
+   dungeon = {
       width = 8,
       height = 8,
 
       monsters = false,
+
+      lighting = false,
 
       generation = {
          algorithm = "cellular_automatons",
@@ -18,11 +20,13 @@ local config = {
       },
    },
 
-   level_2 = {
+   temple = {
       width = 32,
       height = 32,
 
       monsters = false,
+
+      lighting = false,
 
       generation = {
          algorithm = "preset_temple",

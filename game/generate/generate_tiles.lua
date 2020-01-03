@@ -102,7 +102,7 @@ return function(entity_manager, levels_config)
             entity_manager:add_component(tile_id, create_component.opaque())
          end
 
-         if level_config.lighting.fog_of_war then
+         if level_config.lighting and level_config.lighting.fog_of_war then
             entity_manager:add_component(tile_id, create_component.fog_of_war())
          end
 
@@ -132,7 +132,8 @@ return function(entity_manager, levels_config)
             end
 
             if chase_target_id then
-               local spawn_offset = current_time - (love.math.random() * level_config.monsters.spawning.seconds_per_spawn)
+               local spawn_offset =
+                  current_time - (love.math.random() * level_config.monsters.spawning.seconds_per_spawn)
                entity_manager:add_component(
                   tile_id,
                   create_component.monster_spawning(chase_target_id, spawn_offset)
