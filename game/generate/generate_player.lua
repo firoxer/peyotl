@@ -1,4 +1,5 @@
 local create_component = require("game.entity.create_component")
+local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 local function find_free_position_c(entity_manager, level)
@@ -19,6 +20,8 @@ local function find_free_position_c(entity_manager, level)
 end
 
 return function(entity_manager, player_config)
+   measure_time.start()
+
    local position_c = find_free_position_c(entity_manager, player_config.initial_level)
 
    local id = entity_manager:get_registered_entity_id("player")
@@ -34,4 +37,6 @@ return function(entity_manager, player_config)
    entity_manager:add_component(id, create_component.camera())
    entity_manager:add_component(id, create_component.chaseable())
    entity_manager:add_component(id, create_component.render(tileset_quad_names.temple_player, 2))
+
+   measure_time.stop_and_log("player generated")
 end

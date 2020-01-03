@@ -3,6 +3,7 @@ local carve_with_cellular_automatons = require("game.generate.tiles.carve_with_c
 local carve_with_random_squares = require("game.generate.tiles.carve_with_random_squares")
 local carve_with_simplex_noise = require("game.generate.tiles.carve_with_simplex_noise")
 local create_component = require("game.entity.create_component")
+local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 local carves_by_algorithm_name = {
@@ -46,6 +47,8 @@ return function(entity_manager, levels_config)
 
    local current_time = love.timer.getTime()
    for level_name, level_config in pairs(levels_config) do
+      measure_time.start()
+
       render_cs[level_name] = ds.Matrix.new()
 
       local carve = carves_by_algorithm_name[level_config.generation.algorithm]
@@ -141,6 +144,8 @@ return function(entity_manager, levels_config)
             end
          end
       end
+
+      measure_time.stop_and_log(level_name .. " generated")
    end
 
    change_south_wall_tiles_quad(entity_manager, render_cs)

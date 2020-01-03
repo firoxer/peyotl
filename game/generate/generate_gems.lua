@@ -1,4 +1,5 @@
 local create_component = require("game.entity.create_component")
+local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 local function generate_gems(entity_manager, level_name, gem_config)
@@ -31,9 +32,13 @@ local function generate_gems(entity_manager, level_name, gem_config)
 end
 
 return function(entity_manager, levels_config)
+   measure_time.start()
+
    for level_name, level_config in pairs(levels_config) do
       if level_config.gems then
          generate_gems(entity_manager, level_name, level_config.gems)
       end
-    end
+   end
+
+   measure_time.stop_and_log("gems generated")
 end

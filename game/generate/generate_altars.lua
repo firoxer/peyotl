@@ -1,7 +1,10 @@
 local create_component = require("game.entity.create_component")
+local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 return function(entity_manager, levels_config)
+   measure_time.start()
+
    for level_name, level_config in pairs(levels_config) do
       if level_config.altar then
          local altar_1_id = entity_manager:get_registered_entity_id("altar_1")
@@ -31,4 +34,6 @@ return function(entity_manager, levels_config)
          entity_manager:add_component(altar_4_id, create_component.chaseable())
       end
    end
+
+   measure_time.stop_and_log("altar generated")
 end
