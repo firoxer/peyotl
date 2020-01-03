@@ -4,11 +4,11 @@ local config = require("config")
 local devtools = require("devtools")
 local seed = require("seed")
 
+local EntityGenerator = require("game.entity.entity_generator")
 local EntityManager = require("game.entity.entity_manager")
 local PlayerInput = require("game.player_input")
 local Subject = require("game.event.subject")
 local events = require("game.event.events")
-local generate = require("game.generate")
 local make_render = require("game.make_render")
 local make_update = require("game.make_update")
 
@@ -97,8 +97,6 @@ local game_resetting = false
 
 local player_input = PlayerInput.new(config.player_input)
 
-local entity_manager
-
 player_input.subject:subscribe(events.quit_game, function()
    game_terminating = true
 end)
@@ -112,7 +110,8 @@ local render
 local function reset()
    seed()
 
-   entity_manager = EntityManager.new()
+   local entity_manager = EntityManager.new()
+   local entity_generator = EntityGenerator.new(entity_manager, config)
 
    entity_manager.subject:subscribe(events.entity_removed, function(event_data)
       if event_data.entity_id == entity_manager:get_registered_entity_id("player") then
@@ -129,7 +128,7 @@ local function reset()
    update = make_update(config.levels, entity_manager, player_input)
    render = make_render(config.rendering, config.levels, entity_manager)
 
-   generate(entity_manager, config)
+   entity_generator:generate()
 
    game_resetting = false
 end

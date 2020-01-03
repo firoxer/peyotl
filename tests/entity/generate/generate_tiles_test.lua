@@ -1,5 +1,5 @@
 local EntityManager = require("game.entity.entity_manager")
-local generate_tiles = require("game.generate.generate_tiles")
+local generate_tiles = require("game.entity.generate.generate_tiles")
 
 local config = {
    dungeon = {

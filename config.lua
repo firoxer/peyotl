@@ -47,6 +47,8 @@ return tablex.uptight({
          generation = {
             algorithm = "preset_temple",
 
+            regenerate_on_player_warp = false,
+
             square_size_min = 2,
             square_size_max = 15,
             minimum_wall_density = 0.3,
@@ -96,6 +98,8 @@ return tablex.uptight({
 
          generation = {
             algorithm = "cellular_automatons",
+
+            regenerate_on_player_warp = true,
 
             initial_wall_chance = 0.45,
             iterations = 8,

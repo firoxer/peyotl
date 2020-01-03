@@ -1,5 +1,5 @@
 local EntityManager = require("game.entity.entity_manager")
-local generate_altars = require("game.generate.generate_altars")
+local generate_altars = require("game.entity.generate.generate_altars")
 
 local levels_config = {
    level_1 = {

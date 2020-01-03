@@ -39,4 +39,6 @@ return function(entity_manager, player_config)
    entity_manager:add_component(id, create_component.render(tileset_quad_names.temple_player, 2))
 
    measure_time.stop_and_log("player generated")
+
+   return id
 end

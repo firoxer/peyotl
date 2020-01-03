@@ -1,7 +1,7 @@
-local carve_into_preset_temple = require("game.generate.tiles.carve_into_preset_temple")
-local carve_with_cellular_automatons = require("game.generate.tiles.carve_with_cellular_automatons")
-local carve_with_random_squares = require("game.generate.tiles.carve_with_random_squares")
-local carve_with_simplex_noise = require("game.generate.tiles.carve_with_simplex_noise")
+local carve_into_preset_temple = require("game.entity.generate.tiles.carve_into_preset_temple")
+local carve_with_cellular_automatons = require("game.entity.generate.tiles.carve_with_cellular_automatons")
+local carve_with_random_squares = require("game.entity.generate.tiles.carve_with_random_squares")
+local carve_with_simplex_noise = require("game.entity.generate.tiles.carve_with_simplex_noise")
 local create_component = require("game.entity.create_component")
 local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
@@ -43,12 +43,14 @@ local function change_south_wall_tiles_quad(entity_manager, render_cs)
 end
 
 return function(entity_manager, levels_config)
+   local tile_ids = {}
    local render_cs = {}
 
    local current_time = love.timer.getTime()
    for level_name, level_config in pairs(levels_config) do
       measure_time.start()
 
+      tile_ids[level_name] = {}
       render_cs[level_name] = ds.Matrix.new()
 
       local carve = carves_by_algorithm_name[level_config.generation.algorithm]
@@ -95,6 +97,7 @@ return function(entity_manager, levels_config)
          end
 
          local tile_id = entity_manager:new_entity_id()
+         table.insert(tile_ids[level_name], tile_id)
          entity_manager:add_component(tile_id, create_component.position(level_name, point))
          local render_c = create_component.render(tileset_quad_name, 0)
          entity_manager:add_component(tile_id, render_c)
@@ -149,4 +152,6 @@ return function(entity_manager, levels_config)
    end
 
    change_south_wall_tiles_quad(entity_manager, render_cs)
+
+   return tile_ids
 end

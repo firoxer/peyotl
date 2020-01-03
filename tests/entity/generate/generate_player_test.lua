@@ -1,6 +1,6 @@
 local EntityManager = require("game.entity.entity_manager")
 local create_component = require("game.entity.create_component")
-local generate_player = require("game.generate.generate_player")
+local generate_player = require("game.entity.generate.generate_player")
 
 local player_config = {
    initial_level = "temple",
