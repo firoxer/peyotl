@@ -67,7 +67,7 @@ return tablex.uptight({
             lighting_range = 5.8, -- Nice and round
 
             unexplored_alpha = 0.0,
-            explored_alpha = 0.2,
+            explored_alpha = 0.4,
          },
 
          monsters = {
