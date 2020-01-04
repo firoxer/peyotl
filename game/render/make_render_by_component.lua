@@ -3,7 +3,6 @@
 local round = mathx.round
 
 local create_calculate_alpha = require("game.render.create_calculate_alpha")
-local make_render_background = require("game.render.make_render_background")
 
 local function create_render_layers(matrix_iterator)
    local layer_ids = {}
@@ -48,10 +47,10 @@ local function create_illuminabilities(render_matrix_iterator, opaque_matrix)
    return illuminabilities
 end
 
-return function(rendering_config, levels_config, entity_manager, tileset)
+return function(rendering_config, level_config, em, tileset)
    assertx.is_table(rendering_config)
-   assertx.is_table(levels_config)
-   assertx.is_instance_of("entity.EntityManager", entity_manager)
+   assertx.is_table(level_config)
+   assertx.is_instance_of("entity.EntityManager", em)
    assertx.is_table(tileset)
 
    local camera_rigidness = rendering_config.camera_rigidness
@@ -62,87 +61,77 @@ return function(rendering_config, levels_config, entity_manager, tileset)
 
    local current_camera_x = 0
    local current_camera_y = 0
-   local current_camera_level = nil
 
    -- Canvas is used so that everything can be rendered 1x and then scaled up
    local canvas = love.graphics.newCanvas(window_width * tile_size, window_height * tile_size)
    canvas:setFilter("nearest", "nearest")
 
-   local render_background = make_render_background(levels_config, entity_manager)
-
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
 
-   local render_matrices = {}
-   for level_name in pairs(levels_config) do
-      render_matrices[level_name] = ds.Matrix.new()
-   end
-   entity_manager.subject:subscribe_to_any_change_of(
+   local render_matrix = ds.Matrix.new()
+   em.subject:subscribe_to_any_change_of(
       { "render", "position" },
       function(event_data, render_c, position_c)
          if event_data.updated_fields and event_data.updated_fields.point then
-            render_matrices[position_c.level]:get(position_c.point)[render_c.layer] = nil
-            local updated_layer = render_matrices[position_c.level]:get(event_data.updated_fields.point)
+            render_matrix:get(position_c.point)[render_c.layer] = nil
+            local updated_layer = render_matrix:get(event_data.updated_fields.point)
             if not updated_layer then
                updated_layer = {}
             end
             updated_layer[render_c.layer] = render_c
-            render_matrices[position_c.level]:set(event_data.updated_fields.point, updated_layer)
+            render_matrix:set(event_data.updated_fields.point, updated_layer)
          else
-            local updated_layer = render_matrices[position_c.level]:get(position_c.point)
+            local updated_layer = render_matrix:get(position_c.point)
             if not updated_layer then
                updated_layer = {}
             end
             updated_layer[render_c.layer] = render_c
-            render_matrices[position_c.level]:set(position_c.point, updated_layer)
+            render_matrix:set(position_c.point, updated_layer)
          end
       end
    )
 
-   local opaque_matrices = {}
-   for level_name in pairs(levels_config) do
-      opaque_matrices[level_name] = ds.Matrix.new()
-   end
-   entity_manager.subject:subscribe_to_any_change_of(
+   local opaque_matrix = ds.Matrix.new()
+   em.subject:subscribe_to_any_change_of(
       { "opaque", "position" },
       function(event_data, _, position_c)
          if event_data.updated_fields and event_data.updated_fields.point then
-            opaque_matrices[position_c.level]:set(
-               position_c.point,
-               opaque_matrices[position_c.level]:get(position_c.point) - 1
-            )
-            opaque_matrices[position_c.level]:set(
+            opaque_matrix:set(position_c.point, opaque_matrix:get(position_c.point) - 1)
+            opaque_matrix:set(
                event_data.updated_fields.point,
-               opaque_matrices[position_c.level]:get(event_data.updated_fields.point) + 1
+               opaque_matrix:get(event_data.updated_fields.point) + 1
             )
          else
-            opaque_matrices[position_c.level]:set(
-               position_c.point,
-               (opaque_matrices[position_c.level]:get(position_c.point) or 0) + 1
-            )
+            opaque_matrix:set(position_c.point, (opaque_matrix:get(position_c.point) or 0) + 1)
          end
       end
    )
 
    local entity_ids_by_render_c = {}
-   entity_manager.subject:subscribe_to_any_change_of(
+   em.subject:subscribe_to_any_change_of(
       { "render" },
       function(event_data, render_c)
          entity_ids_by_render_c[render_c] = event_data.entity_id
       end
    )
 
+   local time_at_last_render = 0
    return function()
       local camera_entity_position_c =
-         entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")
+         em:get_component(em:get_unique_component("camera"), "position")
 
-      -- By moving the camera only a bit at a time, it gets nice and sticky
-      -- and it follows its target more naturally
       local camera_entity_position_point = camera_entity_position_c.point
-      current_camera_x = current_camera_x + (camera_entity_position_point.x - current_camera_x) * camera_rigidness
-      current_camera_y = current_camera_y + (camera_entity_position_point.y - current_camera_y) * camera_rigidness
-      current_camera_level = camera_entity_position_c.level
-
-      local level_config = levels_config[current_camera_level]
+      if love.timer.getTime() - time_at_last_render < 0.5 then
+         -- By moving the camera only a bit at a time, it gets nice and sticky
+         -- and it follows its target more naturally
+         current_camera_x = current_camera_x + (camera_entity_position_point.x - current_camera_x) * camera_rigidness
+         current_camera_y = current_camera_y + (camera_entity_position_point.y - current_camera_y) * camera_rigidness
+      else
+         -- If too much time has passed since the last render, the stickiness
+         -- would likely look weird (e.g. after warping from another level)
+         current_camera_x = camera_entity_position_point.x
+         current_camera_y = camera_entity_position_point.y
+      end
 
       local visible_nw_se_corners = {
          current_camera_x - (window_width / 2) - 1,
@@ -151,26 +140,25 @@ return function(rendering_config, levels_config, entity_manager, tileset)
          current_camera_y + (window_height / 2)
       }
       local visible_render_matrix_iterator =
-         render_matrices[current_camera_level]:submatrix_pairs(unpack(visible_nw_se_corners))
+         render_matrix:submatrix_pairs(unpack(visible_nw_se_corners))
       local layer_ids, layers_by_id =
          create_render_layers(visible_render_matrix_iterator)
 
       table.sort(layer_ids)
 
       visible_render_matrix_iterator =
-         render_matrices[current_camera_level]:submatrix_pairs(unpack(visible_nw_se_corners))
+         render_matrix:submatrix_pairs(unpack(visible_nw_se_corners))
       local illuminabilities =
-         create_illuminabilities(visible_render_matrix_iterator, opaque_matrices[current_camera_level])
+         create_illuminabilities(visible_render_matrix_iterator, opaque_matrix)
 
       local calculate_alpha =
          create_calculate_alpha(level_config.lighting, illuminabilities, camera_entity_position_c.point)
 
       love.graphics.setCanvas(canvas)
-      love.graphics.clear()
 
       -- The background has to be rendered here so that the alphas
       -- go nicely on top of it
-      render_background()
+      love.graphics.clear(level_config.background_color)
 
       for _, layer_id in ipairs(layer_ids) do
          local renderables = layers_by_id[layer_id]
@@ -180,12 +168,12 @@ return function(rendering_config, levels_config, entity_manager, tileset)
             local alpha = calculate_alpha(point)
 
             local entity_id = entity_ids_by_render_c[render_c]
-            if entity_manager:has_component(entity_id, "fog_of_war") then
-               local fow_c = entity_manager:get_component(entity_id, "fog_of_war")
+            if em:has_component(entity_id, "fog_of_war") then
+               local fow_c = em:get_component(entity_id, "fog_of_war")
                if fow_c.explored and alpha < level_config.lighting.explored_alpha then
                   alpha = level_config.lighting.explored_alpha
                elseif alpha > 0 and not fow_c.explored then
-                  entity_manager:update_component(entity_id, "fog_of_war", { explored = true })
+                  em:update_component(entity_id, "fog_of_war", { explored = true })
                end
             end
 
@@ -209,5 +197,7 @@ return function(rendering_config, levels_config, entity_manager, tileset)
 
       love.graphics.setCanvas()
       love.graphics.draw(canvas, 0, 0, 0, rendering_config.tiles.scale)
+
+      time_at_last_render = love.timer.getTime()
    end
 end

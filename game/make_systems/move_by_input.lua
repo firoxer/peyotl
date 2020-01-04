@@ -22,35 +22,32 @@ local function offset_by_event(event)
    end
 end
 
-local function track_collidable_positions_in_matrices_by_level(levels_config, entity_manager)
-   local collision_matrices = {}
-   for level_name, level_config in pairs(levels_config) do
-      local matrix = ds.Matrix.new()
-      for y = 1, level_config.height do
-         for x = 1, level_config.width do
-            matrix:set(ds.Point.new(x, y), false)
-         end
+local function track_collidable_positions_in_matrix(level_config, em)
+   local matrix = ds.Matrix.new()
+
+   for y = 1, level_config.height do
+      for x = 1, level_config.width do
+         matrix:set(ds.Point.new(x, y), false)
       end
-      collision_matrices[level_name] = matrix
    end
 
-   entity_manager.subject:subscribe(events.component_added, function(event_data)
+   em.subject:subscribe(events.component_added, function(event_data)
       if event_data.component_name == "collision" then
-         local position_c = entity_manager:get_component(event_data.entity_id, "position")
-         collision_matrices[position_c.level]:set(position_c.point, true)
+         local position_c = em:get_component(event_data.entity_id, "position")
+         matrix:set(position_c.point, true)
       end
    end)
 
-   entity_manager.subject:subscribe(events.component_to_be_updated, function(event_data)
+   em.subject:subscribe(events.component_to_be_updated, function(event_data)
       if event_data.component_name == "position" and
-            entity_manager:has_component(event_data.entity_id, "collision") then
-         local position_c = entity_manager:get_component(event_data.entity_id, "position")
-         collision_matrices[position_c.level]:set(position_c.point, false)
-         collision_matrices[position_c.level]:set(event_data.updated_fields.point, true)
+            em:has_component(event_data.entity_id, "collision") then
+         local position_c = em:get_component(event_data.entity_id, "position")
+         matrix:set(position_c.point, false)
+         matrix:set(event_data.updated_fields.point, true)
       end
    end)
 
-   return collision_matrices
+   return matrix
 end
 
 local within_bounds = function(level_config, point)
@@ -61,20 +58,24 @@ local within_bounds = function(level_config, point)
       and point.y <= level_config.height
 end
 
-return function(levels_config, entity_manager, player_input)
-   assertx.is_table(levels_config)
-   assertx.is_instance_of("entity.EntityManager", entity_manager)
+return function(level_config, em, player_input)
+   assertx.is_table(level_config)
+   assertx.is_instance_of("entity.EntityManager", em)
    assertx.is_instance_of("event.Subject", player_input.subject)
 
-   local collision_matrices = track_collidable_positions_in_matrices_by_level(levels_config, entity_manager)
+   local collision_matrix = track_collidable_positions_in_matrix(level_config, em)
 
-   local pending_events = ds.Queue.new()
-   player_input.subject:subscribe_all(tablex.bind(pending_events, "enqueue"))
+   player_input.subject:subscribe_all(function(event)
+      for _, input_c in em:iterate("input") do
+         input_c.pending_events:enqueue(event)
+      end
+   end)
 
    return function()
-      while not pending_events:is_empty() do
-         local event = pending_events:dequeue()
-         for entity_id, _, position_c in entity_manager:iterate("input", "position") do
+      for entity_id, input_c, position_c in em:iterate("input", "position") do
+         while not input_c.pending_events:is_empty() do
+            local event = input_c.pending_events:dequeue()
+
             local point_diff_x, point_diff_y = offset_by_event(event)
 
             if not point_diff_x or not point_diff_y then
@@ -84,7 +85,6 @@ return function(levels_config, entity_manager, player_input)
 
             local new_point = nil
 
-            local collision_matrix = collision_matrices[position_c.level]
             -- Orthogonal movement
             if point_diff_x == 0 or point_diff_y == 0 then
                if collision_matrix:get(offset(position_c.point, point_diff_x, point_diff_y)) ~= true then
@@ -99,11 +99,11 @@ return function(levels_config, entity_manager, player_input)
                new_point = offset(position_c.point, 0, point_diff_y)
             end
 
-            if new_point == nil or not within_bounds(levels_config[position_c.level], new_point) then
+            if new_point == nil or not within_bounds(level_config, new_point) then
                goto continue
             end
 
-            entity_manager:update_component(entity_id, "position", { point = new_point })
+            em:update_component(entity_id, "position", { point = new_point })
 
             ::continue::
          end

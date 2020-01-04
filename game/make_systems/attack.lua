@@ -17,9 +17,7 @@ end
 
 local chebyshev_distance = ds.Point.chebyshev_distance
 local function close_enough(pos_a, pos_b, range)
-   return
-      pos_a.level == pos_b.level
-      and chebyshev_distance(pos_a.point, pos_b.point) <= range
+   return chebyshev_distance(pos_a.point, pos_b.point) <= range
 end
 
 return function(_, entity_manager)

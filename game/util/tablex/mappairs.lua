@@ -2,9 +2,10 @@ return function(tbl, mapper)
    assertx.is_table(tbl)
    assertx.is_function(mapper)
 
+   local new_tbl = {}
    for k, v in pairs(tbl) do
-      tbl[k] = mapper(k, v)
+      new_tbl[k] = mapper(k, v)
    end
 
-   return tbl
+   return new_tbl
 end

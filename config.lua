@@ -4,10 +4,24 @@ return tablex.uptight({
       keyboard_long_tick_s = 0.50,
    },
 
-   player = {
-      initial_level = "temple",
-      initial_health = 100,
-      max_health = 100,
+   initial_player_level = "temple",
+
+   rendering = {
+      tiles = {
+         scale = 3,
+         size = 16,
+      },
+
+      window = {
+         width = 20,
+         height = 20,
+      },
+
+      camera_rigidness = 0.05,
+
+      debug_overlay_enabled = false,
+
+      enable_vsync = true,
    },
 
    levels = {
@@ -20,6 +34,11 @@ return tablex.uptight({
          lighting = {
             algorithm = "full",
             fog_of_war = false,
+         },
+
+         player = {
+            initial_health = 100,
+            max_health = 100,
          },
 
          monsters = {
@@ -72,6 +91,11 @@ return tablex.uptight({
             explored_alpha = 0.4,
          },
 
+         player = {
+            initial_health = 100,
+            max_health = 100,
+         },
+
          monsters = {
             max_n = 100,
 
@@ -107,23 +131,5 @@ return tablex.uptight({
             survival_threshold = 4,
          },
       },
-   },
-
-   rendering = {
-      tiles = {
-         scale = 3,
-         size = 16,
-      },
-
-      window = {
-         width = 20,
-         height = 20,
-      },
-
-      camera_rigidness = 0.05,
-
-      debug_overlay_enabled = false,
-
-      enable_vsync = true,
    },
 })

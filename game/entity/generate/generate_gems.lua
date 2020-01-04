@@ -2,42 +2,35 @@ local create_component = require("game.entity.create_component")
 local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
-local function generate_gems(entity_manager, level_name, gem_config)
-   assertx.is_string(level_name)
+return function(em, level_config)
+   if not level_config.gems then
+      return
+   end
+
+   measure_time.start()
 
    local walkable_points = {}
-   for position_id, position_c in entity_manager:iterate("position") do
-      if position_c.level == level_name
-            and not entity_manager:has_component(position_id, "collision") then
+   for position_id, position_c in em:iterate("position") do
+      if not em:has_component(position_id, "collision") then
          table.insert(walkable_points, position_c.point)
       end
    end
 
    tablex.shuffle(walkable_points)
 
-   local gems_to_generate = math.floor(#walkable_points * gem_config.density)
+   local gems_to_generate = math.floor(#walkable_points * level_config.gems.density)
 
    for i = 1, gems_to_generate do
       local point = walkable_points[i]
 
-      local gem_id = entity_manager:new_entity_id()
-      entity_manager:add_component(gem_id, create_component.position(level_name, point))
+      local gem_id = em:new_entity_id()
+      em:add_component(gem_id, create_component.position(point))
       -- FIXME: Correct quad names, this is not necessarily a dungeon
       local gem_quad_name =
          love.math.random() > 0.5
             and tileset_quad_names.dungeon_gem1
             or tileset_quad_names.dungeon_gem2
-      entity_manager:add_component(gem_id, create_component.render(gem_quad_name, 1))
-   end
-end
-
-return function(entity_manager, levels_config)
-   measure_time.start()
-
-   for level_name, level_config in pairs(levels_config) do
-      if level_config.gems then
-         generate_gems(entity_manager, level_name, level_config.gems)
-      end
+      em:add_component(gem_id, create_component.render(gem_quad_name, 1))
    end
 
    measure_time.stop_and_log("gems generated")

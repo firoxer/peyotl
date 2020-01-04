@@ -71,6 +71,7 @@ return {
    input = function()
       return {
          name = "input",
+         pending_events = ds.Queue.new(),
       }
    end,
 
@@ -91,13 +92,11 @@ return {
       }
    end,
 
-   position = function(level, point)
-      assertx.is_string(level)
+   position = function(point)
       assertx.is_instance_of("ds.Point", point)
 
       return {
          name = "position",
-         level = level,
          point = point,
       }
    end,

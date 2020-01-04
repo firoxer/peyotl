@@ -90,16 +90,13 @@ end
 
 local create_object = prototypify(BreadthFirst)
 return {
-   new = function(collision_matrix, level, max_distance)
+   new = function(collision_matrix, max_distance)
       assertx.is_instance_of("ds.Matrix", collision_matrix)
-      assertx.is_string(level)
       assertx.is_number_or_nil(max_distance)
 
       max_distance = max_distance or math.huge
 
       return create_object({
-         level = level,
-
          _max_distance = max_distance,
          _collision_matrix = collision_matrix,
          _parents = {},

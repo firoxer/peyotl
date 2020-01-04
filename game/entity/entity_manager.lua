@@ -106,6 +106,13 @@ function EntityManager:update_component(entity_id, component_name, fields)
    end
 end
 
+function EntityManager:remove_component(entity_id, component_name)
+   assertx.is_number(entity_id)
+   assertx.is_string(component_name)
+
+   self._components[component_name][entity_id] = nil
+end
+
 function EntityManager:iterate(...)
    local arg_count = select('#', ...)
    local iterated_names = {...}
@@ -134,22 +141,26 @@ function EntityManager:iterate(...)
    end)
 end
 
+function EntityManager:flush()
+   self._components = {}
+   for name in pairs(create_component) do
+      self._components[name] = {}
+   end
+end
+
 local create_object = prototypify(EntityManager)
 return {
    new = function()
-      local components = {}
-      for name in pairs(create_component) do
-         components[name] = {}
-      end
-
       local em = create_object({
          subject = Subject.new(),
 
-         _components = components,
+         _components = {},
          _entity_id = 0,
 
          _registered_ids = {},
       })
+
+      em:flush()
 
       em.subject.subscribe_to_any_change_of = function(subject, names, callback)
          if #names ~= 1 and #names ~= 2 then

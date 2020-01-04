@@ -2,107 +2,20 @@ require("./init")
 
 local config = require("config")
 local devtools = require("devtools")
+local parse_args = require("parse_args")
 local seed = require("seed")
 
-local EntityGenerator = require("game.entity.entity_generator")
 local EntityManager = require("game.entity.entity_manager")
 local PlayerInput = require("game.player_input")
-local Subject = require("game.event.subject")
-local events = require("game.event.events")
+local generate = require("game.entity.generate")
 local make_render = require("game.make_render")
 local make_update = require("game.make_update")
 
-local arg_reactions = {
-   disable_vsync = function()
-      config.rendering.enable_vsync = false
-      log.debug("disabled vsync")
-   end,
-
-   god_mode = function()
-      config.player.initial_health = math.huge
-   end,
-
-   log_events = function()
-      Subject.enable_event_logging()
-      log.debug("enabled event logging")
-   end,
-
-   profile = function()
-      devtools.enable_profiling()
-      log.debug("enabled profiling")
-   end,
-
-   report_memory_usage = function()
-      devtools.enable_memory_usage_reports()
-      log.debug("enabled memory usage reports")
-   end,
-
-   report_low_fps = function()
-      devtools.enable_low_fps_reports()
-      log.debug("enabled low FPS reports")
-   end,
-
-   retard_performance = function()
-      devtools.enable_performance_retardation()
-      log.debug("enabled performance retardation")
-   end,
+local game_state = {
+   status = "running",
+   current_level = config.initial_player_level,
+   levels = {}
 }
-local function parse_args(raw_args)
-   local args = {
-      -- Defaults for development
-      report_low_fps = true,
-      retard_performance = true
-   }
-
-   for _, arg in ipairs(raw_args) do
-      local key = arg:match("^%-%-([%w%-]+)=?")
-      local value = arg:match("=(%w*)$")
-      if not key then
-         log.error("invalid argument: " .. arg)
-         love.event.quit()
-      end
-      args[key:gsub("-", "_")] = value or true
-   end
-
-   if args.h or args.help then
-      print([[usage: ./run [options]
-    --log-events
-    --production
-    --profile
-    --report-memory-usage
-    --report-low-fps
-    --retard-performance]])
-      love.event.quit()
-      return
-   end
-
-   if args.production then
-      args.report_low_fps = nil
-      args.retard_performance = nil
-      args.production = nil
-   end
-
-   for key, value in pairs(args) do
-      if not arg_reactions[key] then
-         log.error("no reaction for CLI arg: " .. key)
-      else
-         arg_reactions[key](value)
-      end
-   end
-end
-
-local game_paused = false
-local game_terminating = false
-local game_resetting = false
-
-local player_input = PlayerInput.new(config.player_input)
-
-player_input.subject:subscribe(events.quit_game, function()
-   game_terminating = true
-end)
-player_input.subject:subscribe(events.toggle_game_pause, function()
-   game_paused = not game_paused
-end)
 
 local update
 local render
@@ -110,46 +23,62 @@ local render
 local function reset()
    seed()
 
-   local entity_manager = EntityManager.new()
-   local entity_generator = EntityGenerator.new(entity_manager, config)
+   game_state.levels = tablex.mappairs(config.levels, function(_, level_config)
+      local em = EntityManager.new()
 
-   entity_manager.subject:subscribe(events.entity_removed, function(event_data)
-      if event_data.entity_id == entity_manager:get_registered_entity_id("player") then
-         game_resetting = true
-      end
+      em:register_entity_id(em:new_entity_id(), "player")
+      em:register_entity_id(em:new_entity_id(), "altar_1")
+      em:register_entity_id(em:new_entity_id(), "altar_2")
+      em:register_entity_id(em:new_entity_id(), "altar_3")
+      em:register_entity_id(em:new_entity_id(), "altar_4")
+
+      return {
+         config = level_config,
+         entity_manager = em,
+      }
    end)
 
-   entity_manager:register_entity_id(entity_manager:new_entity_id(), "player")
-   entity_manager:register_entity_id(entity_manager:new_entity_id(), "altar_1")
-   entity_manager:register_entity_id(entity_manager:new_entity_id(), "altar_2")
-   entity_manager:register_entity_id(entity_manager:new_entity_id(), "altar_3")
-   entity_manager:register_entity_id(entity_manager:new_entity_id(), "altar_4")
+   update = make_update(game_state, PlayerInput.new(config.player_input))
+   render = make_render(config.rendering, game_state)
 
-   update = make_update(config.levels, entity_manager, player_input)
-   render = make_render(config.rendering, config.levels, entity_manager)
+   -- Generation has to happen after updating and rendering are ready because
+   -- they listen to levels' entity managers that emit events during generation
+   for level_name, level in pairs(game_state.levels) do
+      generate(level.entity_manager, level_name, level.config)
+   end
 
-   entity_generator:generate()
-
-   game_resetting = false
+   game_state.status = "running"
 end
 
 function love.load(args)
+   local tile_size = config.rendering.tiles.size
+   local tile_scale = config.rendering.tiles.scale
+   love.window.setMode(
+      config.rendering.window.width * tile_size * tile_scale,
+      config.rendering.window.height * tile_size * tile_scale,
+      { vsync = config.rendering.enable_vsync }
+   )
+
    parse_args(args)
    reset()
 end
 
+local level_at_last_update = game_state.current_level
 function love.update(dt)
-   player_input:tick(dt)
-
-   if game_terminating then
+   if game_state.status == "terminating" then
       love.event.quit()
    end
-   if game_resetting then
+   if game_state.status == "resetting" then
       reset()
    end
-   if game_paused then
+   if game_state.status == "paused" then
       return
    end
+
+   if level_at_last_update ~= game_state.current_level and game_state.current_level == "dungeon" then
+      generate(game_state.levels.dungeon.entity_manager, "dungeon", game_state.levels.dungeon.config)
+   end
+   level_at_last_update = game_state.current_level
 
    update(dt)
 
@@ -157,8 +86,9 @@ function love.update(dt)
 end
 
 function love.draw()
-   if game_resetting then
+   if game_state.status == "resetting" then
       return
    end
+
    render()
 end

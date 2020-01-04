@@ -20,6 +20,9 @@ return {
    merge =
       require("game.util.tablex.merge"),
 
+   prettyprint =
+      require("game.util.tablex.prettyprint"),
+
    readonly =
       require("game.util.tablex.readonly"),
 

@@ -2,12 +2,10 @@ local create_component = require("game.entity.create_component")
 local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
-local function find_free_position_c(entity_manager, level)
+local function find_free_position_c(em)
    local free_positions = {}
-   for tile_entity_id, position_c in entity_manager:iterate("position") do
-      if entity_manager:get_component(tile_entity_id, "collision") == nil
-         and position_c.level == level
-      then
+   for tile_entity_id, position_c in em:iterate("position") do
+      if em:get_component(tile_entity_id, "collision") == nil then
          table.insert(free_positions, position_c)
       end
    end
@@ -19,24 +17,24 @@ local function find_free_position_c(entity_manager, level)
    return tablex.clone(tablex.sample(free_positions))
 end
 
-return function(entity_manager, player_config)
+return function(em, level_config)
    measure_time.start()
 
-   local position_c = find_free_position_c(entity_manager, player_config.initial_level)
-
-   local id = entity_manager:get_registered_entity_id("player")
+   local id = em:get_registered_entity_id("player")
 
    if id == nil then
       log.error("could not get entity ID for player, skipping player generation")
       return
    end
 
-   entity_manager:add_component(id, position_c)
-   entity_manager:add_component(id, create_component.health(player_config.initial_health, player_config.max_health))
-   entity_manager:add_component(id, create_component.input())
-   entity_manager:add_component(id, create_component.camera())
-   entity_manager:add_component(id, create_component.chaseable())
-   entity_manager:add_component(id, create_component.render(tileset_quad_names.temple_player, 2))
+   local position_c = find_free_position_c(em)
+
+   em:add_component(id, position_c)
+   em:add_component(id, create_component.health(level_config.player.initial_health, level_config.player.max_health))
+   em:add_component(id, create_component.input())
+   em:add_component(id, create_component.camera())
+   em:add_component(id, create_component.chaseable())
+   em:add_component(id, create_component.render(tileset_quad_names.temple_player, 2))
 
    measure_time.stop_and_log("player generated")
 
