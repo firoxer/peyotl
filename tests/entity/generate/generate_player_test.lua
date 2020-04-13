@@ -3,7 +3,6 @@ local create_component = require("game.entity.create_component")
 local generate_player = require("game.entity.generate.generate_player")
 
 local player_config = {
-   initial_level = "temple",
    initial_health = 123,
    max_health = 123,
 }
@@ -17,7 +16,7 @@ do
 
    -- Tile for the player to spawn on
    local tile_id = em:new_entity_id()
-   em:add_component(tile_id, create_component.position("temple", ds.Point.new(1, 1)))
+   em:add_component(tile_id, create_component.position(ds.Point.new(1, 1)))
 
    generate_player(em, player_config)
 
