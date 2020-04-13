@@ -63,7 +63,7 @@ return tablex.uptight({
 
          altar = true,
 
-         generation = {
+         tiles = {
             algorithm = "preset_temple",
 
             regenerate_on_player_warp = false,
@@ -120,7 +120,7 @@ return tablex.uptight({
 
          altar = false,
 
-         generation = {
+         tiles = {
             algorithm = "cellular_automatons",
 
             regenerate_on_player_warp = true,

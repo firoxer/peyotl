@@ -17,7 +17,7 @@ local function find_free_position_c(em)
    return tablex.clone(tablex.sample(free_positions))
 end
 
-return function(em, level_config)
+return function(em, player_config)
    measure_time.start()
 
    local id = em:get_registered_entity_id("player")
@@ -30,7 +30,7 @@ return function(em, level_config)
    local position_c = find_free_position_c(em)
 
    em:add_component(id, position_c)
-   em:add_component(id, create_component.health(level_config.player.initial_health, level_config.player.max_health))
+   em:add_component(id, create_component.health(player_config.initial_health, player_config.max_health))
    em:add_component(id, create_component.input())
    em:add_component(id, create_component.camera())
    em:add_component(id, create_component.chaseable())

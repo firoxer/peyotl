@@ -2,11 +2,7 @@ local create_component = require("game.entity.create_component")
 local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
-return function(em, level_config)
-   if not level_config.altar then
-      return
-   end
-
+return function(em)
    measure_time.start()
 
    local altar_1_id = em:get_registered_entity_id("altar_1")

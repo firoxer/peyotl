@@ -7,9 +7,16 @@ return function(em, level_name, level_config)
    em:flush()
 
    generate_tiles(em, level_name, level_config)
-   generate_player(em, level_config)
-   generate_gems(em, level_config)
-   generate_altars(em, level_config)
+
+   generate_player(em, level_config.player)
+
+   if level_config.gems then
+      generate_gems(em, level_config.gems)
+   end
+
+   if level_config.altar then
+      generate_altars(em, level_config.altar)
+   end
 
 --[[
    -- TODO: Optimize

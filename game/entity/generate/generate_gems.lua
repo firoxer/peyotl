@@ -2,11 +2,7 @@ local create_component = require("game.entity.create_component")
 local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
-return function(em, level_config)
-   if not level_config.gems then
-      return
-   end
-
+return function(em, gem_config)
    measure_time.start()
 
    local walkable_points = {}
@@ -18,7 +14,7 @@ return function(em, level_config)
 
    tablex.shuffle(walkable_points)
 
-   local gems_to_generate = math.floor(#walkable_points * level_config.gems.density)
+   local gems_to_generate = math.floor(#walkable_points * gem_config.density)
 
    for i = 1, gems_to_generate do
       local point = walkable_points[i]

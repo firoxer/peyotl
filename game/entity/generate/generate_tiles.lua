@@ -48,11 +48,11 @@ return function(em, level_name, level_config)
    local current_time = love.timer.getTime()
    local render_cs = ds.Matrix.new()
 
-   local carve = carves_by_algorithm_name[level_config.generation.algorithm]
+   local carve = carves_by_algorithm_name[level_config.tiles.algorithm]
    if carve == nil then
-      error("unknown map generation algorithm: " .. level_config.generation.algorithm)
+      error("unknown map generation algorithm: " .. level_config.tiles.algorithm)
    end
-   local matrix = carve(level_config.generation, level_config.width, level_config.height)
+   local matrix = carve(level_config.tiles, level_config.width, level_config.height)
    for point, is_wall in matrix:pairs() do
       local tileset_quad_name
       if is_wall then
