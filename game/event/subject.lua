@@ -5,10 +5,14 @@ local Subject = {}
 local log_events = false
 
 -- These are events that are just too much
-local totally_ignored_events = ds.Set.new({
+local totally_ignored_events = ds.Set({
    events.component_added,
    events.component_to_be_updated,
 })
+
+function Subject:initialize()
+   self._observers = {}
+end
 
 function Subject:subscribe_all(observer)
    assertx.is_function(observer)
@@ -46,15 +50,9 @@ function Subject:notify(event, event_data)
    end
 end
 
-local create_object = prototypify(Subject)
-return {
-   new = function()
-      return create_object({
-         _observers = {},
-      })
-   end,
+function Subject:enable_event_logging()
+   log_events = true
+end
 
-   enable_event_logging = function()
-      log_events = true
-   end,
-}
+local prototype = prototypify(Subject)
+return prototype

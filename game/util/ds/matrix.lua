@@ -5,6 +5,13 @@ local yield = coroutine.yield
 
 local Matrix = {}
 
+function Matrix:initialize()
+   self._contents = {}
+   self._bounds_up_to_date = true
+   self._nw_bound = nil
+   self._se_bound = nil
+end
+
 function Matrix:get(point)
    assertx.is_instance_of("ds.Point", point)
 
@@ -60,22 +67,22 @@ function Matrix:get_immediate_neighbors(point, von_neumann_only)
 
    local n = self:_raw_get(x, y - 1)
    if n ~= nil then
-      neighbors[Point.new(x, y - 1)] = n
+      neighbors[Point.get(x, y - 1)] = n
    end
 
    local e = self:_raw_get(x + 1, y)
    if e ~= nil then
-      neighbors[Point.new(x + 1, y)] = e
+      neighbors[Point.get(x + 1, y)] = e
    end
 
    local s = self:_raw_get(x, y + 1)
    if s ~= nil then
-      neighbors[Point.new(x, y + 1)] = s
+      neighbors[Point.get(x, y + 1)] = s
    end
 
    local w = self:_raw_get(x - 1, y)
    if w ~= nil then
-      neighbors[Point.new(x - 1, y)] = w
+      neighbors[Point.get(x - 1, y)] = w
    end
 
    if von_neumann_only then
@@ -84,22 +91,22 @@ function Matrix:get_immediate_neighbors(point, von_neumann_only)
 
    local nw = self:_raw_get(x - 1, y - 1)
    if nw ~= nil then
-      neighbors[Point.new(x - 1, y - 1)] = nw
+      neighbors[Point.get(x - 1, y - 1)] = nw
    end
 
    local ne = self:_raw_get(x + 1, y - 1)
    if ne ~= nil then
-      neighbors[Point.new(x + 1, y - 1)] = ne
+      neighbors[Point.get(x + 1, y - 1)] = ne
    end
 
    local se = self:_raw_get(x + 1, y + 1)
    if se ~= nil then
-      neighbors[Point.new(x + 1, y + 1)] = se
+      neighbors[Point.get(x + 1, y + 1)] = se
    end
 
    local sw = self:_raw_get(x - 1, y + 1)
    if sw ~= nil then
-      neighbors[Point.new(x - 1, y + 1)] = sw
+      neighbors[Point.get(x - 1, y + 1)] = sw
    end
 
    return neighbors
@@ -126,7 +133,7 @@ function Matrix:pairs()
    local function iter(tbl)
       for y, row in pairs(tbl) do
          for x, elem in pairs(row) do
-            yield(Point.new(x, y), elem)
+            yield(Point.get(x, y), elem)
          end
       end
    end
@@ -148,7 +155,7 @@ function Matrix:submatrix_pairs(nw_x, nw_y, se_x, se_y)
          if y >= nw_y and y <= se_y then
             for x, elem in pairs(row) do
                if x >= nw_x and x <= se_x then
-                  yield(Point.new(x, y), elem)
+                  yield(Point.get(x, y), elem)
                end
             end
          end
@@ -172,8 +179,8 @@ function Matrix:bounds()
          se_x = math.max(se_x, point.x)
          se_y = math.max(se_y, point.y)
       end
-      self._nw_bound = Point.new(nw_x, nw_y)
-      self._se_bound = Point.new(se_x, se_y)
+      self._nw_bound = Point.get(nw_x, nw_y)
+      self._se_bound = Point.get(se_x, se_y)
 
       self._bounds_up_to_date = true
    end
@@ -181,14 +188,5 @@ function Matrix:bounds()
    return self._nw_bound, self._se_bound
 end
 
-local create_object = prototypify(Matrix)
-return {
-   new = function()
-      return create_object({
-         _contents = {},
-         _bounds_up_to_date = true,
-         _nw_bound = nil,
-         _se_bound = nil,
-      })
-   end
-}
+local prototype = prototypify(Matrix)
+return prototype

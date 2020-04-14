@@ -17,7 +17,8 @@ local arg_reactions = {
    end,
 
    log_events = function()
-      Subject.enable_event_logging()
+      -- TODO: This is broken now
+      --Subject.enable_event_logging()
       log.debug("enabled event logging")
    end,
 

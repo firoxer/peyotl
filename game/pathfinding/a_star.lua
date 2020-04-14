@@ -38,6 +38,27 @@ end
 
 local Pathfinder = {}
 
+function Pathfinder:initialize(is_walkable_at, nw_bound, se_bound, options)
+   assertx.is_function(is_walkable_at)
+   assertx.is_number(nw_bound.x)
+   assertx.is_number(nw_bound.y)
+   assertx.is_number(se_bound.x)
+   assertx.is_number(se_bound.y)
+   assertx.is_table_or_nil(options)
+
+   local self = create_object(Pathfinder)
+
+   self._is_walkable_at = is_walkable_at
+   self._nw_bound = nw_bound
+   self._se_bound = se_bound
+
+   self._prefer_orthogonal = options and options.prefer_orthogonal or false
+
+   self._node_matrix = ds.Matrix()
+
+   return self
+end
+
 function Pathfinder:reset()
    local nw_bound_x, nw_bound_y = self._nw_bound.x, self._nw_bound.y
    local se_bound_x, se_bound_y = self._se_bound.x, self._se_bound.y
@@ -46,7 +67,7 @@ function Pathfinder:reset()
 
    for y = nw_bound_y, se_bound_y do
       for x = nw_bound_x, se_bound_x do
-         local point = ds.Point.new(x, y)
+         local point = ds.Point.get(x, y)
          if is_walkable_at(point) then
             if not node_matrix:has(point) then
                node_matrix:set(point, create_node(point))
@@ -76,7 +97,7 @@ function Pathfinder:find_path(a, b)
    origin_node.opened = true
    origin_node.cost = 0
 
-   local open_queue = ds.PriorityQueue.new()
+   local open_queue = ds.PriorityQueue()
    open_queue:enqueue(origin_node, 0)
 
    while not open_queue:is_empty() do
@@ -116,24 +137,5 @@ function Pathfinder:find_path(a, b)
    return nil
 end
 
-local create_object = prototypify(Pathfinder)
-return {
-   new = function(is_walkable_at, nw_bound, se_bound, options)
-      assertx.is_function(is_walkable_at)
-      assertx.is_number(nw_bound.x)
-      assertx.is_number(nw_bound.y)
-      assertx.is_number(se_bound.x)
-      assertx.is_number(se_bound.y)
-      assertx.is_table_or_nil(options)
-
-      return create_object({
-         _is_walkable_at = is_walkable_at,
-         _nw_bound = nw_bound,
-         _se_bound = se_bound,
-
-         _prefer_orthogonal = options and options.prefer_orthogonal or false,
-
-         _node_matrix = ds.Matrix.new(),
-      })
-   end
-}
+local prototype = prototypify(Pathfinder)
+return prototype

@@ -2,6 +2,12 @@
 
 local Queue = {}
 
+function Queue:initialize()
+   self._contents = {}
+   self._first_index = 0
+   self._last_index = -1
+end
+
 function Queue:enqueue(e)
    local last_index = self._last_index + 1
    self._last_index = last_index
@@ -29,13 +35,5 @@ function Queue:is_empty()
    return self._first_index > self._last_index
 end
 
-local create_object = prototypify(Queue)
-return {
-   new = function()
-      return create_object({
-         _contents = {},
-         _first_index = 0,
-         _last_index = -1,
-      })
-   end
-}
+local prototype = prototypify(Queue)
+return prototype

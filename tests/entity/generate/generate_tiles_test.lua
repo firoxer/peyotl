@@ -37,7 +37,7 @@ local temple_config = {
 }
 
 do
-   local em = EntityManager.new()
+   local em = EntityManager()
    generate_tiles(em, "temple", temple_config)
    local position_component_n = 0
    for _ in em:iterate("position") do
@@ -48,7 +48,7 @@ do
 end
 
 do
-   local em = EntityManager.new()
+   local em = EntityManager()
    generate_tiles(em, "dungeon", dungeon_config)
    local position_component_n = 0
    for _ in em:iterate("position") do

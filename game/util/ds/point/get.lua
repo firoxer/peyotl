@@ -18,7 +18,9 @@ return function(x, y)
 
       setmetatable(p, metatable)
 
-      p.type = "ds.Point" -- So that the code can assume this is a prototype
+      -- So that the code can assume this is an object
+      -- FIXME: This is fragile
+      p.prototype = { name = "ds.Point" }
 
       points[y][x] = tablex.readonly(p)
    end

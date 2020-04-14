@@ -3,6 +3,32 @@ local events = require("game.event.events")
 
 local PlayerInput = {}
 
+function PlayerInput:initialize(player_input_config)
+   local short_tick = player_input_config.keyboard_short_tick_s
+   local long_tick = player_input_config.keyboard_long_tick_s
+
+   self.subject = Subject()
+
+   self._key_cooldowns = {
+      escape = long_tick,
+      q = long_tick,
+
+      p = long_tick,
+      space = long_tick,
+      c = long_tick,
+
+      w = short_tick,
+      a = short_tick,
+      s = short_tick,
+      d = short_tick,
+   }
+
+   self._cooldown_left = 0
+   self._pressed_keys = ds.Set()
+
+   self:_bind_to_love()
+end
+
 function PlayerInput:_bind_to_love()
    love.keypressed = function(key)
       if self._key_cooldowns[key] == nil then
@@ -75,35 +101,5 @@ function PlayerInput:tick(dt)
    end
 end
 
-local create_object = prototypify(PlayerInput)
-return {
-   new = function(player_input_config)
-      local short_tick = player_input_config.keyboard_short_tick_s
-      local long_tick = player_input_config.keyboard_long_tick_s
-
-      local self = create_object({
-         subject = Subject.new(),
-
-         _key_cooldowns = {
-            escape = long_tick,
-            q = long_tick,
-
-            p = long_tick,
-            space = long_tick,
-            c = long_tick,
-
-            w = short_tick,
-            a = short_tick,
-            s = short_tick,
-            d = short_tick,
-         },
-
-         _cooldown_left = 0,
-         _pressed_keys = ds.Set.new(),
-      })
-
-      self:_bind_to_love()
-
-      return self
-   end
-}
+local prototype = prototypify(PlayerInput)
+return prototype

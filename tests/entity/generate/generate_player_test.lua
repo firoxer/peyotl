@@ -8,7 +8,7 @@ local player_config = {
 }
 
 do
-   local em = EntityManager.new()
+   local em = EntityManager()
 
    local player_id = em:new_entity_id()
 
@@ -16,7 +16,7 @@ do
 
    -- Tile for the player to spawn on
    local tile_id = em:new_entity_id()
-   em:add_component(tile_id, create_component.position(ds.Point.new(1, 1)))
+   em:add_component(tile_id, create_component.position(ds.Point.get(1, 1)))
 
    generate_player(em, player_config)
 

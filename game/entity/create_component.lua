@@ -71,7 +71,7 @@ return {
    input = function()
       return {
          name = "input",
-         pending_events = ds.Queue.new(),
+         pending_events = ds.Queue(),
       }
    end,
 

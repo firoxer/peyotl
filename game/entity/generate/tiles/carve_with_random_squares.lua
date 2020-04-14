@@ -3,7 +3,7 @@ return function(algo_settings, level_width, level_height)
    assertx.is_number(level_width)
    assertx.is_number(level_height)
 
-   local matrix = ds.Matrix.new()
+   local matrix = ds.Matrix()
 
    local calculate_free_area = function()
       local wall_n = 0
@@ -26,7 +26,7 @@ return function(algo_settings, level_width, level_height)
 
    for y = 1, level_height do
       for x = 1, level_width do
-         matrix:set(ds.Point.new(x, y), false)
+         matrix:set(ds.Point.get(x, y), false)
       end
    end
 
@@ -39,7 +39,7 @@ return function(algo_settings, level_width, level_height)
 
       for y = random_nw_y, random_se_y do
          for x = random_nw_x, random_se_x do
-            matrix:set(ds.Point.new(x, y), true)
+            matrix:set(ds.Point.get(x, y), true)
          end
       end
    end

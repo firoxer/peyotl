@@ -10,8 +10,8 @@ local function breadth_first(lighting_settings, illuminabilities, camera_point)
    local max_distance = lighting_settings.lighting_range
    assertx.is_number(max_distance)
 
-   local distances = ds.Matrix.new()
-   local open_queue = ds.Queue.new()
+   local distances = ds.Matrix()
+   local open_queue = ds.Queue()
 
    open_queue:enqueue(camera_point)
    distances:set(camera_point, 0)

@@ -1,5 +1,5 @@
 do
-   local s = ds.Set.new()
+   local s = ds.Set()
    s:add('a')
    s:add('b')
    s:add('c')
@@ -9,7 +9,7 @@ do
 end
 
 do
-   local s = ds.Set.new()
+   local s = ds.Set()
    s:add('a')
    s:add('b')
    s:add('c')
@@ -18,7 +18,7 @@ do
 end
 
 do
-   local s = ds.Set.new()
+   local s = ds.Set()
    s:add('a')
    s:remove('a')
    s:add('a')
@@ -26,7 +26,7 @@ do
 end
 
 do
-   local s = ds.Set.new()
+   local s = ds.Set()
    s:add('a')
    s:add('a')
    s:add('a')

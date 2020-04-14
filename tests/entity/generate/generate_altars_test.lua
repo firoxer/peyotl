@@ -2,7 +2,7 @@ local EntityManager = require("game.entity.entity_manager")
 local generate_altars = require("game.entity.generate.generate_altars")
 
 do
-   local em = EntityManager.new()
+   local em = EntityManager()
 
    em:register_entity_id(em:new_entity_id(), "altar_1")
    em:register_entity_id(em:new_entity_id(), "altar_2")

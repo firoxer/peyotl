@@ -11,7 +11,7 @@ local function create_render_layers(matrix_iterator)
    for point, layer in matrix_iterator do
       for _, render_c in pairs(layer) do
          if not layers_by_id[render_c.layer] then
-            layers_by_id[render_c.layer] = ds.Matrix.new()
+            layers_by_id[render_c.layer] = ds.Matrix()
             table.insert(layer_ids, render_c.layer)
          end
 
@@ -23,7 +23,7 @@ local function create_render_layers(matrix_iterator)
 end
 
 local function create_illuminabilities(render_matrix_iterator, opaque_matrix)
-   local illuminabilities = ds.Matrix.new()
+   local illuminabilities = ds.Matrix()
 
    for point in render_matrix_iterator do
       local opaque_c_n = opaque_matrix:get(point) or 0
@@ -68,7 +68,7 @@ return function(rendering_config, level_config, em, tileset)
 
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
 
-   local render_matrix = ds.Matrix.new()
+   local render_matrix = ds.Matrix()
    em.subject:subscribe_to_any_change_of(
       { "render", "position" },
       function(event_data, render_c, position_c)
@@ -91,7 +91,7 @@ return function(rendering_config, level_config, em, tileset)
       end
    )
 
-   local opaque_matrix = ds.Matrix.new()
+   local opaque_matrix = ds.Matrix()
    em.subject:subscribe_to_any_change_of(
       { "opaque", "position" },
       function(event_data, _, position_c)

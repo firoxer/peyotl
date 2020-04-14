@@ -1,5 +1,18 @@
 local CircularBuffer = {}
 
+function CircularBuffer:initialize(size, options)
+   assertx.is_number(size)
+   assertx.is_true(size >= 1)
+
+   self.size = size
+
+   self._contents = {}
+   self._read_index = size + 1
+   self._write_index = size + 1
+
+   self._allow_overwrite = options and options.allow_overwrite or false
+end
+
 function CircularBuffer:read()
    -- Faster than modulo
    self._read_index = self._read_index + 1
@@ -30,20 +43,5 @@ function CircularBuffer:ipairs()
    return ipairs(self._contents)
 end
 
-local create_object = prototypify(CircularBuffer)
-return {
-   new = function(size, options)
-      assertx.is_number(size)
-      assertx.is_true(size >= 1)
-
-      return create_object({
-         size = size,
-
-         _contents = {},
-         _read_index = size + 1,
-         _write_index = size + 1,
-
-         _allow_overwrite = options and options.allow_overwrite or false,
-      })
-   end
-}
+local prototype = prototypify(CircularBuffer)
+return prototype

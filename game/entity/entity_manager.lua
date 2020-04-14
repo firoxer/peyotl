@@ -6,6 +6,66 @@ local Subject = require("game.event.subject")
 
 local EntityManager = {}
 
+function EntityManager:initialize()
+   self.subject = Subject()
+   self._components = {}
+   self._entity_id = 0
+   self._registered_ids = {}
+
+   self:flush()
+
+   local em = self
+   self.subject.subscribe_to_any_change_of = function(subject, names, callback)
+      if #names ~= 1 and #names ~= 2 then
+         error("not implemented")
+      end
+
+      if #names == 1 then
+         subject:subscribe(events.component_added, function(event_data)
+            if names[1] == event_data.component_name
+               and em:has_component(event_data.entity_id, names[1])
+            then
+               callback(event_data, em:get_component(event_data.entity_id, names[1]))
+            end
+         end)
+
+         subject:subscribe(events.component_to_be_updated, function(event_data)
+            if names[1] == event_data.component_name
+               and em:has_component(event_data.entity_id, names[1])
+            then
+               callback(event_data, em:get_component(event_data.entity_id, names[1]))
+            end
+         end)
+      elseif #names == 2 then
+         subject:subscribe(events.component_added, function(event_data)
+            if (names[1] == event_data.component_name or names[2] == event_data.component_name)
+               and em:has_component(event_data.entity_id, names[1])
+               and em:has_component(event_data.entity_id, names[2])
+            then
+               callback(
+                  event_data,
+                  em:get_component(event_data.entity_id, names[1]),
+                  em:get_component(event_data.entity_id, names[2])
+               )
+            end
+         end)
+
+         subject:subscribe(events.component_to_be_updated, function(event_data)
+            if (names[1] == event_data.component_name or names[2] == event_data.component_name)
+               and em:has_component(event_data.entity_id, names[1])
+               and em:has_component(event_data.entity_id, names[2])
+            then
+               callback(
+                  event_data,
+                  em:get_component(event_data.entity_id, names[1]),
+                  em:get_component(event_data.entity_id, names[2])
+               )
+            end
+         end)
+      end
+   end
+end
+
 function EntityManager:new_entity_id()
    self._entity_id = self._entity_id + 1
    return self._entity_id
@@ -148,70 +208,5 @@ function EntityManager:flush()
    end
 end
 
-local create_object = prototypify(EntityManager)
-return {
-   new = function()
-      local em = create_object({
-         subject = Subject.new(),
-
-         _components = {},
-         _entity_id = 0,
-
-         _registered_ids = {},
-      })
-
-      em:flush()
-
-      em.subject.subscribe_to_any_change_of = function(subject, names, callback)
-         if #names ~= 1 and #names ~= 2 then
-            error("not implemented")
-         end
-
-         if #names == 1 then
-            subject:subscribe(events.component_added, function(event_data)
-               if names[1] == event_data.component_name
-                  and em:has_component(event_data.entity_id, names[1])
-               then
-                  callback(event_data, em:get_component(event_data.entity_id, names[1]))
-               end
-            end)
-
-            subject:subscribe(events.component_to_be_updated, function(event_data)
-               if names[1] == event_data.component_name
-                  and em:has_component(event_data.entity_id, names[1])
-               then
-                  callback(event_data, em:get_component(event_data.entity_id, names[1]))
-               end
-            end)
-         elseif #names == 2 then
-            subject:subscribe(events.component_added, function(event_data)
-               if (names[1] == event_data.component_name or names[2] == event_data.component_name)
-                  and em:has_component(event_data.entity_id, names[1])
-                  and em:has_component(event_data.entity_id, names[2])
-               then
-                  callback(
-                     event_data,
-                     em:get_component(event_data.entity_id, names[1]),
-                     em:get_component(event_data.entity_id, names[2])
-                  )
-               end
-            end)
-
-            subject:subscribe(events.component_to_be_updated, function(event_data)
-               if (names[1] == event_data.component_name or names[2] == event_data.component_name)
-                  and em:has_component(event_data.entity_id, names[1])
-                  and em:has_component(event_data.entity_id, names[2])
-               then
-                  callback(
-                     event_data,
-                     em:get_component(event_data.entity_id, names[1]),
-                     em:get_component(event_data.entity_id, names[2])
-                  )
-               end
-            end)
-         end
-      end
-
-      return em
-   end
-}
+local prototype = prototypify(EntityManager)
+return prototype

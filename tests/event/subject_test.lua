@@ -1,7 +1,7 @@
 local Subject = require("game.event.subject")
 
 do
-   local s = Subject.new()
+   local s = Subject()
 
    local event_fired = false
    s:subscribe('test_event', function(event)
@@ -15,7 +15,7 @@ do
 end
 
 do
-   local s = Subject.new()
+   local s = Subject()
 
    local event_fired = false
    s:subscribe('test_event_a', function()
@@ -28,7 +28,7 @@ do
 end
 
 do
-   local s = Subject.new()
+   local s = Subject()
 
    local event_fired = false
    s:subscribe_all(function()

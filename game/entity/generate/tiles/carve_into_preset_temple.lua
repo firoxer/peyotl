@@ -41,7 +41,7 @@ return function(_, level_width, level_height)
 ................................
    ]]
 
-   local matrix = ds.Matrix.new()
+   local matrix = ds.Matrix()
 
    local x
    local y = 0
@@ -51,9 +51,9 @@ return function(_, level_width, level_height)
       for char in line:gmatch("%S") do
          x = x + 1
          if char == "." then
-            matrix:set(ds.Point.new(x, y), false)
+            matrix:set(ds.Point.get(x, y), false)
          elseif char == "#" then
-            matrix:set(ds.Point.new(x, y), true)
+            matrix:set(ds.Point.get(x, y), true)
          else
             error("unknown character in preset map")
          end

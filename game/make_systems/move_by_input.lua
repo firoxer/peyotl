@@ -23,11 +23,11 @@ local function offset_by_event(event)
 end
 
 local function track_collidable_positions_in_matrix(level_config, em)
-   local matrix = ds.Matrix.new()
+   local matrix = ds.Matrix()
 
    for y = 1, level_config.height do
       for x = 1, level_config.width do
-         matrix:set(ds.Point.new(x, y), false)
+         matrix:set(ds.Point.get(x, y), false)
       end
    end
 

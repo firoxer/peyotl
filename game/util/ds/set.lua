@@ -1,5 +1,18 @@
 local Set = {}
 
+function Set:initialize(values)
+   assertx.is_table_or_nil(values)
+
+   self._contents = {}
+   self._size = 0
+
+   if values ~= nil then
+      for _, elem in ipairs(values) do
+         self:add(elem)
+      end
+   end
+end
+
 function Set:add(elem)
    if self:contains(elem) then
       return
@@ -30,22 +43,5 @@ function Set:pairs()
    return pairs(self._contents)
 end
 
-local create_object = prototypify(Set)
-return {
-   new = function(values)
-      assertx.is_table_or_nil(values)
-
-      local self = create_object({
-         _contents = {},
-         _size = 0,
-      })
-
-      if values ~= nil then
-         for _, elem in ipairs(values) do
-            self:add(elem)
-         end
-      end
-
-      return self
-   end
-}
+local prototype = prototypify(Set)
+return prototype

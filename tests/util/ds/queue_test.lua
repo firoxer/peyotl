@@ -1,5 +1,5 @@
 do
-   local q = ds.Queue.new()
+   local q = ds.Queue()
    q:enqueue(1)
    q:enqueue(2)
    q:enqueue(3)
@@ -9,7 +9,7 @@ do
 end
 
 do
-   local q = ds.Queue.new()
+   local q = ds.Queue()
    q:enqueue(1)
    assert(q:dequeue() == 1)
    q:enqueue(2)
@@ -19,13 +19,13 @@ do
 end
 
 do
-   local q = ds.Queue.new()
+   local q = ds.Queue()
    local _, err = pcall(function() q:dequeue() end)
    assert(err ~= nil)
 end
 
 do
-   local q = ds.Queue.new()
+   local q = ds.Queue()
    assert(q:is_empty() == true)
    q:enqueue("not important")
    assert(q:is_empty() == false)

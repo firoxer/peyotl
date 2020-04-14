@@ -24,7 +24,7 @@ local function reset()
    seed()
 
    game_state.levels = tablex.mappairs(config.levels, function(_, level_config)
-      local em = EntityManager.new()
+      local em = EntityManager()
 
       em:register_entity_id(em:new_entity_id(), "player")
       em:register_entity_id(em:new_entity_id(), "altar_1")
@@ -38,7 +38,7 @@ local function reset()
       }
    end)
 
-   update = make_update(game_state, PlayerInput.new(config.player_input))
+   update = make_update(game_state, PlayerInput(config.player_input))
    render = make_render(config.rendering, game_state)
 
    -- Generation has to happen after updating and rendering are ready because

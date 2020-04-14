@@ -3,10 +3,10 @@ local BreadthFirst = require("game.pathfinding.breadth_first")
 local chebyshev_distance = ds.Point.chebyshev_distance
 
 local function track_collidable_positions_as_matrix(level_config, em)
-   local matrix = ds.Matrix.new()
+   local matrix = ds.Matrix()
    for y = 1, level_config.height do
       for x = 1, level_config.width do
-         matrix:set(ds.Point.new(x, y), false)
+         matrix:set(ds.Point.get(x, y), false)
       end
    end
 
@@ -40,7 +40,7 @@ local function track_chaseables_as_pathfinders(level_config, em, collision_matri
 
          if not pathfinders[event_data.entity_id] then
             pathfinders[event_data.entity_id] =
-               BreadthFirst.new(collision_matrix, level_config.monsters.aggro_range)
+               BreadthFirst(collision_matrix, level_config.monsters.aggro_range)
          end
 
          local pathfinder =

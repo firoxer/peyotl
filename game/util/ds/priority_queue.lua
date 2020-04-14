@@ -3,6 +3,12 @@
 
 local PriorityQueue = {}
 
+function PriorityQueue:initialize()
+   self._elem_heap = {}
+   self._priority_heap = {}
+   self._size = 0
+end
+
 function PriorityQueue:enqueue(elem, priority)
    assertx.is_number(priority)
 
@@ -73,13 +79,5 @@ function PriorityQueue:_min_child(i)
    end
 end
 
-local create_object = prototypify(PriorityQueue)
-return {
-   new = function()
-      return create_object({
-         _elem_heap = {},
-         _priority_heap = {},
-         _size = 0,
-      })
-   end
-}
+local prototype = prototypify(PriorityQueue)
+return prototype

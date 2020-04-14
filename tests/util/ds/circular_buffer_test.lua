@@ -1,5 +1,5 @@
 do
-   local b = ds.CircularBuffer.new(4)
+   local b = ds.CircularBuffer(4)
    b:write("a")
    b:write("b")
    b:write("c")
@@ -14,7 +14,7 @@ do
 end
 
 do
-   local b = ds.CircularBuffer.new(3)
+   local b = ds.CircularBuffer(3)
    b:write("a")
    b:write("b")
    b:write("c")
@@ -23,7 +23,7 @@ do
 end
 
 do
-   local b = ds.CircularBuffer.new(4)
+   local b = ds.CircularBuffer(4)
    b:write("a")
    b:write("b")
    b:write("c")

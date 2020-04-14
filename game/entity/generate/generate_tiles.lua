@@ -46,7 +46,7 @@ return function(em, level_name, level_config)
    measure_time.start()
 
    local current_time = love.timer.getTime()
-   local render_cs = ds.Matrix.new()
+   local render_cs = ds.Matrix()
 
    local carve = carves_by_algorithm_name[level_config.tiles.algorithm]
    if carve == nil then

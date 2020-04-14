@@ -3,14 +3,14 @@ return function(algo_settings, level_width, level_height)
    assertx.is_number(level_width)
    assertx.is_number(level_height)
 
-   local matrix = ds.Matrix.new()
+   local matrix = ds.Matrix()
 
    for y = 1, level_height do
       for x = 1, level_width do
          if love.math.random() < algo_settings.initial_wall_chance then
-            matrix:set(ds.Point.new(x, y), true)
+            matrix:set(ds.Point.get(x, y), true)
          else
-            matrix:set(ds.Point.new(x, y), false)
+            matrix:set(ds.Point.get(x, y), false)
          end
       end
    end
@@ -20,7 +20,7 @@ return function(algo_settings, level_width, level_height)
 
       for y = 1, level_height do
          for x = 1, level_width do
-            local point = ds.Point.new(x, y)
+            local point = ds.Point.get(x, y)
             local is_wall = matrix:get(point)
 
             local neighbors = matrix:get_immediate_neighbors(point)

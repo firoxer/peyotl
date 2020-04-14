@@ -6,13 +6,24 @@ end
 
 local BreadthFirst = {}
 
+function BreadthFirst:initialize(collision_matrix, max_distance)
+   assertx.is_instance_of("ds.Matrix", collision_matrix)
+   assertx.is_number_or_nil(max_distance)
+
+   self._max_distance = max_distance or math.huge
+   self._collision_matrix = collision_matrix
+   self._parents = {}
+   self._children = {}
+   self._distances = {}
+end
+
 function BreadthFirst:_recalculate_from(start_point)
    local max_distance = self._max_distance
    local parents = self._parents
    local children = self._children
    local distances = self._distances
 
-   local open_queue = ds.Queue.new()
+   local open_queue = ds.Queue()
    open_queue:enqueue(start_point)
 
    -- No gotos in this while to buy performance with readability
@@ -88,20 +99,5 @@ function BreadthFirst:find_next_step(point)
    return self._parents[point]
 end
 
-local create_object = prototypify(BreadthFirst)
-return {
-   new = function(collision_matrix, max_distance)
-      assertx.is_instance_of("ds.Matrix", collision_matrix)
-      assertx.is_number_or_nil(max_distance)
-
-      max_distance = max_distance or math.huge
-
-      return create_object({
-         _max_distance = max_distance,
-         _collision_matrix = collision_matrix,
-         _parents = {},
-         _children = {},
-         _distances = {},
-      })
-   end
-}
+local prototype = prototypify(BreadthFirst)
+return prototype

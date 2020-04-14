@@ -1,12 +1,12 @@
 return {
-   new =
-       require("game.util.ds.point.get"),
-
    bresenham_line =
        require("game.util.ds.point.bresenham_line"),
 
    chebyshev_distance =
        require("game.util.ds.point.chebyshev_distance"),
+
+   get =
+       require("game.util.ds.point.get"),
 
    euclidean_distance =
        require("game.util.ds.point.euclidean_distance"),

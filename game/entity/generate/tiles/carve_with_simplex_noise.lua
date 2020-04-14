@@ -4,12 +4,12 @@ return function(algo_settings, level_width, level_height)
    assertx.is_number(level_width)
    assertx.is_number(level_height)
 
-   local matrix = ds.Matrix.new()
+   local matrix = ds.Matrix()
    local random_offset = love.math.random(0, 1000)
 
    for y = 1, level_height do
       for x = 1, level_width do
-         matrix:set(ds.Point.new(x, y), true)
+         matrix:set(ds.Point.get(x, y), true)
       end
    end
 
@@ -29,7 +29,7 @@ return function(algo_settings, level_width, level_height)
          local noise = love.math.noise(modified_x, modified_y) -- Not affected by love.math.setRandomSeed
 
          if noise < algo_settings.a_noise_threshold then
-            local point = ds.Point.new(x, y)
+            local point = ds.Point.get(x, y)
             if matrix:has(point) then
                matrix:set(point, false)
             end
@@ -52,7 +52,7 @@ return function(algo_settings, level_width, level_height)
 
          local noise = love.math.noise(modified_x, modified_y) -- Not affected by love.math.setRandomSeed
          if noise > algo_settings.b_noise_threshold_low and noise < algo_settings.b_noise_threshold_high then
-            local point = ds.Point.new(x, y)
+            local point = ds.Point.get(x, y)
             if matrix:has(point) then
                matrix:set(point, false)
             end

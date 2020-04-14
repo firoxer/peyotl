@@ -15,19 +15,19 @@ return function(em)
       return
    end
 
-   em:add_component(altar_1_id, create_component.position(ds.Point.new(15, 4)))
+   em:add_component(altar_1_id, create_component.position(ds.Point.get(15, 4)))
    em:add_component(altar_1_id, create_component.render(tileset_quad_names.temple_altar, 1))
    em:add_component(altar_1_id, create_component.chaseable())
 
-   em:add_component(altar_2_id, create_component.position(ds.Point.new(15, 5)))
+   em:add_component(altar_2_id, create_component.position(ds.Point.get(15, 5)))
    em:add_component(altar_2_id, create_component.render(tileset_quad_names.temple_altar, 1))
    em:add_component(altar_2_id, create_component.chaseable())
 
-   em:add_component(altar_3_id, create_component.position(ds.Point.new(16, 4)))
+   em:add_component(altar_3_id, create_component.position(ds.Point.get(16, 4)))
    em:add_component(altar_3_id, create_component.render(tileset_quad_names.temple_altar, 1))
    em:add_component(altar_3_id, create_component.chaseable())
 
-   em:add_component(altar_4_id, create_component.position(ds.Point.new(16, 5)))
+   em:add_component(altar_4_id, create_component.position(ds.Point.get(16, 5)))
    em:add_component(altar_4_id, create_component.render(tileset_quad_names.temple_altar, 1))
    em:add_component(altar_4_id, create_component.chaseable())
 
