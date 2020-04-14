@@ -1,5 +1,10 @@
 --- Set globals to make development and testing nicer
 
+-- For debugging
+if os.getenv("DEBUG") == "true" then
+   require("lldebugger").start()
+end
+
 -- For tests
 if love == nil then
    love = {
