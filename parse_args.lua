@@ -10,9 +10,7 @@ local arg_reactions = {
    end,
 
    god_mode = function()
-      for _, level_config in pairs(config.levels) do
-         level_config.player.initial_health = math.huge
-      end
+      config.level.player.initial_health = math.huge
       log.debug("enabled god mode")
    end,
 

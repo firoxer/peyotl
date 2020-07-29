@@ -21,47 +21,57 @@ function EntityManager:initialize()
       end
 
       if #names == 1 then
-         subject:subscribe(events.component_added, function(event_data)
-            if names[1] == event_data.component_name
-               and em:has_component(event_data.entity_id, names[1])
-            then
-               callback(event_data, em:get_component(event_data.entity_id, names[1]))
+         subject:subscribe(
+            events.component_added,
+            function(event_data)
+               if names[1] == event_data.component_name and em:has_component(event_data.entity_id, names[1]) then
+                  callback(event_data, em:get_component(event_data.entity_id, names[1]))
+               end
             end
-         end)
+         )
 
-         subject:subscribe(events.component_to_be_updated, function(event_data)
-            if names[1] == event_data.component_name
-               and em:has_component(event_data.entity_id, names[1])
-            then
-               callback(event_data, em:get_component(event_data.entity_id, names[1]))
+         subject:subscribe(
+            events.component_to_be_updated,
+            function(event_data)
+               if names[1] == event_data.component_name and em:has_component(event_data.entity_id, names[1]) then
+                  callback(event_data, em:get_component(event_data.entity_id, names[1]))
+               end
             end
-         end)
+         )
       elseif #names == 2 then
-         subject:subscribe(events.component_added, function(event_data)
-            if (names[1] == event_data.component_name or names[2] == event_data.component_name)
-               and em:has_component(event_data.entity_id, names[1])
-               and em:has_component(event_data.entity_id, names[2])
-            then
-               callback(
-                  event_data,
-                  em:get_component(event_data.entity_id, names[1]),
-                  em:get_component(event_data.entity_id, names[2])
-               )
+         subject:subscribe(
+            events.component_added,
+            function(event_data)
+               if
+                  (names[1] == event_data.component_name or names[2] == event_data.component_name) and
+                     em:has_component(event_data.entity_id, names[1]) and
+                     em:has_component(event_data.entity_id, names[2])
+                then
+                  callback(
+                     event_data,
+                     em:get_component(event_data.entity_id, names[1]),
+                     em:get_component(event_data.entity_id, names[2])
+                  )
+               end
             end
-         end)
+         )
 
-         subject:subscribe(events.component_to_be_updated, function(event_data)
-            if (names[1] == event_data.component_name or names[2] == event_data.component_name)
-               and em:has_component(event_data.entity_id, names[1])
-               and em:has_component(event_data.entity_id, names[2])
-            then
-               callback(
-                  event_data,
-                  em:get_component(event_data.entity_id, names[1]),
-                  em:get_component(event_data.entity_id, names[2])
-               )
+         subject:subscribe(
+            events.component_to_be_updated,
+            function(event_data)
+               if
+                  (names[1] == event_data.component_name or names[2] == event_data.component_name) and
+                     em:has_component(event_data.entity_id, names[1]) and
+                     em:has_component(event_data.entity_id, names[2])
+                then
+                  callback(
+                     event_data,
+                     em:get_component(event_data.entity_id, names[1]),
+                     em:get_component(event_data.entity_id, names[2])
+                  )
+               end
             end
-         end)
+         )
       end
    end
 end
@@ -91,9 +101,12 @@ function EntityManager:remove_entity(entity_id)
       component[entity_id] = nil
    end
 
-   self.subject:notify(events.entity_removed, {
-      entity_id = entity_id
-   })
+   self.subject:notify(
+      events.entity_removed,
+      {
+         entity_id = entity_id
+      }
+   )
 end
 
 function EntityManager:get_component(entity_id, component_name)
@@ -116,18 +129,19 @@ function EntityManager:add_component(entity_id, component)
 
    if self._components[component.name] == nil then
       local component_name_str =
-         type(component.name) == "string"
-            and component.name
-            or string.format("<%s>", type(component.name))
+         type(component.name) == "string" and component.name or string.format("<%s>", type(component.name))
       error("unknown component being added: " .. component_name_str)
    end
 
    self._components[component.name][entity_id] = component
 
-   self.subject:notify(events.component_added, {
-      component_name = component.name,
-      entity_id = entity_id
-   })
+   self.subject:notify(
+      events.component_added,
+      {
+         component_name = component.name,
+         entity_id = entity_id
+      }
+   )
 end
 
 function EntityManager:get_unique_component(component_name)
@@ -155,11 +169,14 @@ function EntityManager:update_component(entity_id, component_name, fields)
    assertx.is_string(component_name)
    assertx.is_table(fields)
 
-   self.subject:notify(events.component_to_be_updated, {
-      component_name = component_name,
-      entity_id = entity_id,
-      updated_fields = fields,
-   })
+   self.subject:notify(
+      events.component_to_be_updated,
+      {
+         component_name = component_name,
+         entity_id = entity_id,
+         updated_fields = fields
+      }
+   )
 
    for key, value in pairs(fields) do
       self._components[component_name][entity_id][key] = value
@@ -174,7 +191,7 @@ function EntityManager:remove_component(entity_id, component_name)
 end
 
 function EntityManager:iterate(...)
-   local arg_count = select('#', ...)
+   local arg_count = select("#", ...)
    local iterated_names = {...}
 
    if arg_count == 1 then
@@ -196,9 +213,11 @@ function EntityManager:iterate(...)
       end
    end
 
-   return coroutine.wrap(function()
-      iter()
-   end)
+   return coroutine.wrap(
+      function()
+         iter()
+      end
+   )
 end
 
 function EntityManager:flush()

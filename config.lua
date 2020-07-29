@@ -4,8 +4,6 @@ return tablex.uptight({
       keyboard_long_tick_s = 0.50,
    },
 
-   initial_player_level = "temple",
-
    rendering = {
       tiles = {
          scale = 3,
@@ -24,112 +22,58 @@ return tablex.uptight({
       enable_vsync = true,
    },
 
-   levels = {
-      temple = {
-         width = 32,
-         height = 32,
+   level = {
+      width = 64,
+      height = 64,
 
-         background_color = { 39 / 255, 59 / 255, 45 / 255 },
+      background_color = { 3 / 255, 7 / 255, 16 / 255 },
 
-         lighting = {
-            algorithm = "full",
-            fog_of_war = false,
-         },
+      lighting = {
+         algorithm = "fog_of_war",
 
-         player = {
-            initial_health = 100,
-            max_health = 100,
-         },
+         fog_of_war = true,
 
-         monsters = {
-            max_n = 50,
+         lighting_range = 5.8, -- Nice and round
 
-            spawning = {
-               seconds_per_spawn = 30,
-               location = "bottom_edge",
-            },
-
-            chase_target = "altar",
-
-            batches_n = 8,
-            update_interval_s = 1 / 8,
-
-            movement_erraticness = 0.1,
-            damage = 3,
-            aggro_range = math.huge,
-         },
-
-         gems = false,
-
-         altar = true,
-
-         tiles = {
-            algorithm = "preset_temple",
-
-            regenerate_on_player_warp = false,
-
-            square_size_min = 2,
-            square_size_max = 15,
-            minimum_wall_density = 0.3,
-         },
+         unexplored_alpha = 0.0,
+         explored_alpha = 0.4,
       },
 
-      dungeon = {
-         width = 64,
-         height = 64,
+      player = {
+         initial_health = 100,
+         max_health = 100,
+      },
 
-         background_color = { 3 / 255, 7 / 255, 16 / 255 },
+      monsters = {
+         max_n = 100,
 
-         lighting = {
-            algorithm = "fog_of_war",
-
-            fog_of_war = true,
-
-            lighting_range = 5.8, -- Nice and round
-
-            unexplored_alpha = 0.0,
-            explored_alpha = 0.4,
+         spawning = {
+            seconds_per_spawn = 100,
          },
 
-         player = {
-            initial_health = 100,
-            max_health = 100,
-         },
+         chase_target = "player",
 
-         monsters = {
-            max_n = 100,
+         batches_n = 8,
+         update_interval_s = 1 / 8,
 
-            spawning = {
-               seconds_per_spawn = 100,
-               location = "everywhere"
-            },
+         movement_erraticness = 0.1,
+         damage = 3,
+         aggro_range = 8,
+      },
 
-            chase_target = "player",
+      gems = {
+         density = 0.01,
+      },
 
-            batches_n = 8,
-            update_interval_s = 1 / 8,
+      altar = false,
 
-            movement_erraticness = 0.1,
-            damage = 3,
-            aggro_range = 8,
-         },
+      tiles = {
+         algorithm = "cellular_automatons",
 
-         gems = {
-            density = 0.01,
-         },
-
-         altar = false,
-
-         tiles = {
-            algorithm = "cellular_automatons",
-
-            regenerate_on_player_warp = true,
-
-            initial_wall_chance = 0.45,
-            iterations = 8,
-            birth_threshold = 5,
-            survival_threshold = 4,
-         },
+         initial_wall_chance = 0.45,
+         iterations = 8,
+         birth_threshold = 5,
+         survival_threshold = 4,
       },
    },
 })

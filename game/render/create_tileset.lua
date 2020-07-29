@@ -22,22 +22,14 @@ return function(tile_size)
    return {
       image = image,
       quads = tablex.uptight({
-         [tileset_quad_names.dungeon_wall] = quad(0, 0),
-         [tileset_quad_names.dungeon_wall_south] = quad(0, 1),
-         [tileset_quad_names.dungeon_player] = quad(1, 0),
-         [tileset_quad_names.dungeon_monster] = quad(1, 1),
-         [tileset_quad_names.dungeon_empty] = quad(2, 0),
-         [tileset_quad_names.dungeon_empty2] = quad(2, 1),
-         [tileset_quad_names.dungeon_gem1] = quad(3, 0),
-         [tileset_quad_names.dungeon_gem2] = quad(3, 1),
-
-         [tileset_quad_names.temple_wall] = quad(4, 0),
-         [tileset_quad_names.temple_wall_south] = quad(4, 1),
-         [tileset_quad_names.temple_player] = quad(5, 0),
-         [tileset_quad_names.temple_monster] = quad(5, 1),
-         [tileset_quad_names.temple_empty] = quad(6, 0),
-         [tileset_quad_names.temple_empty2] = quad(6, 1),
-         [tileset_quad_names.temple_altar] = quad(7, 0),
+         [tileset_quad_names.wall] = quad(0, 0),
+         [tileset_quad_names.wall_south] = quad(0, 1),
+         [tileset_quad_names.player] = quad(1, 0),
+         [tileset_quad_names.monster] = quad(1, 1),
+         [tileset_quad_names.empty] = quad(2, 0),
+         [tileset_quad_names.empty2] = quad(2, 1),
+         [tileset_quad_names.gem1] = quad(3, 0),
+         [tileset_quad_names.gem2] = quad(3, 1),
       }),
    }
 end

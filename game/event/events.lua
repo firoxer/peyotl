@@ -9,7 +9,6 @@ return tablex.uptight({
    move_nw = "move_nw",
 
    interact = "interact",
-   warp = "warp",
 
    quit_game = "quit_game",
    toggle_game_pause = "toggle_game_pause",

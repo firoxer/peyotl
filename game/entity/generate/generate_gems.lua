@@ -21,11 +21,10 @@ return function(em, gem_config)
 
       local gem_id = em:new_entity_id()
       em:add_component(gem_id, create_component.position(point))
-      -- FIXME: Correct quad names, this is not necessarily a dungeon
       local gem_quad_name =
          love.math.random() > 0.5
-            and tileset_quad_names.dungeon_gem1
-            or tileset_quad_names.dungeon_gem2
+            and tileset_quad_names.gem1
+            or tileset_quad_names.gem2
       em:add_component(gem_id, create_component.render(gem_quad_name, 1))
    end
 

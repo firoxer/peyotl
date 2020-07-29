@@ -73,7 +73,9 @@ return function(rendering_config, level_config, em, tileset)
       { "render", "position" },
       function(event_data, render_c, position_c)
          if event_data.updated_fields and event_data.updated_fields.point then
-            render_matrix:get(position_c.point)[render_c.layer] = nil
+            if render_matrix:has(position_c.point) then
+               render_matrix:get(position_c.point)[render_c.layer] = nil
+            end
             local updated_layer = render_matrix:get(event_data.updated_fields.point)
             if not updated_layer then
                updated_layer = {}
@@ -128,7 +130,7 @@ return function(rendering_config, level_config, em, tileset)
          current_camera_y = current_camera_y + (camera_entity_position_point.y - current_camera_y) * camera_rigidness
       else
          -- If too much time has passed since the last render, the stickiness
-         -- would likely look weird (e.g. after warping from another level)
+         -- would likely look weird
          current_camera_x = camera_entity_position_point.x
          current_camera_y = camera_entity_position_point.y
       end

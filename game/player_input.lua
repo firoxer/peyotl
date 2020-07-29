@@ -84,10 +84,6 @@ function PlayerInput:tick(dt)
       self.subject:notify(events.move_e)
    end
 
-   if pressed_keys:contains("c") then
-      self.subject:notify(events.warp)
-   end
-
    if pressed_keys:contains("space") then
       self.subject:notify(events.interact)
    end

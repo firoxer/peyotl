@@ -34,7 +34,7 @@ return function(em, player_config)
    em:add_component(id, create_component.input())
    em:add_component(id, create_component.camera())
    em:add_component(id, create_component.chaseable())
-   em:add_component(id, create_component.render(tileset_quad_names.temple_player, 2))
+   em:add_component(id, create_component.render(tileset_quad_names.player, 2))
 
    measure_time.stop_and_log("player generated")
 
