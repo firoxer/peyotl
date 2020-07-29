@@ -75,6 +75,12 @@ return {
       }
    end,
 
+   monster = function()
+      return {
+         name = "monster"
+      }
+   end,
+
    monster_spawning = function(chase_target_id, time_at_last_spawn)
       assertx.is_number(chase_target_id)
       assertx.is_number_or_nil(time_at_last_spawn)

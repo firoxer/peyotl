@@ -1,6 +1,15 @@
 local create_component = require("game.entity.create_component")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
+local function count_monsters(em)
+   local n = 0
+   for _ in em:iterate("monster") do
+      n = n + 1
+   end
+
+   return n
+end
+
 local function spawn_monster(em, level_config, spawning_tile_id, spawning_c)
    local position_c = em:get_component(spawning_tile_id, "position")
 
@@ -8,6 +17,7 @@ local function spawn_monster(em, level_config, spawning_tile_id, spawning_c)
    em:add_component(id, create_component.attack(level_config.monsters.damage, 1))
    em:add_component(id, create_component.position(position_c.point))
    em:add_component(id, create_component.collision())
+   em:add_component(id, create_component.monster())
    em:add_component(id, create_component.render(tileset_quad_names.monster, 2))
    em:add_component(id,
       create_component.chase(spawning_c.chase_target_id, level_config.monsters.aggro_range)
@@ -15,9 +25,15 @@ local function spawn_monster(em, level_config, spawning_tile_id, spawning_c)
 end
 
 return function(level_config, em)
+   if not level_config.monsters or not level_config.monsters.spawning then
+      return function()
+         -- No-op
+      end
+   end
+
    return function()
-      -- TODO: Return a noop function instead
-      if not level_config.monsters or not level_config.monsters.spawning then
+      local too_many_monsters = count_monsters(em) >= level_config.monsters.max_n
+      if too_many_monsters then
          return
       end
 
