@@ -5,11 +5,30 @@ local yield = coroutine.yield
 
 local Matrix = {}
 
-function Matrix:initialize()
+function Matrix:initialize(width, height, initializer)
    self._contents = {}
    self._bounds_up_to_date = true
    self._nw_bound = nil
    self._se_bound = nil
+
+   if width or height or initializer then
+      assert(type(width) == "number")
+      assert(type(height) == "number")
+
+      if type(initializer) == "function" then
+         for y = 1, height do
+            for x = 1, width do
+               self:set(ds.Point.get(x, y), initializer(x, y))
+            end
+         end
+      else
+         for y = 1, height do
+            for x = 1, width do
+               self:set(ds.Point.get(x, y), initializer)
+            end
+         end
+      end
+   end
 end
 
 function Matrix:get(point)
@@ -144,6 +163,7 @@ function Matrix:pairs()
 end
 
 -- TODO: Check if this can be optimized
+-- TODO: Use points as parameters
 function Matrix:submatrix_pairs(nw_x, nw_y, se_x, se_y)
    assert(type(nw_x) == "number")
    assert(type(nw_y) == "number")

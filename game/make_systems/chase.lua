@@ -2,79 +2,33 @@ local BreadthFirst = require("game.pathfinding.breadth_first")
 
 local chebyshev_distance = ds.Point.chebyshev_distance
 
-local function track_collidable_positions_as_matrix(level_config, em)
-   local matrix = ds.Matrix()
-   for y = 1, level_config.height do
-      for x = 1, level_config.width do
-         matrix:set(ds.Point.get(x, y), false)
-      end
-   end
-
-   em.subject:subscribe_to_any_change_of(
-      { "position", "collision" },
-      function(event_data, position_c)
-         if event_data.updated_fields and event_data.updated_fields.point then
-            matrix:set(position_c.point, false)
-            matrix:set(event_data.updated_fields.point, true)
-         else
-            matrix:set(position_c.point, true)
-         end
-      end
-   )
-
-   return matrix
-end
-
-local function track_chaseables_as_pathfinders(level_config, em, collision_matrix)
-   local pathfinders = {}
-
-   em.subject:subscribe_to_any_change_of(
-      { "chaseable", "position" },
-      function(event_data, _, position_c)
-         local point = position_c.point
-         if event_data.updated_fields then
-            if event_data.updated_fields.point then
-               point = event_data.updated_fields.point
-            end
-         end
-
-         if not pathfinders[event_data.entity_id] then
-            pathfinders[event_data.entity_id] =
-               BreadthFirst(collision_matrix, level_config.monsters.aggro_range)
-         end
-
-         local pathfinder =
-            pathfinders[event_data.entity_id]
-
-         pathfinder:change_destination_to(point)
-      end
-   )
-
-   em.subject:subscribe_to_any_change_of(
-      { "position", "collision" },
-      function(event_data, position_c)
-         for _, pathfinder in pairs(pathfinders) do
-            pathfinder:recalculate_at(position_c.point)
-
-            if event_data.updated_fields and event_data.updated_fields.point then
-               pathfinder:recalculate_at(event_data.updated_fields.point)
-            end
-         end
-      end
-   )
-
-   return pathfinders
-end
-
 local function too_far(pos_a, pos_b, range)
    return range ~= math.huge and chebyshev_distance(pos_a.point, pos_b.point) > range
 end
 
 return function(level_config, em)
-   local collision_matrix =
-      track_collidable_positions_as_matrix(level_config, em)
-   local pathfinders_and_chase_target_id =
-      track_chaseables_as_pathfinders(level_config, em, collision_matrix)
+   local collision_matrix = ds.Matrix()
+   local pathfinders = {}
+
+   local update_collision_matrix = function()
+      for y = 1, level_config.height do
+         for x = 1, level_config.width do
+            collision_matrix:set(ds.Point.get(x, y), false)
+         end
+      end
+
+      for _, position_c in em:iterate("position", "collision") do
+         collision_matrix:set(position_c.point, true)
+      end
+   end
+
+   local update_pathfinders = function()
+      for entity_id, _, position_c in em:iterate("chaseable", "position") do
+         local pathfinder = BreadthFirst(collision_matrix, level_config.monsters.aggro_range)
+         pathfinder:change_destination_to(position_c.point)
+         pathfinders[entity_id] = pathfinder
+      end
+   end
 
    return function()
       local current_time = love.timer.getTime()
@@ -90,7 +44,10 @@ return function(level_config, em)
             goto continue
          end
 
-         local pathfinder = pathfinders_and_chase_target_id[chase_c.target_id]
+         update_collision_matrix()
+         update_pathfinders()
+
+         local pathfinder = pathfinders[chase_c.target_id]
          if not pathfinder then
             log.error("no pathfinder for chase target", chase_c)
             goto continue

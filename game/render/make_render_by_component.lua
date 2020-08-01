@@ -68,54 +68,37 @@ return function(rendering_config, level_config, em, tileset)
 
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
 
-   local render_matrix = ds.Matrix()
-   em.subject:subscribe_to_any_change_of(
-      { "render", "position" },
-      function(event_data, render_c, position_c)
-         if event_data.updated_fields and event_data.updated_fields.point then
-            if render_matrix:has(position_c.point) then
-               render_matrix:get(position_c.point)[render_c.layer] = nil
-            end
-            local updated_layer = render_matrix:get(event_data.updated_fields.point)
-            if not updated_layer then
-               updated_layer = {}
-            end
-            updated_layer[render_c.layer] = render_c
-            render_matrix:set(event_data.updated_fields.point, updated_layer)
-         else
-            local updated_layer = render_matrix:get(position_c.point)
-            if not updated_layer then
-               updated_layer = {}
-            end
-            updated_layer[render_c.layer] = render_c
+   local render_matrix
+   local update_render_matrix = function()
+      render_matrix = ds.Matrix()
+
+      for _, render_c, position_c in em:iterate("render", "position") do
+         local updated_layer = render_matrix:get(position_c.point)
+         if not updated_layer then
+            updated_layer = {}
             render_matrix:set(position_c.point, updated_layer)
          end
+         updated_layer[render_c.layer] = render_c
       end
-   )
+   end
 
-   local opaque_matrix = ds.Matrix()
-   em.subject:subscribe_to_any_change_of(
-      { "opaque", "position" },
-      function(event_data, _, position_c)
-         if event_data.updated_fields and event_data.updated_fields.point then
-            opaque_matrix:set(position_c.point, opaque_matrix:get(position_c.point) - 1)
-            opaque_matrix:set(
-               event_data.updated_fields.point,
-               opaque_matrix:get(event_data.updated_fields.point) + 1
-            )
-         else
-            opaque_matrix:set(position_c.point, (opaque_matrix:get(position_c.point) or 0) + 1)
-         end
+   local opaque_matrix
+   local update_opaque_matrix = function()
+      opaque_matrix = ds.Matrix()
+      for _, _, position_c in em:iterate("opaque", "position") do
+         opaque_matrix:set(
+            position_c.point,
+            (opaque_matrix:get(position_c.point) or 0) + 1
+         )
       end
-   )
+   end
 
    local entity_ids_by_render_c = {}
-   em.subject:subscribe_to_any_change_of(
-      { "render" },
-      function(event_data, render_c)
-         entity_ids_by_render_c[render_c] = event_data.entity_id
+   local update_entity_ids_by_render_c = function()
+      for entity_id, render_c in em:iterate("render") do
+         entity_ids_by_render_c[render_c] = entity_id
       end
-   )
+   end
 
    local time_at_last_render = 0
    return function()
@@ -134,6 +117,10 @@ return function(rendering_config, level_config, em, tileset)
          current_camera_x = camera_entity_position_point.x
          current_camera_y = camera_entity_position_point.y
       end
+
+      update_render_matrix()
+      update_opaque_matrix()
+      update_entity_ids_by_render_c()
 
       local visible_nw_se_corners = {
          current_camera_x - (window_width / 2) - 1,
