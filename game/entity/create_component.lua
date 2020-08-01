@@ -98,6 +98,12 @@ return {
       }
    end,
 
+   player = function()
+      return {
+         name = "player"
+      }
+   end,
+
    position = function(point)
       assertx.is_instance_of("ds.Point", point)
 

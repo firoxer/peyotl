@@ -9,13 +9,6 @@ end
 do
    local em = EntityManager()
    local id = em:new_entity_id()
-   em:register_entity_id(id, "test")
-   assert(em:get_registered_entity_id("test") == id)
-end
-
-do
-   local em = EntityManager()
-   local id = em:new_entity_id()
    local component = create_component.camera()
    em:add_component(id, component)
    assert(em:has_component(id, "camera") == true)

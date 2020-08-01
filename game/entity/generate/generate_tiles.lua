@@ -90,7 +90,7 @@ return function(em, level_config)
       if level_config.monsters and not is_wall then
          local chase_target_id
          if level_config.monsters.chase_target == "player" then
-            chase_target_id = em:get_registered_entity_id("player")
+            chase_target_id = em:get_unique_component("player")
          else
             error("unknown monster chase target: " .. level_config.monsters.chase_target)
          end

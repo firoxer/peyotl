@@ -23,7 +23,8 @@ return function(game_state, player_input)
    local spawn_monsters = make_spawn_monsters(level_config, em)
 
    em.subject:subscribe(events.entity_removed, function(event_data)
-      if event_data.entity_id == em:get_registered_entity_id("player") then
+      local player_is_removed = em:has_component(event_data.entity_id, "player")
+      if player_is_removed then
          game_state.status = "resetting"
       end
    end)

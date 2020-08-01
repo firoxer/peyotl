@@ -26,8 +26,6 @@ local function reset()
    local em = EntityManager()
    game_state.entity_manager = em
 
-   game_state.entity_manager:register_entity_id(em:new_entity_id(), "player")
-
    update = make_update(game_state, PlayerInput(config.player_input))
    render = make_render(config.rendering, game_state)
 
