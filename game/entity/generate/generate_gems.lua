@@ -1,10 +1,7 @@
 local create_component = require("game.entity.create_component")
-local measure_time = require("game.util.measure_time")
 local tileset_quad_names = require("game.render.tileset_quad_names")
 
 return function(em, gem_config)
-   measure_time.start()
-
    local walkable_points = {}
    for position_id, position_c in em:iterate("position") do
       if not em:has_component(position_id, "collision") then
@@ -27,6 +24,4 @@ return function(em, gem_config)
             or tileset_quad_names.gem2
       em:add_component(gem_id, create_component.render(gem_quad_name, 1))
    end
-
-   measure_time.stop_and_log("gems generated")
 end
