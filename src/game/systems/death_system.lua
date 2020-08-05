@@ -1,8 +1,6 @@
-local DeathSystem = {}
-
-function DeathSystem:initialize(_, em)
+local DeathSystem = prototype(function(self, _, em)
    self._entity_manager = em
-end
+end)
 
 function DeathSystem:run()
    for entity_id, health_c in self._entity_manager:iterate("health") do
@@ -12,5 +10,4 @@ function DeathSystem:run()
    end
 end
 
-local prototype = prototypify(DeathSystem)
-return prototype
+return DeathSystem

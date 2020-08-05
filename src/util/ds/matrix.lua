@@ -3,9 +3,7 @@ local Point = require("src.util.ds.point")
 
 local yield = coroutine.yield
 
-local Matrix = {}
-
-function Matrix:initialize(width, height, initializer)
+local Matrix = prototype(function(self, width, height, initializer)
    self._contents = {}
    self._bounds_up_to_date = true
    self._nw_bound = nil
@@ -29,7 +27,7 @@ function Matrix:initialize(width, height, initializer)
          end
       end
    end
-end
+end)
 
 function Matrix:get(point)
    assertx.is_instance_of("ds.Point", point)
@@ -208,5 +206,4 @@ function Matrix:bounds()
    return self._nw_bound, self._se_bound
 end
 
-local prototype = prototypify(Matrix)
-return prototype
+return Matrix

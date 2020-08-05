@@ -1,12 +1,10 @@
 local components = require("src.game.components")
 local tile_names = require("src.game.tileset.tile_names")
 
-local MonsterSpawningSystem = {}
-
-function MonsterSpawningSystem:initialize(level_config, em)
+local MonsterSpawningSystem = prototype(function(self, level_config, em)
    self._level_config = level_config
    self._entity_manager = em
-end
+end)
 
 function MonsterSpawningSystem:_count_monsters()
    local n = 0
@@ -57,5 +55,4 @@ function MonsterSpawningSystem:run()
    end
 end
 
-local prototype = prototypify(MonsterSpawningSystem)
-return prototype
+return MonsterSpawningSystem

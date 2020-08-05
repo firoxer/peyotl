@@ -2,11 +2,9 @@
 
 local EntityManager = require("src.engine.ecs.entity_manager")
 
-local GridEntityManager = {}
-
-function GridEntityManager:initialize()
+local GridEntityManager = prototype(EntityManager, function(self)
    self._matrices = {}
-end
+end)
 
 function EntityManager:add_component(entity_id, component)
    if component.name == "position" then
@@ -43,5 +41,4 @@ function GridEntityManager:get_matrix_for(component_name)
    return self._matrices[component_name]
 end
 
-local prototype = prototypify(GridEntityManager, EntityManager)
-return prototype
+return GridEntityManager

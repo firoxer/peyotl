@@ -6,15 +6,13 @@ local function too_far(pos_a, pos_b, range)
    return range ~= math.huge and chebyshev_distance(pos_a.point, pos_b.point) > range
 end
 
-local ChaseSystem = {}
-
-function ChaseSystem:initialize(level_config, em)
+local ChaseSystem = prototype(function(self, level_config, em)
    self._level_config = level_config
    self._entity_manager = em
 
    self._collision_matrix = ds.Matrix()
    self._pathfinders = {}
-end
+end)
 
 function ChaseSystem:_update_collision_matrix()
    local matrix = self._collision_matrix
@@ -77,5 +75,4 @@ function ChaseSystem:run()
    end
 end
 
-local prototype = prototypify(ChaseSystem)
-return prototype
+return ChaseSystem

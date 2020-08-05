@@ -1,12 +1,10 @@
 -- From http://www.lua.org/pil/11.4.html
 
-local Queue = {}
-
-function Queue:initialize()
+local Queue = prototype(function(self)
    self._contents = {}
    self._first_index = 0
    self._last_index = -1
-end
+end)
 
 function Queue:enqueue(e)
    local last_index = self._last_index + 1
@@ -35,5 +33,4 @@ function Queue:is_empty()
    return self._first_index > self._last_index
 end
 
-local prototype = prototypify(Queue)
-return prototype
+return Queue

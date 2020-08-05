@@ -1,8 +1,6 @@
 local offset = ds.Point.offset
 
-local MovementSystem = {}
-
-function MovementSystem:initialize(level_config, em, player_input)
+local MovementSystem = prototype(function(self, level_config, em, player_input)
    self._level_config = level_config
    self._entity_manager = em
    self._player_input = player_input
@@ -14,7 +12,7 @@ function MovementSystem:initialize(level_config, em, player_input)
          input_c.pending_events:enqueue(event)
       end
    end)
-end
+end)
 
 function MovementSystem:_track_collidable_positions_in_matrix()
    local em = self._entity_manager
@@ -115,5 +113,4 @@ function MovementSystem:run()
    end
 end
 
-local prototype = prototypify(MovementSystem)
-return prototype
+return MovementSystem

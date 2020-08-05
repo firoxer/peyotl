@@ -10,5 +10,5 @@ globals = {
    "ds",
    "game_debug",
    "log",
-   "prototypify",
+   "prototype",
 }

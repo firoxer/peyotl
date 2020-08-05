@@ -52,6 +52,6 @@ stringx = require("src.util.stringx")
 tablex = require("src.util.tablex")
 mathx = require("src.util.mathx")
 
-prototypify = require("src.util.prototypify") -- This has to come before `ds`
+prototype = require("src.util.prototype") -- This has to come before `ds`
 ds = require("src.util.ds")
 log = require("src.util.log")

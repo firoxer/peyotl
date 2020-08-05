@@ -4,9 +4,7 @@ local function calculate_distance(a, b) -- Optimized for only one step movements
    return (diagonal_move and sqrt2 or 1)
 end
 
-local BreadthFirst = {}
-
-function BreadthFirst:initialize(collision_matrix, max_distance)
+local BreadthFirst = prototype(function(self, collision_matrix, max_distance)
    assertx.is_instance_of("ds.Matrix", collision_matrix)
    assertx.is_number_or_nil(max_distance)
 
@@ -15,7 +13,7 @@ function BreadthFirst:initialize(collision_matrix, max_distance)
    self._parents = {}
    self._children = {}
    self._distances = {}
-end
+end)
 
 function BreadthFirst:_recalculate_from(start_point)
    local max_distance = self._max_distance
@@ -99,5 +97,4 @@ function BreadthFirst:find_next_step(point)
    return self._parents[point]
 end
 
-local prototype = prototypify(BreadthFirst)
-return prototype
+return BreadthFirst

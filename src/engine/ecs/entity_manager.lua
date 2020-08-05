@@ -8,9 +8,7 @@ local events = tablex.identity({
    "entity_removed",
 })
 
-local EntityManager = {}
-
-function EntityManager:initialize(component_names)
+local EntityManager = prototype(function(self, component_names)
    self.event_subject = EventSubject(events)
    self.event_subject:disable_logging_for(events.component_added)
    self.event_subject:disable_logging_for(events.component_to_be_updated)
@@ -19,7 +17,7 @@ function EntityManager:initialize(component_names)
    self._entity_id = 0
 
    self:flush(component_names)
-end
+end)
 
 function EntityManager:new_entity_id()
    self._entity_id = self._entity_id + 1
@@ -160,5 +158,4 @@ function EntityManager:flush(component_names)
    end
 end
 
-local prototype = prototypify(EntityManager)
-return prototype
+return EntityManager

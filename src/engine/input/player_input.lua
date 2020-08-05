@@ -1,7 +1,5 @@
 local EventSubject = require("src.engine.event.event_subject")
 
-local PlayerInput = {}
-
 local events = tablex.identity({
    "move_n",
    "move_ne",
@@ -18,7 +16,7 @@ local events = tablex.identity({
    "toggle_game_pause",
 })
 
-function PlayerInput:initialize(player_input_config)
+local PlayerInput = prototype(function(self, player_input_config)
    local short_tick = player_input_config.keyboard_short_tick_s
    local long_tick = player_input_config.keyboard_long_tick_s
 
@@ -42,7 +40,7 @@ function PlayerInput:initialize(player_input_config)
    self._pressed_keys = ds.Set()
 
    self:_bind_to_love()
-end
+end)
 
 function PlayerInput:_bind_to_love()
    love.keypressed = function(key)
@@ -112,5 +110,4 @@ function PlayerInput:tick(dt)
    end
 end
 
-local prototype = prototypify(PlayerInput)
-return prototype
+return PlayerInput

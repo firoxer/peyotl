@@ -1,13 +1,4 @@
-local EventSubject = {}
-
--- Global for all subjects
-local is_logging_enabled = false
-
-function EventSubject.enable_event_logging()
-   is_logging_enabled = true
-end
-
-function EventSubject:initialize(events)
+local EventSubject = prototype(function(self, events)
    if events then
       assertx.is_table(events)
    end
@@ -16,6 +7,13 @@ function EventSubject:initialize(events)
 
    self._unlogged_events = {}
    self._observers = {}
+end)
+
+-- Global for all subjects
+local is_logging_enabled = false
+
+function EventSubject.enable_event_logging()
+   is_logging_enabled = true
 end
 
 function EventSubject:disable_logging_for(event)
@@ -58,5 +56,4 @@ function EventSubject:notify(event, event_data)
    end
 end
 
-local prototype = prototypify(EventSubject)
-return prototype
+return EventSubject

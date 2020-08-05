@@ -36,17 +36,13 @@ local function backtrace(node) -- TODO: Return a linked list?
    return path
 end
 
-local Pathfinder = {}
-
-function Pathfinder:initialize(is_walkable_at, nw_bound, se_bound, options)
+local Pathfinder = prototype(function(self, is_walkable_at, nw_bound, se_bound, options)
    assertx.is_function(is_walkable_at)
    assertx.is_number(nw_bound.x)
    assertx.is_number(nw_bound.y)
    assertx.is_number(se_bound.x)
    assertx.is_number(se_bound.y)
    assertx.is_table_or_nil(options)
-
-   local self = create_object(Pathfinder)
 
    self._is_walkable_at = is_walkable_at
    self._nw_bound = nw_bound
@@ -57,7 +53,7 @@ function Pathfinder:initialize(is_walkable_at, nw_bound, se_bound, options)
    self._node_matrix = ds.Matrix()
 
    return self
-end
+end)
 
 function Pathfinder:reset()
    local nw_bound_x, nw_bound_y = self._nw_bound.x, self._nw_bound.y
@@ -137,5 +133,4 @@ function Pathfinder:find_path(a, b)
    return nil
 end
 
-local prototype = prototypify(Pathfinder)
-return prototype
+return Pathfinder

@@ -1,6 +1,4 @@
-local Set = {}
-
-function Set:initialize(values)
+local Set = prototype(function(self, values)
    assertx.is_table_or_nil(values)
 
    self._contents = {}
@@ -11,7 +9,7 @@ function Set:initialize(values)
          self:add(elem)
       end
    end
-end
+end)
 
 function Set:add(elem)
    if self:contains(elem) then
@@ -43,5 +41,4 @@ function Set:pairs()
    return pairs(self._contents)
 end
 
-local prototype = prototypify(Set)
-return prototype
+return Set

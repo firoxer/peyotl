@@ -1,15 +1,13 @@
-local AttackSystem = {}
-
 local chebyshev_distance = ds.Point.chebyshev_distance
 local function close_enough(pos_a, pos_b, range)
    return chebyshev_distance(pos_a.point, pos_b.point) <= range
 end
 
-function AttackSystem:initialize(_, em)
+local AttackSystem = prototype(function(self, _, em)
    self._entity_manager = em
 
    self:_track_attackable_positions()
-end
+end)
 
 function AttackSystem:_track_attackable_positions()
    self._attackable_positions = {}
@@ -52,5 +50,4 @@ function AttackSystem:run()
    end
 end
 
-local prototype = prototypify(AttackSystem)
-return prototype
+return AttackSystem

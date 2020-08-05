@@ -30,25 +30,37 @@ local function assign_name(prototype)
    prototype.name = (namespace .. "." .. stringx.camelcasify(prototype_name, true)):gsub("/", ".")
 end
 
-return function(prototype, parent_prototype)
-   assertx.is_table(prototype)
+return function(parent_prototype, initialize)
+   if type(parent_prototype) == "function" then
+      -- No parent was provided, just the initialize function
+      initialize = parent_prototype
+      parent_prototype = nil
+   end
+
+   local prototype = { prototype = parent_prototype }
 
    assign_name(prototype)
 
-   prototype.prototype = parent_prototype
+   initialize = initialize or function()
+      -- No-op, just to make it certain that `initialize` is always callable
+   end
+
+   prototype.initialize = function(...)
+      if parent_prototype then
+         parent_prototype.initialize(...)
+      end
+
+      initialize(...)
+   end
 
    setmetatable(prototype, {
       __call = function(_, ...)
-         local object = { prototype = prototype }
-         setmetatable(object, { __index = prototype })
+         local instance = { prototype = prototype }
+         setmetatable(instance, { __index = prototype })
 
-         if parent_prototype ~= nil then
-            parent_prototype.initialize(object, ...)
-         end
+         instance.initialize(instance, ...)
 
-         prototype.initialize(object, ...)
-
-         return object
+         return instance
       end,
 
       __index = parent_prototype

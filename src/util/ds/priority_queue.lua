@@ -1,13 +1,11 @@
 -- Priority queue implemented using a binary heap
 -- From https://gist.github.com/LukeMS/89dc587abd786f92d60886f4977b1953
 
-local PriorityQueue = {}
-
-function PriorityQueue:initialize()
+local PriorityQueue = prototype(function(self)
    self._elem_heap = {}
    self._priority_heap = {}
    self._size = 0
-end
+end)
 
 function PriorityQueue:enqueue(elem, priority)
    assertx.is_number(priority)
@@ -79,5 +77,4 @@ function PriorityQueue:_min_child(i)
    end
 end
 
-local prototype = prototypify(PriorityQueue)
-return prototype
+return PriorityQueue
