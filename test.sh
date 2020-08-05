@@ -3,7 +3,7 @@
 cd $(dirname $BASH_SOURCE[0])
 
 if [ $# -eq 0 ]; then
-  files=`find tests/ -name "*_test.lua"`
+  files=`find src/ -name "*_test.lua"`
 
   for file in $files; do
       echo "testing $file"

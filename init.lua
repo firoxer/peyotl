@@ -47,11 +47,11 @@ end
 game_debug = {}
 
 -- Standard library extensions
-assertx = require("game.util.assertx")
-stringx = require("game.util.stringx")
-tablex = require("game.util.tablex")
-mathx = require("game.util.mathx")
+assertx = require("src.util.assertx")
+stringx = require("src.util.stringx")
+tablex = require("src.util.tablex")
+mathx = require("src.util.mathx")
 
-prototypify = require("game.util.prototypify") -- This has to come before `ds`
-ds = require("game.util.ds")
-log = require("game.util.log")
+prototypify = require("src.util.prototypify") -- This has to come before `ds`
+ds = require("src.util.ds")
+log = require("src.util.log")
