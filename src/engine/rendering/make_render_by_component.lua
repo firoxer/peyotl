@@ -53,7 +53,6 @@ return function(rendering_config, level_config, em, tileset)
    assertx.is_instance_of("engine.ecs.EntityManager", em)
    assertx.is_table(tileset)
 
-   local camera_rigidness = rendering_config.camera_rigidness
    local window_width = rendering_config.window.width
    local window_height = rendering_config.window.height
    local tile_size = rendering_config.tiles.size
@@ -100,23 +99,12 @@ return function(rendering_config, level_config, em, tileset)
       end
    end
 
-   local time_at_last_render = 0
    return function()
       local camera_entity_position_c =
          em:get_component(em:get_unique_component("camera"), "position")
 
-      local camera_entity_position_point = camera_entity_position_c.point
-      if love.timer.getTime() - time_at_last_render < 0.5 then
-         -- By moving the camera only a bit at a time, it gets nice and sticky
-         -- and it follows its target more naturally
-         current_camera_x = current_camera_x + (camera_entity_position_point.x - current_camera_x) * camera_rigidness
-         current_camera_y = current_camera_y + (camera_entity_position_point.y - current_camera_y) * camera_rigidness
-      else
-         -- If too much time has passed since the last render, the stickiness
-         -- would likely look weird
-         current_camera_x = camera_entity_position_point.x
-         current_camera_y = camera_entity_position_point.y
-      end
+      current_camera_x = camera_entity_position_c.point.x
+      current_camera_y = camera_entity_position_c.point.y
 
       update_render_matrix()
       update_opaque_matrix()
@@ -186,7 +174,5 @@ return function(rendering_config, level_config, em, tileset)
 
       love.graphics.setCanvas()
       love.graphics.draw(canvas, 0, 0, 0, rendering_config.tiles.scale)
-
-      time_at_last_render = love.timer.getTime()
    end
 end
