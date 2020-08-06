@@ -1,9 +1,11 @@
 local BreadthFirst = require("src.engine.pathfinding.breadth_first")
 
-local chebyshev_distance = ds.Point.chebyshev_distance
-
 local function too_far(pos_a, pos_b, range)
-   return range ~= math.huge and chebyshev_distance(pos_a.point, pos_b.point) > range
+   if range == math.huge then
+      return false
+   end
+
+   return ds.Point.chebyshev_distance(pos_a.point, pos_b.point) > range
 end
 
 local ChaseSystem = prototype(function(self, level_config, em)

@@ -12,7 +12,6 @@ return function(em, gem_config)
    tablex.shuffle(walkable_points)
 
    local gems_to_generate = math.floor(#walkable_points * gem_config.density)
-
    for i = 1, gems_to_generate do
       local point = walkable_points[i]
 

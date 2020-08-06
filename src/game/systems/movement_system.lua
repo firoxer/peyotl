@@ -1,5 +1,3 @@
-local offset = ds.Point.offset
-
 local MovementSystem = prototype(function(self, level_config, em, player_input)
    self._level_config = level_config
    self._entity_manager = em
@@ -88,6 +86,7 @@ function MovementSystem:run()
 
          local new_point = nil
 
+         local offset = ds.Point.offset
          -- Orthogonal movement
          if point_diff_x == 0 or point_diff_y == 0 then
             if self._collision_matrix:get(offset(position_c.point, point_diff_x, point_diff_y)) ~= true then

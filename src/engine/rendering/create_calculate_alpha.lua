@@ -1,9 +1,8 @@
-local bresenham_line = ds.Point.bresenham_line
+local sqrt2 = math.sqrt(2)
 
-local almost_sqrt2 = math.sqrt(2)
 local function calculate_distance(a, b)
    local diagonal_move = a.x ~= b.x and a.y ~= b.y
-   return (diagonal_move and almost_sqrt2 or 1)
+   return (diagonal_move and sqrt2 or 1)
 end
 
 local function breadth_first(lighting_settings, illuminabilities, camera_point)
@@ -27,7 +26,7 @@ local function breadth_first(lighting_settings, illuminabilities, camera_point)
          end
 
          local visible_from_camera =
-            bresenham_line(camera_point, neighbor_point, tablex.bind(illuminabilities, "get"))
+            ds.Point.bresenham_line(camera_point, neighbor_point, tablex.bind(illuminabilities, "get"))
          if not visible_from_camera then
             goto continue
          end

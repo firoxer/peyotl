@@ -1,7 +1,5 @@
 --- Technically this should go under systems/ but this way it just makes more sense
 
-local round = mathx.round
-
 local create_calculate_alpha = require("src.engine.rendering.create_calculate_alpha")
 
 local function create_render_layers(matrix_iterator)
@@ -58,9 +56,6 @@ return function(rendering_config, level_config, em, tileset)
    local tile_size = rendering_config.tiles.size
    local tileset_draw_rounding = 1 / tile_size
 
-   local current_camera_x = 0
-   local current_camera_y = 0
-
    -- Canvas is used so that everything can be rendered 1x and then scaled up
    local canvas = love.graphics.newCanvas(window_width * tile_size, window_height * tile_size)
    canvas:setFilter("nearest", "nearest")
@@ -103,8 +98,8 @@ return function(rendering_config, level_config, em, tileset)
       local camera_entity_position_c =
          em:get_component(em:get_unique_component("camera"), "position")
 
-      current_camera_x = camera_entity_position_c.point.x
-      current_camera_y = camera_entity_position_c.point.y
+      local current_camera_x = camera_entity_position_c.point.x
+      local current_camera_y = camera_entity_position_c.point.y
 
       update_render_matrix()
       update_opaque_matrix()
@@ -155,8 +150,8 @@ return function(rendering_config, level_config, em, tileset)
             end
 
             if alpha > 0 then
-               local offset_x = round(point.x - current_camera_x + (window_width / 2), tileset_draw_rounding)
-               local offset_y = round(point.y - current_camera_y + (window_height / 2), tileset_draw_rounding)
+               local offset_x = mathx.round(point.x - current_camera_x + (window_width / 2), tileset_draw_rounding)
+               local offset_y = mathx.round(point.y - current_camera_y + (window_height / 2), tileset_draw_rounding)
 
                tileset_batch:setColor(1, 1, 1, alpha)
                tileset_batch:add(

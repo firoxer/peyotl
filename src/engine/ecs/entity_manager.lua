@@ -1,5 +1,3 @@
-local yield = coroutine.yield
-
 local EventSubject = require("src.engine.event.event_subject")
 
 local events = tablex.identity({
@@ -135,7 +133,7 @@ function EntityManager:iterate(...)
 
          for id = 1, self._entity_id do
             if first_components[id] ~= nil and second_components[id] ~= nil then
-               yield(id, first_components[id], second_components[id])
+               coroutine.yield(id, first_components[id], second_components[id])
             end
          end
       else
