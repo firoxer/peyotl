@@ -63,8 +63,6 @@ return tablex.uptight({
          density = 0.01,
       },
 
-      altar = false,
-
       tiles = {
          algorithm = "cellular_automatons",
 

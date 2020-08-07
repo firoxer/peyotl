@@ -1,6 +1,5 @@
 require("./init")
 
-local config = require("config")
 local devtools = require("src.lib.devtools")
 local parse_args = require("src.lib.parse_args")
 local seed = require("src.lib.seed")
@@ -8,10 +7,15 @@ local seed = require("src.lib.seed")
 local EntityManager = require("src.engine.ecs.entity_manager")
 local PlayerInput = require("src.engine.input.player_input")
 local Renderer = require("src.engine.rendering.renderer")
+local validate_config = require("src.engine.config.validate_config")
+
 local Systems = require("src.game.systems")
 local components = require("src.game.components")
 local create_tileset = require("src.game.tileset.create_tileset")
 local generate = require("src.game.generate")
+
+local config = require("config")
+validate_config(config)
 
 local game_status
 local systems
