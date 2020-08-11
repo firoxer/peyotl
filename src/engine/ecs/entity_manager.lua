@@ -1,15 +1,11 @@
 local EventSubject = require("src.engine.event.event_subject")
 
 local events = tablex.identity({
-   "component_added",
-   "component_to_be_updated",
    "entity_removed",
 })
 
 local EntityManager = prototype(function(self, component_names)
    self.event_subject = EventSubject(events)
-   self.event_subject:disable_logging_for(events.component_added)
-   self.event_subject:disable_logging_for(events.component_to_be_updated)
 
    self._components = nil
    self._entity_id = 0
@@ -29,12 +25,7 @@ function EntityManager:remove_entity(entity_id)
       component[entity_id] = nil
    end
 
-   self.event_subject:notify(
-      events.entity_removed,
-      {
-         entity_id = entity_id
-      }
-   )
+   self.event_subject:notify(events.entity_removed, { entity_id = entity_id })
 end
 
 function EntityManager:get_component(entity_id, component_name)
@@ -62,14 +53,6 @@ function EntityManager:add_component(entity_id, component)
    end
 
    self._components[component.name][entity_id] = component
-
-   self.event_subject:notify(
-      events.component_added,
-      {
-         component_name = component.name,
-         entity_id = entity_id
-      }
-   )
 end
 
 function EntityManager:get_unique_component(component_name)
@@ -96,15 +79,6 @@ function EntityManager:update_component(entity_id, component_name, fields)
    assertx.is_number(entity_id)
    assertx.is_string(component_name)
    assertx.is_table(fields)
-
-   self.event_subject:notify(
-      events.component_to_be_updated,
-      {
-         component_name = component_name,
-         entity_id = entity_id,
-         updated_fields = fields
-      }
-   )
 
    for key, value in pairs(fields) do
       self._components[component_name][entity_id][key] = value

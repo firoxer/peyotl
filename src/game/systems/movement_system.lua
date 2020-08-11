@@ -3,7 +3,7 @@ local MovementSystem = prototype(function(self, level_config, em, player_input)
    self._entity_manager = em
    self._player_input = player_input
 
-   self:_track_collidable_positions_in_matrix()
+   self._collision_matrix = ds.Matrix()
 
    player_input.event_subject:subscribe_all(function(event)
       for _, input_c in em:iterate("input") do
@@ -12,10 +12,8 @@ local MovementSystem = prototype(function(self, level_config, em, player_input)
    end)
 end)
 
-function MovementSystem:_track_collidable_positions_in_matrix()
-   local em = self._entity_manager
-
-   local matrix = ds.Matrix()
+function MovementSystem:_update_collision_matrix()
+   local matrix = self._collision_matrix
 
    for y = 1, self._level_config.height do
       for x = 1, self._level_config.width do
@@ -23,23 +21,9 @@ function MovementSystem:_track_collidable_positions_in_matrix()
       end
    end
 
-   em.event_subject:subscribe(em.event_subject.events.component_added, function(event_data)
-      if event_data.component_name == "collision" then
-         local position_c = em:get_component(event_data.entity_id, "position")
-         matrix:set(position_c.point, true)
-      end
-   end)
-
-   em.event_subject:subscribe(em.event_subject.events.component_to_be_updated, function(event_data)
-      if event_data.component_name == "position" and
-            em:has_component(event_data.entity_id, "collision") then
-         local position_c = em:get_component(event_data.entity_id, "position")
-         matrix:set(position_c.point, false)
-         matrix:set(event_data.updated_fields.point, true)
-      end
-   end)
-
-   self._collision_matrix = matrix
+   for _, position_c in self._entity_manager:iterate("position", "collision") do
+      matrix:set(position_c.point, true)
+   end
 end
 
 function MovementSystem:_within_bounds(point)
@@ -75,6 +59,9 @@ end
 function MovementSystem:run()
    for entity_id, input_c, position_c in self._entity_manager:iterate("input", "position") do
       while not input_c.pending_events:is_empty() do
+         -- TODO: Check if this can be run less often
+         self:_update_collision_matrix()
+
          local event = input_c.pending_events:dequeue()
 
          local point_diff_x, point_diff_y = self:_offset_by_event(event)
