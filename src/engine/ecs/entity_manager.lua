@@ -10,7 +10,7 @@ local EntityManager = prototype(function(self, component_names)
    self._components = nil
    self._entity_id = 0
 
-   self:flush(component_names)
+   self:_reset(component_names)
 end)
 
 function EntityManager:new_entity_id()
@@ -137,7 +137,7 @@ function EntityManager:iterate(...)
    )
 end
 
-function EntityManager:flush(component_names)
+function EntityManager:_reset(component_names)
    self._components = {}
 
    for _, name in ipairs(component_names) do
