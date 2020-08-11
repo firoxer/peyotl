@@ -1,7 +1,7 @@
 local EventSubject = require("src.engine.event.event_subject")
 
 local events = tablex.identity({
-   "entity_removed",
+   "entity_to_be_removed",
 })
 
 local EntityManager = prototype(function(self, component_names)
@@ -18,14 +18,29 @@ function EntityManager:new_entity_id()
    return self._entity_id
 end
 
+function EntityManager:_compose_entity(entity_id)
+   local entity_components = {}
+
+   for component_name, component in pairs(self._components) do
+      if component[entity_id] then
+         entity_components[component_name] = component[entity_id]
+      end
+   end
+
+   return entity_components
+end
+
 function EntityManager:remove_entity(entity_id)
    assertx.is_number(entity_id)
+
+   self.event_subject:notify(
+      events.entity_to_be_removed,
+      { entity = self:_compose_entity(entity_id) }
+   )
 
    for _, component in pairs(self._components) do
       component[entity_id] = nil
    end
-
-   self.event_subject:notify(events.entity_removed, { entity_id = entity_id })
 end
 
 function EntityManager:get_component(entity_id, component_name)

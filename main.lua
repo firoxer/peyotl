@@ -27,13 +27,15 @@ local function reset()
 
    local entity_manager = EntityManager(tablex.keys(components))
 
-   entity_manager.event_subject:subscribe(entity_manager.event_subject.events.entity_removed, function(event_data)
-      local player_is_removed = not entity_manager:has_component(event_data.entity_id, "player")
-      if player_is_removed then
-         game_status = "resetting"
-         reset()
+   entity_manager.event_subject:subscribe(
+      entity_manager.event_subject.events.entity_to_be_removed,
+      function(event_data)
+         if event_data.entity.player then
+            game_status = "resetting"
+            reset()
+         end
       end
-   end)
+   )
 
    player_input = PlayerInput(config.player_input)
 
