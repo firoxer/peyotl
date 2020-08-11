@@ -23,12 +23,13 @@ local function enable_performance_retardation()
    performance_retardation_on = true
 end
 
-local frame = 0
+local time_at_last_report = 0
 local function _report_profiling()
-   frame = frame + 1
-   if frame % 100 == 0 then
+   local current_time = love.timer.getTime()
+   if current_time - time_at_last_report > 5 then
       print(profiler.report("time", 20))
       profiler.reset()
+      time_at_last_report = current_time
    end
 end
 
