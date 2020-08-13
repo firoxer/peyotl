@@ -15,6 +15,10 @@ local function validate_rendering(subconfig)
    assertx.is_number(subconfig.window.width)
    assertx.is_number(subconfig.window.height)
 
+   if subconfig.fps_overlay_enabled then
+      assertx.is_boolean(subconfig.fps_overlay_enabled)
+   end
+
    if subconfig.debug_overlay_enabled then
       assertx.is_boolean(subconfig.debug_overlay_enabled)
    end

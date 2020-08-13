@@ -15,6 +15,7 @@ return tablex.uptight({
          height = 20,
       },
 
+      fps_overlay_enabled = true,
       debug_overlay_enabled = false,
 
       enable_vsync = true,
