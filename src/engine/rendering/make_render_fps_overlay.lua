@@ -1,6 +1,6 @@
 local LINE_WIDTH = 5
 local BUFFER_SIZE = 100
-local GOAL_FPS = 60
+local TARGET_FPS = 60
 
 -- This is super rudimentary
 return function(rendering_config)
@@ -33,14 +33,18 @@ return function(rendering_config)
 
       love.graphics.line(
          right_edge - (BUFFER_SIZE * LINE_WIDTH),
-         bottom_edge - (GOAL_FPS * LINE_WIDTH),
+         bottom_edge - (TARGET_FPS * LINE_WIDTH),
          right_edge,
-         bottom_edge - (GOAL_FPS * LINE_WIDTH)
+         bottom_edge - (TARGET_FPS * LINE_WIDTH)
       )
 
-      love.graphics.setColor(1, 0, 0, 0.2)
-
       for index, fps in ipairs(fps_buffer) do
+         if fps >= TARGET_FPS then
+            love.graphics.setColor(0, 1, 0, 0.2)
+         else
+            love.graphics.setColor(1, 0, 0, 0.4)
+         end
+
          love.graphics.line(
             right_edge - (index * LINE_WIDTH),
             bottom_edge,
