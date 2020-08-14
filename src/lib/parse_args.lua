@@ -22,11 +22,6 @@ local arg_reactions = {
       log.debug("enabled memory usage reports")
    end,
 
-   report_low_fps = function()
-      devtools.enable_low_fps_reports()
-      log.debug("enabled low FPS reports")
-   end,
-
    retard_performance = function()
       devtools.enable_performance_retardation()
       log.debug("enabled performance retardation")
@@ -35,7 +30,6 @@ local arg_reactions = {
 return function(raw_args)
    local args = {
       -- Defaults for development
-      report_low_fps = true,
       retard_performance = true
    }
 
@@ -54,14 +48,12 @@ return function(raw_args)
     --production
     --profile
     --report-memory-usage
-    --report-low-fps
     --retard-performance]])
       love.event.quit()
       return
    end
 
    if args.production then
-      args.report_low_fps = nil
       args.retard_performance = nil
       args.production = nil
    end

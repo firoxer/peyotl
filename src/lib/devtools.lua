@@ -2,17 +2,12 @@ local profiler = require("lib.profiler")
 
 local profiling_on = false
 local memory_usage_reporting_on = false
-local low_fps_reporting_on = false
 local performance_retardation_on = false
 
 local function enable_profiling()
    profiling_on = true
    profiler.hookall("Lua")
    profiler.start()
-end
-
-local function enable_low_fps_reports()
-   low_fps_reporting_on = true
 end
 
 local function enable_memory_usage_reports()
@@ -31,15 +26,6 @@ local function _report_profiling()
       profiler.reset()
       time_at_last_report = current_time
    end
-end
-
-local prev_fps = 0
-local function _report_low_fps()
-   local fps = love.timer.getFPS()
-   if fps < 60 and fps ~= prev_fps then
-      log.debug("FPS under 60: " .. fps)
-   end
-   prev_fps = fps
 end
 
 local last_memory_usage = math.huge
@@ -80,10 +66,6 @@ local function tick()
       _report_profiling()
    end
 
-   if low_fps_reporting_on then
-      _report_low_fps()
-   end
-
    if memory_usage_reporting_on then
       _report_memory_usage()
    end
@@ -95,7 +77,6 @@ end
 
 return {
    enable_profiling = enable_profiling,
-   enable_low_fps_reports = enable_low_fps_reports,
    enable_memory_usage_reports = enable_memory_usage_reports,
    enable_performance_retardation = enable_performance_retardation,
    tick = tick

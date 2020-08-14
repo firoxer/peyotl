@@ -29,10 +29,6 @@ return function(rendering_config, em)
       rendering_config.window.height * rendering_config.tiles.size * rendering_config.tiles.scale
 
    return function()
-      -- Render FPS
-      love.graphics.setColor(1, 0, 1, 1)
-      love.graphics.print(tostring(love.timer.getFPS()), 0, 0)
-
       -- Render input entity (player) stats
       local input_entity_id = em:get_unique_component("input")
       local input_entity_health_c = em:get_component(input_entity_id, "health")
