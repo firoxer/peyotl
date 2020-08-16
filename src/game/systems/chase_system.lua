@@ -8,9 +8,9 @@ local function too_far(pos_a, pos_b, range)
    return ds.Point.chebyshev_distance(pos_a.point, pos_b.point) > range
 end
 
-local ChaseSystem = prototype(function(self, level_config, em)
+local ChaseSystem = prototype(function(self, level_config, entity_manager)
    self._level_config = level_config
-   self._entity_manager = em
+   self._entity_manager = entity_manager
 
    self._collision_matrix = ds.Matrix()
    self._pathfinders = {}
@@ -42,17 +42,17 @@ function ChaseSystem:_update_pathfinders()
 end
 
 function ChaseSystem:run()
-   local em = self._entity_manager
+   local entity_manager = self._entity_manager
 
    local current_time = love.timer.getTime()
-   for entity_id, chase_c, position_c in em:iterate("chase", "position") do
+   for entity_id, chase_c, position_c in entity_manager:iterate("chase", "position") do
       local too_soon_to_move =
          current_time - chase_c.time_at_last_movement < chase_c.time_between_movements
       if too_soon_to_move then
          goto continue
       end
 
-      local chased_position_c = em:get_component(chase_c.target_id, "position")
+      local chased_position_c = entity_manager:get_component(chase_c.target_id, "position")
 
       if too_far(position_c, chased_position_c, chase_c.aggro_range) then
          goto continue
@@ -69,8 +69,8 @@ function ChaseSystem:run()
 
       local next_point = pathfinder:find_next_step(position_c.point)
       if next_point ~= nil and next_point ~= chased_position_c.point then
-         em:update_component(entity_id, "position", { point = next_point })
-         em:update_component(entity_id, "chase", { time_at_last_movement = current_time })
+         entity_manager:update_component(entity_id, "position", { point = next_point })
+         entity_manager:update_component(entity_id, "chase", { time_at_last_movement = current_time })
       end
 
       ::continue::

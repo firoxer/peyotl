@@ -17,9 +17,9 @@ local function _render_pause_screen()
 end
 --]]
 
-return function(rendering_config, em)
+return function(rendering_config, entity_manager)
    assertx.is_table(rendering_config)
-   assertx.is_instance_of("engine.ecs.EntityManager", em)
+   assertx.is_instance_of("engine.ecs.EntityManager", entity_manager)
 
    local ui_unit =
       rendering_config.window.width / 10
@@ -30,8 +30,8 @@ return function(rendering_config, em)
 
    return function()
       -- Render input entity (player) stats
-      local input_entity_id = em:get_unique_component("input")
-      local input_entity_health_c = em:get_component(input_entity_id, "health")
+      local input_entity_id = entity_manager:get_unique_component("input")
+      local input_entity_health_c = entity_manager:get_component(input_entity_id, "health")
 
       love.graphics.setColor(0.9, 0.34, 0.1)
       love.graphics.rectangle(

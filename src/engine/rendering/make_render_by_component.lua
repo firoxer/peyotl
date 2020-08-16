@@ -45,10 +45,10 @@ local function create_illuminabilities(render_matrix_iterator, opaque_matrix)
    return illuminabilities
 end
 
-return function(rendering_config, level_config, em, tileset)
+return function(rendering_config, level_config, entity_manager, tileset)
    assertx.is_table(rendering_config)
    assertx.is_table(level_config)
-   assertx.is_instance_of("engine.ecs.EntityManager", em)
+   assertx.is_instance_of("engine.ecs.EntityManager", entity_manager)
    assertx.is_table(tileset)
 
    local window_width = rendering_config.window.width
@@ -66,7 +66,7 @@ return function(rendering_config, level_config, em, tileset)
    local update_render_matrix = function()
       render_matrix = ds.Matrix()
 
-      for _, render_c, position_c in em:iterate("render", "position") do
+      for _, render_c, position_c in entity_manager:iterate("render", "position") do
          local updated_layer = render_matrix:get(position_c.point)
          if not updated_layer then
             updated_layer = {}
@@ -79,7 +79,7 @@ return function(rendering_config, level_config, em, tileset)
    local opaque_matrix
    local update_opaque_matrix = function()
       opaque_matrix = ds.Matrix()
-      for _, _, position_c in em:iterate("opaque", "position") do
+      for _, _, position_c in entity_manager:iterate("opaque", "position") do
          opaque_matrix:set(
             position_c.point,
             (opaque_matrix:get(position_c.point) or 0) + 1
@@ -89,14 +89,14 @@ return function(rendering_config, level_config, em, tileset)
 
    local entity_ids_by_render_c = {}
    local update_entity_ids_by_render_c = function()
-      for entity_id, render_c in em:iterate("render") do
+      for entity_id, render_c in entity_manager:iterate("render") do
          entity_ids_by_render_c[render_c] = entity_id
       end
    end
 
    return function()
       local camera_entity_position_c =
-         em:get_component(em:get_unique_component("camera"), "position")
+         entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")
 
       local current_camera_x = camera_entity_position_c.point.x
       local current_camera_y = camera_entity_position_c.point.y
@@ -140,12 +140,12 @@ return function(rendering_config, level_config, em, tileset)
             local alpha = calculate_alpha(point)
 
             local entity_id = entity_ids_by_render_c[render_c]
-            if em:has_component(entity_id, "fog_of_war") then
-               local fow_c = em:get_component(entity_id, "fog_of_war")
+            if entity_manager:has_component(entity_id, "fog_of_war") then
+               local fow_c = entity_manager:get_component(entity_id, "fog_of_war")
                if fow_c.explored and alpha < level_config.lighting.explored_alpha then
                   alpha = level_config.lighting.explored_alpha
                elseif alpha > 0 and not fow_c.explored then
-                  em:update_component(entity_id, "fog_of_war", { explored = true })
+                  entity_manager:update_component(entity_id, "fog_of_war", { explored = true })
                end
             end
 

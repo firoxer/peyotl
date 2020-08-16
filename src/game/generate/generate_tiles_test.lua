@@ -21,10 +21,10 @@ local level_config = {
 }
 
 do
-   local em = EntityManager(tablex.keys(components))
-   generate_tiles(em, level_config)
+   local entity_manager = EntityManager(tablex.keys(components))
+   generate_tiles(entity_manager, level_config)
    local position_component_n = 0
-   for _ in em:iterate("position") do
+   for _ in entity_manager:iterate("position") do
       position_component_n = position_component_n + 1
    end
 

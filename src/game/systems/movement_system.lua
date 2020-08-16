@@ -1,12 +1,12 @@
-local MovementSystem = prototype(function(self, level_config, em, player_input)
+local MovementSystem = prototype(function(self, level_config, entity_manager, player_input)
    self._level_config = level_config
-   self._entity_manager = em
+   self._entity_manager = entity_manager
    self._player_input = player_input
 
    self._collision_matrix = ds.Matrix()
 
    player_input.event_subject:subscribe_all(function(event)
-      for _, input_c in em:iterate("input") do
+      for _, input_c in entity_manager:iterate("input") do
          input_c.pending_events:enqueue(event)
       end
    end)

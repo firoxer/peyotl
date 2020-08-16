@@ -8,17 +8,17 @@ local player_config = {
 }
 
 do
-   local em = EntityManager(tablex.keys(components))
+   local entity_manager = EntityManager(tablex.keys(components))
 
    -- Tile for the player to spawn on
-   local tile_id = em:new_entity_id()
-   em:add_component(tile_id, components.position(ds.Point.get(1, 1)))
+   local tile_id = entity_manager:new_entity_id()
+   entity_manager:add_component(tile_id, components.position(ds.Point.get(1, 1)))
 
-   generate_player(em, player_config)
+   generate_player(entity_manager, player_config)
 
-   local player_id = em:get_unique_component("player")
+   local player_id = entity_manager:get_unique_component("player")
 
-   assert(em:get_component(player_id, "health").amount == player_config.initial_health)
-   assert(em:get_unique_component("input") ~= nil)
+   assert(entity_manager:get_component(player_id, "health").amount == player_config.initial_health)
+   assert(entity_manager:get_unique_component("input") ~= nil)
 end
 

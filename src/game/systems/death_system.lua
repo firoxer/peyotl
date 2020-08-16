@@ -1,5 +1,5 @@
-local DeathSystem = prototype(function(self, _, em)
-   self._entity_manager = em
+local DeathSystem = prototype(function(self, _, entity_manager)
+   self._entity_manager = entity_manager
 end)
 
 function DeathSystem:run()

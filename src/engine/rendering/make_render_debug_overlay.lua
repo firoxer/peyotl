@@ -1,10 +1,10 @@
-return function(rendering_config, em)
+return function(rendering_config, entity_manager)
    assertx.is_table(rendering_config)
-   assertx.is_instance_of("engine.ecs.EntityManager", em)
+   assertx.is_instance_of("engine.ecs.EntityManager", entity_manager)
 
    return function()
       local camera_entity_position_c =
-         em:get_component(em:get_unique_component("camera"), "position")
+         entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")
       local current_camera_x = camera_entity_position_c.point.x
       local current_camera_y = camera_entity_position_c.point.y
 
