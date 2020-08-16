@@ -1,7 +1,7 @@
 do
    local tbl = {
-      {"a", "b"},
-      {"c", "d"},
+      { "a", "b" },
+      { "c", "d" },
    }
 
    local m = ds.Matrix()
