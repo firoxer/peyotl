@@ -1,7 +1,7 @@
 local EventSubject = require("src.engine.event.event_subject")
 
 local events = tablex.identity({
-   "entity_to_be_removed",
+   "entity_to_be_removed"
 })
 
 local EntityManager = prototype(function(self, component_names)

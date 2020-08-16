@@ -30,6 +30,10 @@ function EventSubject:subscribe(event, observer)
    assertx.is_string(event)
    assertx.is_function(observer)
 
+   if not self.events[event] then
+      error("trying to subscribe to event that is not handled by this subject: " .. event)
+   end
+
    self._observers[observer] = function(ev, ...)
       if event == ev then
          observer(...)
