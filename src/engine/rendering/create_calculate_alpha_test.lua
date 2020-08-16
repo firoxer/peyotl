@@ -13,7 +13,8 @@ test_illuminabilities:set(ds.Point.get(2, 2), true)
 
 do
    local settings = { algorithm = "full" }
-   local calculate_alpha = create_calculate_alpha(settings, test_illuminabilities, ds.Point.get(1, 1))
+   local calculate_alpha =
+      create_calculate_alpha(settings, test_illuminabilities, ds.Point.get(1, 1))
    assert(calculate_alpha(ds.Point.get(0, 0) == 1))
    assert(calculate_alpha(ds.Point.get(2, 2) == 1))
 end
@@ -23,7 +24,8 @@ do
       algorithm = "fog_of_war",
       lighting_range = 0,
    }
-   local calculate_alpha = create_calculate_alpha(settings, test_illuminabilities, ds.Point.get(0, 0))
+   local calculate_alpha =
+      create_calculate_alpha(settings, test_illuminabilities, ds.Point.get(0, 0))
    assert(calculate_alpha(ds.Point.get(0, 0)) == 1)
    assert(calculate_alpha(ds.Point.get(0, 1)) == 0.5)
    assert(calculate_alpha(ds.Point.get(0, 2)) == 0)
@@ -36,7 +38,8 @@ do
       algorithm = "fog_of_war",
       lighting_range = 1,
    }
-   local calculate_alpha = create_calculate_alpha(settings, test_illuminabilities, ds.Point.get(0, 0))
+   local calculate_alpha =
+      create_calculate_alpha(settings, test_illuminabilities, ds.Point.get(0, 0))
    assert(calculate_alpha(ds.Point.get(0, 0)) == 1)
    assert(calculate_alpha(ds.Point.get(0, 1)) == 1)
    assert(calculate_alpha(ds.Point.get(0, 2)) == 0.5)

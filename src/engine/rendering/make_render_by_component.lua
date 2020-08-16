@@ -30,8 +30,8 @@ local function create_illuminabilities(render_matrix_iterator, opaque_matrix)
 
    for point in illuminabilities:pairs() do
       local has_illuminable_neighbor = false
-      for neighbor_point in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
-         if illuminabilities:get(neighbor_point) == true then
+      for neighbor in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
+         if illuminabilities:get(neighbor) == true then
             has_illuminable_neighbor = true
             break
          end
@@ -95,21 +95,19 @@ return function(rendering_config, level_config, entity_manager, tileset)
    end
 
    return function()
-      local camera_entity_position_c =
+      local camera_point =
          entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")
-
-      local current_camera_x = camera_entity_position_c.point.x
-      local current_camera_y = camera_entity_position_c.point.y
+            .point
 
       update_render_matrix()
       update_opaque_matrix()
       update_entity_ids_by_render_c()
 
       local visible_nw_se_corners = {
-         current_camera_x - (window_width / 2) - 1,
-         current_camera_y - (window_height / 2) - 1,
-         current_camera_x + (window_width / 2),
-         current_camera_y + (window_height / 2)
+         camera_point.x - (window_width / 2) - 1,
+         camera_point.y - (window_height / 2) - 1,
+         camera_point.x + (window_width / 2),
+         camera_point.y + (window_height / 2)
       }
       local visible_render_matrix_iterator =
          render_matrix:submatrix_pairs(unpack(visible_nw_se_corners))
@@ -124,7 +122,7 @@ return function(rendering_config, level_config, entity_manager, tileset)
          create_illuminabilities(visible_render_matrix_iterator, opaque_matrix)
 
       local calculate_alpha =
-         create_calculate_alpha(level_config.lighting, illuminabilities, camera_entity_position_c.point)
+         create_calculate_alpha(level_config.lighting, illuminabilities, camera_point)
 
       love.graphics.setCanvas(canvas)
 
@@ -150,8 +148,16 @@ return function(rendering_config, level_config, entity_manager, tileset)
             end
 
             if alpha > 0 then
-               local offset_x = mathx.round(point.x - current_camera_x + (window_width / 2), tileset_draw_rounding)
-               local offset_y = mathx.round(point.y - current_camera_y + (window_height / 2), tileset_draw_rounding)
+               local offset_x =
+                  mathx.round(
+                     point.x - camera_point.x + (window_width / 2),
+                     tileset_draw_rounding
+                  )
+               local offset_y =
+                  mathx.round(
+                     point.y - camera_point.y + (window_height / 2),
+                     tileset_draw_rounding
+                  )
 
                tileset_batch:setColor(1, 1, 1, alpha)
                tileset_batch:add(

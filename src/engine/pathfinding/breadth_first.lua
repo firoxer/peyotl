@@ -29,19 +29,19 @@ function BreadthFirst:_recalculate_from(start_point)
       local point = open_queue:dequeue()
 
       if distances[point] + 1 <= max_distance then
-         for neighbor_point, collides in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
-            local actual_neighbor_distance = distances[point] + calculate_distance(point, neighbor_point)
-            if distances[neighbor_point] == nil or actual_neighbor_distance < distances[neighbor_point] then
-               distances[neighbor_point] = actual_neighbor_distance
-               parents[neighbor_point] = point
+         for neighbor, collides in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
+            local actual_neighbor_distance = distances[point] + calculate_distance(point, neighbor)
+            if distances[neighbor] == nil or actual_neighbor_distance < distances[neighbor] then
+               distances[neighbor] = actual_neighbor_distance
+               parents[neighbor] = point
 
                if not children[point] then
                   children[point] = {}
                end
-               table.insert(children[point], neighbor_point)
+               table.insert(children[point], neighbor)
 
                if not collides then
-                  open_queue:enqueue(neighbor_point)
+                  open_queue:enqueue(neighbor)
                end
             end
          end
@@ -82,11 +82,11 @@ function BreadthFirst:recalculate_at(point)
 
    self:_reset_lineage(point)
 
-   for neighbor_point, collides in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
+   for neighbor, collides in pairs(self._collision_matrix:get_immediate_neighbors(point)) do
       -- This `not collides` prevents monsters from colliding into one another.
       -- I don't understand why and I think it would be better to move it to  `_recalculate_from`.
-      if not collides and self._distances[neighbor_point] ~= nil then
-         self:_recalculate_from(neighbor_point)
+      if not collides and self._distances[neighbor] ~= nil then
+         self:_recalculate_from(neighbor)
       end
    end
 end

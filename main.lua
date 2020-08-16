@@ -39,10 +39,10 @@ local function reset()
 
    player_input = PlayerInput(config.player_input)
 
-   player_input.event_subject:subscribe(player_input.event_subject.events.quit_game, function()
+   player_input.event_subject:subscribe("quit_game", function()
       game_status = "terminating"
    end)
-   player_input.event_subject:subscribe(player_input.event_subject.events.toggle_game_pause, function()
+   player_input.event_subject:subscribe("toggle_game_pause", function()
       game_status = game_status ~= "paused" and "paused" or "running"
    end)
 

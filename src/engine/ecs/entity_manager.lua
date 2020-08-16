@@ -63,7 +63,9 @@ function EntityManager:add_component(entity_id, component)
 
    if self._components[component.name] == nil then
       local component_name_str =
-         type(component.name) == "string" and component.name or string.format("<%s>", type(component.name))
+         type(component.name) == "string"
+            and component.name
+            or string.format("<%s>", type(component.name))
       error("unknown component being added: " .. component_name_str)
    end
 

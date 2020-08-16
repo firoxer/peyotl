@@ -18,27 +18,27 @@ local function breadth_first(lighting_settings, illuminabilities, camera_point)
    while not open_queue:is_empty() do
       local point = open_queue:dequeue()
 
-      for neighbor_point, is_illuminable in pairs(illuminabilities:get_immediate_neighbors(point)) do
-         local neighbor_distance = distances:get(point) + calculate_distance(point, neighbor_point)
+      for neighbor, is_illuminable in pairs(illuminabilities:get_immediate_neighbors(point)) do
+         local neighbor_distance = distances:get(point) + calculate_distance(point, neighbor)
 
          if neighbor_distance > max_distance then
             goto continue
          end
 
          local visible_from_camera =
-            ds.Point.bresenham_line(camera_point, neighbor_point, tablex.bind(illuminabilities, "get"))
+            ds.Point.bresenham_line(camera_point, neighbor, tablex.bind(illuminabilities, "get"))
          if not visible_from_camera then
             goto continue
          end
 
-         if distances:get(neighbor_point) ~= nil and neighbor_distance >= distances:get(neighbor_point) then
+         if distances:get(neighbor) ~= nil and neighbor_distance >= distances:get(neighbor) then
             goto continue
          end
 
-         distances:set(neighbor_point, neighbor_distance)
+         distances:set(neighbor, neighbor_distance)
 
          if is_illuminable then
-            open_queue:enqueue(neighbor_point)
+            open_queue:enqueue(neighbor)
          end
 
          ::continue::
@@ -53,8 +53,8 @@ local function breadth_first(lighting_settings, illuminabilities, camera_point)
       end
 
       -- Edges of lighted areas
-      for neighbor_point in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
-         if distances:has(neighbor_point) and illuminabilities:get(neighbor_point) == true then
+      for neighbor in pairs(illuminabilities:get_immediate_neighbors(point, true)) do
+         if distances:has(neighbor) and illuminabilities:get(neighbor) == true then
             return 0.5
          end
       end
