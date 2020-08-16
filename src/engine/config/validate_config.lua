@@ -44,9 +44,7 @@ local function validate_level(subconfig)
    if subconfig.lighting.algorithm == "fog_of_war" then
       assertx.is_number(subconfig.lighting.unexplored_alpha)
       assertx.is_number(subconfig.lighting.explored_alpha)
-   elseif subconfig.lighting.algorithm == "full" then
-      -- Good
-   else
+   elseif subconfig.lighting.algorithm ~= "full" then
       error("bad lighting algorithm")
    end
 

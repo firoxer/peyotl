@@ -1,4 +1,5 @@
 -- From https://bitbucket.org/itraykov/profile.lua/src
+-- luacheck: ignore 631
 
 local clock = os.clock
 local getinfo = debug.getinfo
@@ -106,7 +107,7 @@ local function _comp(a, b)
   if _fs[a] == _fs[b] then
     return _fs2[a] < _fs2[b]
   end
-  return _fs[a] < _fs[b] 
+  return _fs[a] < _fs[b]
 end
 
 --- Sets a clock function to be used by the profiler.
@@ -185,7 +186,6 @@ function profile.hook(f, fn)
     _rcount[f] = 0
     _telapsed[f] = 0
   end
-  fn = info.name
   _filter = "hooked"
 end
 
@@ -274,7 +274,7 @@ function profile.report(s, n)
 end
 
 -- store all internal profiler functions
-for k, v in pairs(profile) do
+for _, v in pairs(profile) do
   if type(v) == "function" then
     _internal[v] = true
   end

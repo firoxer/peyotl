@@ -59,7 +59,7 @@ do
       self.prop = 2
    end
 
-   local instance = ChildPrototype(j)
+   local instance = ChildPrototype()
 
    assert(instance.prop == nil)
 
