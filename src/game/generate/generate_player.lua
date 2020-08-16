@@ -9,7 +9,7 @@ return function(entity_manager, player_config)
    entity_manager:add_component(id, components.camera())
    entity_manager:add_component(id, components.chaseable())
    entity_manager:add_component(id, components.player())
-   entity_manager:add_component(id, components.render(tile_names.player, 2))
+   entity_manager:add_component(id, components.texture(tile_names.player, 2))
 
    return id
 end

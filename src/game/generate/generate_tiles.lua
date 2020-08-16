@@ -12,31 +12,31 @@ local carves_by_algorithm_name = {
    preset_temple = carve_into_preset_temple,
 }
 
-local function change_south_wall_tiles_quad(entity_manager, render_cs)
-   for entity_id, position_c, render_c in entity_manager:iterate("position", "render") do
-      if render_c.tile_name == "wall" then
-         local render_c_south = render_cs:get(ds.Point.offset(position_c.point, 0, 1))
+local function change_south_wall_tiles_quad(entity_manager, texture_cs)
+   for entity_id, position_c, texture_c in entity_manager:iterate("position", "texture") do
+      if texture_c.tile_name == "wall" then
+         local texture_c_south = texture_cs:get(ds.Point.offset(position_c.point, 0, 1))
          if
-            render_c_south
+            texture_c_south
             and (
-               render_c_south.tile_name == tile_names.empty
-               or render_c_south.tile_name == tile_names.empty2
+               texture_c_south.tile_name == tile_names.empty
+               or texture_c_south.tile_name == tile_names.empty2
             )
          then
-            entity_manager:update_component(entity_id, "render", {
+            entity_manager:update_component(entity_id, "texture", {
                tile_name = tile_names.wall_south
             })
          end
-      elseif render_c.tile_name == "wall" then
-         local render_c_south = render_cs:get(ds.Point.offset(position_c.point, 0, 1))
+      elseif texture_c.tile_name == "wall" then
+         local texture_c_south = texture_cs:get(ds.Point.offset(position_c.point, 0, 1))
          if
-            render_c_south
+            texture_c_south
             and (
-               render_c_south.tile_name == tile_names.empty
-               or render_c_south.tile_name == tile_names.empty2
+               texture_c_south.tile_name == tile_names.empty
+               or texture_c_south.tile_name == tile_names.empty2
             )
          then
-            entity_manager:update_component(entity_id, "render", {
+            entity_manager:update_component(entity_id, "texture", {
                tile_name = tile_names.wall_south
             })
          end
@@ -46,7 +46,7 @@ end
 
 return function(entity_manager, level_config)
    local current_time = love.timer.getTime()
-   local render_cs = ds.Matrix()
+   local texture_cs = ds.Matrix()
 
    local carve = carves_by_algorithm_name[level_config.tiles.algorithm]
    if carve == nil then
@@ -71,9 +71,9 @@ return function(entity_manager, level_config)
 
       local tile_id = entity_manager:new_entity_id()
       entity_manager:add_component(tile_id, components.position(point))
-      local render_c = components.render(tile_name, 0)
-      entity_manager:add_component(tile_id, render_c)
-      render_cs:set(point, render_c)
+      local texture_c = components.texture(tile_name, 0)
+      entity_manager:add_component(tile_id, texture_c)
+      texture_cs:set(point, texture_c)
 
       if is_wall then
          entity_manager:add_component(tile_id, components.collision())
@@ -103,5 +103,5 @@ return function(entity_manager, level_config)
       end
    end
 
-   change_south_wall_tiles_quad(entity_manager, render_cs)
+   change_south_wall_tiles_quad(entity_manager, texture_cs)
 end

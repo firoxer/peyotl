@@ -2,28 +2,28 @@
 
 local create_calculate_alpha = require("src.engine.rendering.create_calculate_alpha")
 
-local function create_render_layers(matrix_iterator)
+local function create_texture_layers(matrix_iterator)
    local layer_ids = {}
    local layers_by_id = {}
 
    for point, layer in matrix_iterator do
-      for _, render_c in pairs(layer) do
-         if not layers_by_id[render_c.layer] then
-            layers_by_id[render_c.layer] = ds.Matrix()
-            table.insert(layer_ids, render_c.layer)
+      for _, texture_c in pairs(layer) do
+         if not layers_by_id[texture_c.layer] then
+            layers_by_id[texture_c.layer] = ds.Matrix()
+            table.insert(layer_ids, texture_c.layer)
          end
 
-         layers_by_id[render_c.layer]:set(point, render_c)
+         layers_by_id[texture_c.layer]:set(point, texture_c)
       end
    end
 
    return layer_ids, layers_by_id
 end
 
-local function create_illuminabilities(render_matrix_iterator, opaque_matrix)
+local function create_illuminabilities(texture_matrix_iterator, opaque_matrix)
    local illuminabilities = ds.Matrix()
 
-   for point in render_matrix_iterator do
+   for point in texture_matrix_iterator do
       local opaque_c_n = opaque_matrix:get(point) or 0
       illuminabilities:set(point, opaque_c_n == 0)
    end
@@ -62,17 +62,17 @@ return function(rendering_config, level_config, entity_manager, tileset)
 
    local tileset_batch = love.graphics.newSpriteBatch(tileset.image, window_width * window_height)
 
-   local render_matrix
-   local update_render_matrix = function()
-      render_matrix = ds.Matrix()
+   local texture_matrix
+   local update_texture_matrix = function()
+      texture_matrix = ds.Matrix()
 
-      for _, render_c, position_c in entity_manager:iterate("render", "position") do
-         local updated_layer = render_matrix:get(position_c.point)
+      for _, texture_c, position_c in entity_manager:iterate("texture", "position") do
+         local updated_layer = texture_matrix:get(position_c.point)
          if not updated_layer then
             updated_layer = {}
-            render_matrix:set(position_c.point, updated_layer)
+            texture_matrix:set(position_c.point, updated_layer)
          end
-         updated_layer[render_c.layer] = render_c
+         updated_layer[texture_c.layer] = texture_c
       end
    end
 
@@ -87,10 +87,10 @@ return function(rendering_config, level_config, entity_manager, tileset)
       end
    end
 
-   local entity_ids_by_render_c = {}
-   local update_entity_ids_by_render_c = function()
-      for entity_id, render_c in entity_manager:iterate("render") do
-         entity_ids_by_render_c[render_c] = entity_id
+   local entity_ids_by_texture_c = {}
+   local update_entity_ids_by_texture_c = function()
+      for entity_id, texture_c in entity_manager:iterate("texture") do
+         entity_ids_by_texture_c[texture_c] = entity_id
       end
    end
 
@@ -99,9 +99,9 @@ return function(rendering_config, level_config, entity_manager, tileset)
          entity_manager:get_component(entity_manager:get_unique_component("camera"), "position")
             .point
 
-      update_render_matrix()
+      update_texture_matrix()
       update_opaque_matrix()
-      update_entity_ids_by_render_c()
+      update_entity_ids_by_texture_c()
 
       local visible_nw_se_corners = {
          camera_point.x - (window_width / 2) - 1,
@@ -109,17 +109,17 @@ return function(rendering_config, level_config, entity_manager, tileset)
          camera_point.x + (window_width / 2),
          camera_point.y + (window_height / 2)
       }
-      local visible_render_matrix_iterator =
-         render_matrix:submatrix_pairs(unpack(visible_nw_se_corners))
+      local visible_texture_matrix_iterator =
+         texture_matrix:submatrix_pairs(unpack(visible_nw_se_corners))
       local layer_ids, layers_by_id =
-         create_render_layers(visible_render_matrix_iterator)
+         create_texture_layers(visible_texture_matrix_iterator)
 
       table.sort(layer_ids)
 
-      visible_render_matrix_iterator =
-         render_matrix:submatrix_pairs(unpack(visible_nw_se_corners))
+      visible_texture_matrix_iterator =
+         texture_matrix:submatrix_pairs(unpack(visible_nw_se_corners))
       local illuminabilities =
-         create_illuminabilities(visible_render_matrix_iterator, opaque_matrix)
+         create_illuminabilities(visible_texture_matrix_iterator, opaque_matrix)
 
       local calculate_alpha =
          create_calculate_alpha(level_config.lighting, illuminabilities, camera_point)
@@ -131,13 +131,13 @@ return function(rendering_config, level_config, entity_manager, tileset)
       love.graphics.clear(level_config.background_color)
 
       for _, layer_id in ipairs(layer_ids) do
-         local renderables = layers_by_id[layer_id]
+         local texture_cs = layers_by_id[layer_id]
 
          tileset_batch:clear()
-         for point, render_c in renderables:pairs() do
+         for point, texture_c in texture_cs:pairs() do
             local alpha = calculate_alpha(point)
 
-            local entity_id = entity_ids_by_render_c[render_c]
+            local entity_id = entity_ids_by_texture_c[texture_c]
             if entity_manager:has_component(entity_id, "fog_of_war") then
                local fow_c = entity_manager:get_component(entity_id, "fog_of_war")
                if fow_c.explored and alpha < level_config.lighting.explored_alpha then
@@ -161,7 +161,7 @@ return function(rendering_config, level_config, entity_manager, tileset)
 
                tileset_batch:setColor(1, 1, 1, alpha)
                tileset_batch:add(
-                  tileset.quads[render_c.tile_name],
+                  tileset.quads[texture_c.tile_name],
                   offset_x * tile_size,
                   offset_y * tile_size
                )

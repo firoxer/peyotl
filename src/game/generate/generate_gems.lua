@@ -21,6 +21,6 @@ return function(entity_manager, gem_config)
          love.math.random() > 0.5
             and tile_names.gem1
             or tile_names.gem2
-      entity_manager:add_component(gem_id, components.render(gem_quad_name, 1))
+      entity_manager:add_component(gem_id, components.texture(gem_quad_name, 1))
    end
 end

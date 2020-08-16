@@ -25,7 +25,7 @@ function MonsterSpawningSystem:_spawn_monster(spawning_tile_id, spawning_c)
    entity_manager:add_component(id, components.position(position_c.point))
    entity_manager:add_component(id, components.collision())
    entity_manager:add_component(id, components.monster())
-   entity_manager:add_component(id, components.render(tile_names.monster, 2))
+   entity_manager:add_component(id, components.texture(tile_names.monster, 2))
    entity_manager:add_component(id, components.chase(spawning_c.chase_target_id, self._monster_config.aggro_range))
 end
 

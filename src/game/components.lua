@@ -113,12 +113,12 @@ return {
       }
    end,
 
-   render = function(tile_name, layer)
+   texture = function(tile_name, layer)
       assertx.is_string(tile_name)
       assertx.is_number(layer)
 
       return {
-         name = "render",
+         name = "texture",
          tile_name = tile_name,
          layer = layer,
       }
