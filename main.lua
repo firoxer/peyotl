@@ -6,6 +6,7 @@ local seed = require("src.lib.seed")
 
 local EntityManager = require("src.engine.ecs.entity_manager")
 local PlayerInput = require("src.engine.input.player_input")
+local PauseScreenRenderer = require("src.engine.rendering.pause_screen_renderer")
 local Renderer = require("src.engine.rendering.renderer")
 local validate_config = require("src.engine.config.validate_config")
 
@@ -20,6 +21,7 @@ validate_config(config)
 local game_status
 local systems
 local renderer
+local pause_screen_renderer
 local player_input
 
 local function reset()
@@ -56,6 +58,8 @@ local function reset()
 
    local tileset = create_tileset(config.rendering.tiles.size)
    renderer = Renderer(config.rendering, config.level, entity_manager, tileset)
+
+   pause_screen_renderer = PauseScreenRenderer(config.rendering)
 
    generate(entity_manager, config.level)
 
@@ -98,7 +102,9 @@ end
 function love.draw()
    if game_status == "resetting" then
       return
+   elseif game_status == "paused" then
+      pause_screen_renderer:render()
+   else
+      renderer:render(game_status)
    end
-
-   renderer:render()
 end

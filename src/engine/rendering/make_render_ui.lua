@@ -1,22 +1,5 @@
 --- Technically this should go under systems/ but this way it just makes more sense
 
---[[
---local PAUSE_SCREEN_COLOR = { 22, 22, 29 } -- Eigengrau
-local function _render_pause_screen()
-   love.graphics.setColor(PAUSE_SCREEN_COLOR)
-   love.graphics.rectangle("fill", 0, 0, self._window_real_width, self._window_real_height)
-
-   love.graphics.setColor(1, 1, 1, 1)
-   love.graphics.printf(
-      "paused",
-      0,
-      self._window_real_height / 2 - 10,
-      self._window_real_width,
-      "center"
-   )
-end
---]]
-
 return function(rendering_config, entity_manager)
    assertx.is_table(rendering_config)
    assertx.is_instance_of("engine.ecs.EntityManager", entity_manager)
