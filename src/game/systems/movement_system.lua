@@ -1,5 +1,7 @@
-local MovementSystem = prototype(function(self, level_config, entity_manager, player_input)
-   self._level_config = level_config
+local System = require("src.engine.ecs.system")
+
+local MovementSystem = prototype(System, function(self, world_config, entity_manager, player_input)
+   self._world_config = world_config
    self._entity_manager = entity_manager
    self._player_input = player_input
 
@@ -15,8 +17,8 @@ end)
 function MovementSystem:_update_collision_matrix()
    local matrix = self._collision_matrix
 
-   for y = 1, self._level_config.height do
-      for x = 1, self._level_config.width do
+   for y = 1, self._world_config.height do
+      for x = 1, self._world_config.width do
          matrix:set(ds.Point.get(x, y), false)
       end
    end
@@ -30,8 +32,8 @@ function MovementSystem:_within_bounds(point)
    return
       point.x >= 1
       and point.y >= 1
-      and point.x <= self._level_config.width
-      and point.y <= self._level_config.height
+      and point.x <= self._world_config.width
+      and point.y <= self._world_config.height
 end
 
 function MovementSystem:_offset_by_event(event)

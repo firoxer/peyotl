@@ -5,13 +5,13 @@ local parse_args = require("src.lib.parse_args")
 local seed = require("src.lib.seed")
 
 local EntityManager = require("src.engine.ecs.entity_manager")
-local PlayerInput = require("src.engine.input.player_input")
 local PauseScreenRenderer = require("src.engine.rendering.pause_screen_renderer")
+local PlayerInput = require("src.engine.input.player_input")
 local Renderer = require("src.engine.rendering.renderer")
 local validate_config = require("src.engine.config.validate_config")
 
-local Systems = require("src.game.systems")
 local components = require("src.game.components")
+local Systems = require("src.game.systems")
 local create_tileset = require("src.game.tileset.create_tileset")
 local generate = require("src.game.generate")
 
@@ -27,7 +27,24 @@ local player_input
 local function reset()
    seed()
 
-   local entity_manager = EntityManager(tablex.keys(components))
+   player_input = PlayerInput(config.player_input)
+
+   player_input.event_subject:subscribe("quit_game", function()
+      game_status = "terminating"
+   end)
+   player_input.event_subject:subscribe("toggle_game_pause", function()
+      game_status = game_status ~= "paused" and "paused" or "running"
+   end)
+
+   local entity_manager = EntityManager(components)
+
+   systems = {
+      Systems.Chase(config.world, entity_manager),
+      Systems.Attack(config.world, entity_manager),
+      Systems.Death(config.world, entity_manager),
+      Systems.Movement(config.world, entity_manager, player_input),
+      Systems.MonsterSpawning(config.world, entity_manager, components),
+   }
 
    entity_manager.event_subject:subscribe(
       entity_manager.event_subject.events.entity_to_be_removed,
@@ -39,29 +56,12 @@ local function reset()
       end
    )
 
-   player_input = PlayerInput(config.player_input)
-
-   player_input.event_subject:subscribe("quit_game", function()
-      game_status = "terminating"
-   end)
-   player_input.event_subject:subscribe("toggle_game_pause", function()
-      game_status = game_status ~= "paused" and "paused" or "running"
-   end)
-
-   systems = {
-      Systems.ChaseSystem(config.level, entity_manager),
-      Systems.AttackSystem(config.level, entity_manager),
-      Systems.DeathSystem(config.level, entity_manager),
-      Systems.MovementSystem(config.level, entity_manager, player_input),
-      Systems.MonsterSpawningSystem(config.level, entity_manager),
-   }
-
    local tileset = create_tileset(config.rendering.tiles.size)
-   renderer = Renderer(config.rendering, config.level, entity_manager, tileset)
+   renderer = Renderer(config.rendering, config.world, entity_manager, tileset)
 
    pause_screen_renderer = PauseScreenRenderer(config.rendering)
 
-   generate(entity_manager, config.level)
+   generate(config.world, entity_manager, components)
 
    game_status = "running"
 end

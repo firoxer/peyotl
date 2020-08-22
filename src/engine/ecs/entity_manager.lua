@@ -4,13 +4,13 @@ local events = tablex.identity({
    "entity_to_be_removed"
 })
 
-local EntityManager = prototype(function(self, component_names)
+local EntityManager = prototype(function(self, components)
    self.event_subject = EventSubject(events)
 
    self._components = nil
    self._entity_id = 0
 
-   self:_reset(component_names)
+   self:_reset(components)
 end)
 
 function EntityManager:new_entity_id()
@@ -65,7 +65,7 @@ function EntityManager:add_component(entity_id, component)
       local component_name_str =
          type(component.name) == "string"
             and component.name
-            or string.format("<%s>", type(component.name))
+            or string.format("<%s>", type(component))
       error("unknown component being added: " .. component_name_str)
    end
 
@@ -139,11 +139,11 @@ function EntityManager:iterate(...)
    )
 end
 
-function EntityManager:_reset(component_names)
+function EntityManager:_reset(components)
    self._components = {}
 
-   for _, name in ipairs(component_names) do
-      self._components[name] = {}
+   for _, component in pairs(components) do
+      self._components[component.name] = {}
    end
 end
 

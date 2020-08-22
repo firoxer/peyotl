@@ -1,13 +1,13 @@
 --- Assign a name to the prototype for type checks
 local function assign_name(prototype)
-   if prototype.name ~= nil then
+   if prototype.prototype_name ~= nil then
       return
    end
 
    local caller_src = debug.getinfo(3, "S").source
 
    if caller_src == nil then
-      prototype.name = "unknown"
+      prototype.prototype_name = "unknown"
       return
    end
 
@@ -27,7 +27,7 @@ local function assign_name(prototype)
    local prototype_name = table.remove(parts, #parts)
    local namespace = table.concat(parts, ".")
 
-   prototype.name = (namespace .. "." .. stringx.camelcasify(prototype_name, true)):gsub("/", ".")
+   prototype.prototype_name = (namespace .. "." .. stringx.camelcasify(prototype_name, true)):gsub("/", ".")
 end
 
 return function(parent_prototype, initialize)
@@ -41,16 +41,8 @@ return function(parent_prototype, initialize)
 
    assign_name(prototype)
 
-   initialize = initialize or function()
+   prototype.initialize = initialize or function()
       -- No-op, just to make it certain that `initialize` is always callable
-   end
-
-   prototype.initialize = function(...)
-      if parent_prototype then
-         parent_prototype.initialize(...)
-      end
-
-      initialize(...)
    end
 
    setmetatable(prototype, {

@@ -1,12 +1,12 @@
-return function(algo_settings, level_width, level_height)
+return function(algo_settings, width, height)
    assertx.is_table(algo_settings)
-   assertx.is_number(level_width)
-   assertx.is_number(level_height)
+   assertx.is_number(width)
+   assertx.is_number(height)
 
    local matrix = ds.Matrix()
 
-   for y = 1, level_height do
-      for x = 1, level_width do
+   for y = 1, height do
+      for x = 1, width do
          if love.math.random() < algo_settings.initial_wall_chance then
             matrix:set(ds.Point.get(x, y), true)
          else
@@ -18,8 +18,8 @@ return function(algo_settings, level_width, level_height)
    for _ = 1, algo_settings.iterations do
       local updates = {}
 
-      for y = 1, level_height do
-         for x = 1, level_width do
+      for y = 1, height do
+         for x = 1, width do
             local point = ds.Point.get(x, y)
             local is_wall = matrix:get(point)
 

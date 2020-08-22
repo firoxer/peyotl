@@ -1,8 +1,10 @@
+local System = require("src.engine.ecs.system")
+
 local function close_enough(pos_a, pos_b, range)
    return ds.Point.chebyshev_distance(pos_a.point, pos_b.point) <= range
 end
 
-local AttackSystem = prototype(function(self, _, entity_manager)
+local AttackSystem = prototype(System, function(self, _, entity_manager)
    self._entity_manager = entity_manager
 end)
 

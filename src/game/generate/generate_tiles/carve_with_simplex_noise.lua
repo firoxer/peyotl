@@ -1,20 +1,20 @@
 -- Using math.ceil ensures that the jaggedness matches with the map's edges
-return function(algo_settings, level_width, level_height)
+return function(algo_settings, width, height)
    assertx.is_table(algo_settings)
-   assertx.is_number(level_width)
-   assertx.is_number(level_height)
+   assertx.is_number(width)
+   assertx.is_number(height)
 
    local matrix = ds.Matrix()
    local random_offset = love.math.random(0, 1000)
 
-   for y = 1, level_height do
-      for x = 1, level_width do
+   for y = 1, height do
+      for x = 1, width do
          matrix:set(ds.Point.get(x, y), true)
       end
    end
 
-   for y = 1, level_height do
-      for x = 1, level_width do
+   for y = 1, height do
+      for x = 1, width do
          local modified_x =
             math.ceil(x / algo_settings.a_noise_jaggedness)
             * algo_settings.a_noise_jaggedness
@@ -37,8 +37,8 @@ return function(algo_settings, level_width, level_height)
       end
    end
 
-   for y = 1, level_height do
-      for x = 1, level_width do
+   for y = 1, height do
+      for x = 1, width do
          local modified_x =
             math.ceil(x / algo_settings.b_noise_jaggedness)
             * algo_settings.b_noise_jaggedness

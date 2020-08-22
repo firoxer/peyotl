@@ -1,16 +1,16 @@
 return {
-   AttackSystem =
+   Attack =
       require("src.game.systems.attack_system"),
 
-   ChaseSystem =
+   Chase =
       require("src.game.systems.chase_system"),
 
-   DeathSystem =
+   Death =
       require("src.game.systems.death_system"),
 
-   MonsterSpawningSystem =
+   MonsterSpawning =
       require("src.game.systems.monster_spawning_system"),
 
-   MovementSystem =
+   Movement =
       require("src.game.systems.movement_system"),
 }

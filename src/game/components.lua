@@ -1,126 +1,43 @@
 return {
-   attack = function(amount, time_between_attacks, time_at_last_attack)
-      assertx.is_number(amount)
-      assertx.is_number(time_between_attacks)
-      assertx.is_number_or_nil(time_at_last_attack)
+   Attack =
+      require("src.game.components.attack_component"),
 
-      time_at_last_attack = time_at_last_attack or 0
+   Camera =
+      require("src.game.components.camera_component"),
 
-      return {
-         name = "attack",
-         amount = amount,
-         range = 1,
-         time_at_last_attack = time_at_last_attack,
-         time_between_attacks = time_between_attacks,
-      }
-   end,
+   Chase =
+      require("src.game.components.chase_component"),
 
-   camera = function()
-      return {
-         name = "camera"
-      }
-   end,
+   Chaseable =
+      require("src.game.components.chaseable_component"),
 
-   chase = function(target_id, aggro_range)
-      assertx.is_number(target_id)
-      assertx.is_number(aggro_range)
+   Collision =
+      require("src.game.components.collision_component"),
 
-      return {
-         name = "chase",
-         aggro_range = aggro_range,
-         target_id = target_id,
-         time_at_last_movement = 0,
-         time_between_movements = 1,
-      }
-   end,
+   FogOfWar =
+      require("src.game.components.fog_of_war_component"),
 
-   chaseable = function()
-      return {
-         name = "chaseable"
-      }
-   end,
+   Health =
+      require("src.game.components.health_component"),
 
-   collision = function()
-      return {
-         name = "collision",
-      }
-   end,
+   Input =
+      require("src.game.components.input_component"),
 
-   fog_of_war = function(explored)
-      assertx.is_boolean_or_nil(explored)
+   Monster =
+      require("src.game.components.monster_component"),
 
-      explored = explored or false
+   MonsterSpawning =
+      require("src.game.components.monster_spawning_component"),
 
-      return {
-         name = "fog_of_war",
-         explored = explored,
-      }
-   end,
+   Opaque =
+      require("src.game.components.opaque_component"),
 
-   health = function(amount, max_amount)
-      assertx.is_number(amount)
-      assertx.is_number(max_amount)
+   Player =
+      require("src.game.components.player_component"),
 
-      return {
-         name = "health",
-         amount = amount,
-         max_amount = max_amount,
-      }
-   end,
+   Position =
+      require("src.game.components.position_component"),
 
-   input = function()
-      return {
-         name = "input",
-         pending_events = ds.Queue(),
-      }
-   end,
-
-   monster = function()
-      return {
-         name = "monster"
-      }
-   end,
-
-   monster_spawning = function(chase_target_id, time_at_last_spawn)
-      assertx.is_number(chase_target_id)
-      assertx.is_number_or_nil(time_at_last_spawn)
-
-      return {
-         name = "monster_spawning",
-         chase_target_id = chase_target_id,
-         time_at_last_spawn = time_at_last_spawn or 0,
-      }
-   end,
-
-   opaque = function()
-      return {
-         name = "opaque",
-      }
-   end,
-
-   player = function()
-      return {
-         name = "player"
-      }
-   end,
-
-   position = function(point)
-      assertx.is_instance_of("ds.Point", point)
-
-      return {
-         name = "position",
-         point = point,
-      }
-   end,
-
-   texture = function(tile_name, layer)
-      assertx.is_string(tile_name)
-      assertx.is_number(layer)
-
-      return {
-         name = "texture",
-         tile_name = tile_name,
-         layer = layer,
-      }
-   end
+   Texture =
+      require("src.game.components.texture_component"),
 }

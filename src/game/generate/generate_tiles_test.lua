@@ -2,7 +2,7 @@ local EntityManager = require("src.engine.ecs.entity_manager")
 local components = require("src.game.components")
 local generate_tiles = require("src.game.generate.generate_tiles")
 
-local level_config = {
+local world_config = {
    width = 8,
    height = 8,
 
@@ -21,8 +21,8 @@ local level_config = {
 }
 
 do
-   local entity_manager = EntityManager(tablex.keys(components))
-   generate_tiles(entity_manager, level_config)
+   local entity_manager = EntityManager(components)
+   generate_tiles(world_config, entity_manager, components)
    local position_component_n = 0
    for _ in entity_manager:iterate("position") do
       position_component_n = position_component_n + 1

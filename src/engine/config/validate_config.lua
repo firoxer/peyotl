@@ -26,7 +26,7 @@ local function validate_rendering(subconfig)
    assertx.is_boolean(subconfig.enable_vsync)
 end
 
-local function validate_level(subconfig)
+local function validate_world(subconfig)
    assertx.is_table(subconfig)
 
    assertx.is_number(subconfig.width)
@@ -90,5 +90,5 @@ return function(config)
 
    validate_rendering(config.rendering)
 
-   validate_level(config.level)
+   validate_world(config.world)
 end

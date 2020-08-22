@@ -11,5 +11,7 @@ return function(tbl)
       cloned[k] = v
    end
 
+   setmetatable(cloned, getmetatable(tbl))
+
    return cloned
 end

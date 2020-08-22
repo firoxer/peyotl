@@ -8,13 +8,13 @@ local player_config = {
 }
 
 do
-   local entity_manager = EntityManager(tablex.keys(components))
+   local entity_manager = EntityManager(components)
 
    -- Tile for the player to spawn on
    local tile_id = entity_manager:new_entity_id()
-   entity_manager:add_component(tile_id, components.position(ds.Point.get(1, 1)))
+   entity_manager:add_component(tile_id, components.Position(ds.Point.get(1, 1)))
 
-   generate_player(entity_manager, player_config)
+   generate_player(player_config, entity_manager, components)
 
    local player_id = entity_manager:get_unique_component("player")
 

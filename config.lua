@@ -21,7 +21,7 @@ return tablex.uptight({
       enable_vsync = true,
    },
 
-   level = {
+   world = {
       width = 64,
       height = 64,
 

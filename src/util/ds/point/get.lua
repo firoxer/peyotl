@@ -20,7 +20,7 @@ return function(x, y)
 
       -- So that the code can assume this is an object
       -- FIXME: This is fragile
-      p.prototype = { name = "ds.Point" }
+      p.prototype = { prototype_name = "ds.Point" }
 
       points[y][x] = tablex.readonly(p)
    end

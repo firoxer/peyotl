@@ -1,9 +1,10 @@
-local components = require("src.game.components")
+local System = require("src.engine.ecs.system")
 local tile_names = require("src.game.tileset.tile_names")
 
-local MonsterSpawningSystem = prototype(function(self, level_config, entity_manager)
-   self._monster_config = level_config.monsters
+local MonsterSpawningSystem = prototype(System, function(self, world_config, entity_manager, components)
+   self._monster_config = world_config.monsters
    self._entity_manager = entity_manager
+   self._components = components
 end)
 
 function MonsterSpawningSystem:_count_monsters()
@@ -21,12 +22,12 @@ function MonsterSpawningSystem:_spawn_monster(spawning_tile_id, spawning_c)
    local position_c = entity_manager:get_component(spawning_tile_id, "position")
 
    local id = entity_manager:new_entity_id()
-   entity_manager:add_component(id, components.attack(self._monster_config.damage, 1))
-   entity_manager:add_component(id, components.position(position_c.point))
-   entity_manager:add_component(id, components.collision())
-   entity_manager:add_component(id, components.monster())
-   entity_manager:add_component(id, components.texture(tile_names.monster, 2))
-   entity_manager:add_component(id, components.chase(spawning_c.chase_target_id, self._monster_config.aggro_range))
+   entity_manager:add_component(id, self._components.Attack(self._monster_config.damage, 1))
+   entity_manager:add_component(id, self._components.Position(position_c.point))
+   entity_manager:add_component(id, self._components.Collision())
+   entity_manager:add_component(id, self._components.Monster())
+   entity_manager:add_component(id, self._components.Texture(tile_names.monster, 2))
+   entity_manager:add_component(id, self._components.Chase(spawning_c.chase_target_id, self._monster_config.aggro_range))
 end
 
 function MonsterSpawningSystem:run()

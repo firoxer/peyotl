@@ -89,13 +89,9 @@ do
    assert(instance.prop == 1)
 end
 
--- Ensuring all initializations get called
+-- Ensuring only the last initialization gets called
 do
-   local GrandparentPrototype = prototype(function(self)
-      self.grandparentCalled = true
-   end)
-
-   local ParentPrototype = prototype(GrandparentPrototype, function(self)
+   local ParentPrototype = prototype(function(self)
       self.parentCalled = true
    end)
 
@@ -106,6 +102,5 @@ do
    local instance = Prototype()
 
    assert(instance.called == true)
-   assert(instance.parentCalled == true)
-   assert(instance.grandparentCalled == true)
+   assert(instance.parentCalled == nil)
 end

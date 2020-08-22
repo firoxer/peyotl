@@ -1,9 +1,9 @@
-return function(_, level_width, level_height)
-   assertx.is_number(level_width)
-   assertx.is_number(level_height)
+return function(_, width, height)
+   assertx.is_number(width)
+   assertx.is_number(height)
 
-   if level_width ~= 32 or level_height ~= 32 then
-      error("this generation works only a size 32x32 level")
+   if width ~= 32 or height ~= 32 then
+      error("this generation works only a size 32x32 world")
    end
 
    local map = [[

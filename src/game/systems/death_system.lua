@@ -1,4 +1,6 @@
-local DeathSystem = prototype(function(self, _, entity_manager)
+local System = require("src.engine.ecs.system")
+
+local DeathSystem = prototype(System, function(self, _, entity_manager)
    self._entity_manager = entity_manager
 end)
 

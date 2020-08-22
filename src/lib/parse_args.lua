@@ -8,7 +8,7 @@ local arg_reactions = {
    end,
 
    god_mode = function()
-      config.level.player.initial_health = math.huge
+      config.world.player.initial_health = math.huge
       log.debug("enabled god mode")
    end,
 

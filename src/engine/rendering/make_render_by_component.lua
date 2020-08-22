@@ -45,9 +45,9 @@ local function create_illuminabilities(texture_matrix_iterator, opaque_matrix)
    return illuminabilities
 end
 
-return function(rendering_config, level_config, entity_manager, tileset)
+return function(rendering_config, world_config, entity_manager, tileset)
    assertx.is_table(rendering_config)
-   assertx.is_table(level_config)
+   assertx.is_table(world_config)
    assertx.is_instance_of("engine.ecs.EntityManager", entity_manager)
    assertx.is_table(tileset)
 
@@ -122,13 +122,13 @@ return function(rendering_config, level_config, entity_manager, tileset)
          create_illuminabilities(visible_texture_matrix_iterator, opaque_matrix)
 
       local calculate_alpha =
-         create_calculate_alpha(level_config.lighting, illuminabilities, camera_point)
+         create_calculate_alpha(world_config.lighting, illuminabilities, camera_point)
 
       love.graphics.setCanvas(canvas)
 
       -- The background has to be rendered here so that the alphas
       -- go nicely on top of it
-      love.graphics.clear(level_config.background_color)
+      love.graphics.clear(world_config.background_color)
 
       for _, layer_id in ipairs(layer_ids) do
          local texture_cs = layers_by_id[layer_id]
@@ -140,8 +140,8 @@ return function(rendering_config, level_config, entity_manager, tileset)
             local entity_id = entity_ids_by_texture_c[texture_c]
             if entity_manager:has_component(entity_id, "fog_of_war") then
                local fow_c = entity_manager:get_component(entity_id, "fog_of_war")
-               if fow_c.explored and alpha < level_config.lighting.explored_alpha then
-                  alpha = level_config.lighting.explored_alpha
+               if fow_c.explored and alpha < world_config.lighting.explored_alpha then
+                  alpha = world_config.lighting.explored_alpha
                elseif alpha > 0 and not fow_c.explored then
                   entity_manager:update_component(entity_id, "fog_of_war", { explored = true })
                end

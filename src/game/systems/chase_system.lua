@@ -1,4 +1,5 @@
 local BreadthFirst = require("src.engine.pathfinding.breadth_first")
+local System = require("src.engine.ecs.system")
 
 local function too_far(pos_a, pos_b, range)
    if range == math.huge then
@@ -8,8 +9,8 @@ local function too_far(pos_a, pos_b, range)
    return ds.Point.chebyshev_distance(pos_a.point, pos_b.point) > range
 end
 
-local ChaseSystem = prototype(function(self, level_config, entity_manager)
-   self._level_config = level_config
+local ChaseSystem = prototype(System, function(self, world_config, entity_manager)
+   self._world_config = world_config
    self._entity_manager = entity_manager
 
    self._collision_matrix = ds.Matrix()
@@ -19,8 +20,8 @@ end)
 function ChaseSystem:_update_collision_matrix()
    local matrix = self._collision_matrix
 
-   for y = 1, self._level_config.height do
-      for x = 1, self._level_config.width do
+   for y = 1, self._world_config.height do
+      for x = 1, self._world_config.width do
          matrix:set(ds.Point.get(x, y), false)
       end
    end
@@ -34,7 +35,7 @@ function ChaseSystem:_update_pathfinders()
    for entity_id, _, position_c in self._entity_manager:iterate("chaseable", "position") do
       local pathfinder = BreadthFirst(
          self._collision_matrix,
-         self._level_config.monsters.aggro_range
+         self._world_config.monsters.aggro_range
       )
       pathfinder:change_destination_to(position_c.point)
       self._pathfinders[entity_id] = pathfinder

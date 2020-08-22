@@ -3,13 +3,13 @@ local make_render_debug_overlay = require("src.engine.rendering.make_render_debu
 local make_render_fps_overlay = require("src.engine.rendering.make_render_fps_overlay")
 local make_render_ui = require("src.engine.rendering.make_render_ui")
 
-local Renderer = prototype(function(self, rendering_config, level_config, entity_manager, tileset)
+local Renderer = prototype(function(self, rendering_config, world_config, entity_manager, tileset)
    self._tileset = tileset
 
    self._render_by_component =
       make_render_by_component(
          rendering_config,
-         level_config,
+         world_config,
          entity_manager,
          tileset
       )

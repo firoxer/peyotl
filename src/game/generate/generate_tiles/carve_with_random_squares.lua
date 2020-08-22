@@ -1,7 +1,7 @@
-return function(algo_settings, level_width, level_height)
+return function(algo_settings, width, height)
    assertx.is_table(algo_settings)
-   assertx.is_number(level_width)
-   assertx.is_number(level_height)
+   assertx.is_number(width)
+   assertx.is_number(height)
 
    local matrix = ds.Matrix()
 
@@ -24,18 +24,18 @@ return function(algo_settings, level_width, level_height)
       return wall_n / (wall_n + empty_n)
    end
 
-   for y = 1, level_height do
-      for x = 1, level_width do
+   for y = 1, height do
+      for x = 1, width do
          matrix:set(ds.Point.get(x, y), false)
       end
    end
 
    while calculate_free_area() < algo_settings.minimum_wall_density do
-      local random_nw_x = love.math.random(level_width)
-      local random_nw_y = love.math.random(level_height)
+      local random_nw_x = love.math.random(width)
+      local random_nw_y = love.math.random(height)
       local square_size = love.math.random(algo_settings.square_size_min, algo_settings.square_size_max)
-      local random_se_x = math.min(level_width, random_nw_x + square_size)
-      local random_se_y = math.min(level_height, random_nw_y + square_size)
+      local random_se_x = math.min(width, random_nw_x + square_size)
+      local random_se_y = math.min(height, random_nw_y + square_size)
 
       for y = random_nw_y, random_se_y do
          for x = random_nw_x, random_se_x do
