@@ -2,7 +2,6 @@ require("./init")
 
 local devtools = require("src.lib.devtools")
 local parse_args = require("src.lib.parse_args")
-local seed = require("src.lib.seed")
 
 local EntityManager = require("src.engine.ecs.entity_manager")
 local PauseScreenRenderer = require("src.engine.rendering.pause_screen_renderer")
@@ -18,14 +17,26 @@ local generate = require("src.game.generate")
 local config = require("config")
 validate_config(config)
 
+local seed = 1
 local game_status
 local systems
 local renderer
 local pause_screen_renderer
 local player_input
 
+local function reseed()
+   if not seed then
+      math.randomseed(os.time())
+      seed = math.random() * ((2^51) - 1)
+   end
+
+   seed = seed + 1
+   math.randomseed(seed)
+   love.math.setRandomSeed(seed)
+end
+
 local function reset()
-   seed()
+   reseed()
 
    player_input = PlayerInput(config.player_input)
 
