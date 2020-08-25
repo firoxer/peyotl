@@ -15,8 +15,6 @@ function PauseScreenRenderer:render()
    love.graphics.setColor(PAUSE_SCREEN_COLOR)
    love.graphics.rectangle("fill", 0, 0, self._window_width, self._window_height)
 
-   print(self._window_height)
-
    love.graphics.setColor(1, 1, 1, 1)
    love.graphics.printf(
       "paused",
