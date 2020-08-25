@@ -18,7 +18,7 @@ local config = require("config")
 validate_config(config)
 
 local seed = 1
-local game_status
+local game_paused = false
 local systems
 local renderer
 local pause_screen_renderer
@@ -41,10 +41,10 @@ local function reset()
    player_input = PlayerInput(config.player_input)
 
    player_input.event_subject:subscribe("quit_game", function()
-      game_status = "terminating"
+      love.event.quit()
    end)
    player_input.event_subject:subscribe("toggle_game_pause", function()
-      game_status = game_status ~= "paused" and "paused" or "running"
+      game_paused = not game_paused
    end)
 
    local entity_manager = EntityManager(components)
@@ -61,7 +61,6 @@ local function reset()
       entity_manager.event_subject.events.entity_to_be_removed,
       function(event_data)
          if event_data.entity.player then
-            game_status = "resetting"
             reset()
          end
       end
@@ -74,7 +73,7 @@ local function reset()
 
    generate(config.world, entity_manager, components)
 
-   game_status = "running"
+   game_paused = false
 end
 
 function love.load(args)
@@ -91,17 +90,11 @@ function love.load(args)
 end
 
 function love.update(dt)
-   if game_status == "terminating" then
-      love.event.quit()
-   end
-   if game_status == "resetting" then
-      reset()
-   end
-   if game_status == "paused" then
+   player_input:tick(dt)
+
+   if game_paused then
       return
    end
-
-   player_input:tick(dt)
 
    for _, system in ipairs(systems) do
       system:run()
@@ -111,11 +104,9 @@ function love.update(dt)
 end
 
 function love.draw()
-   if game_status == "resetting" then
-      return
-   elseif game_status == "paused" then
+   if game_paused then
       pause_screen_renderer:render()
    else
-      renderer:render(game_status)
+      renderer:render()
    end
 end
