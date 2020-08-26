@@ -1,16 +1,17 @@
 require("./init")
 
-local devtools = require("src.lib.devtools")
-local parse_args = require("src.lib.parse_args")
-
+local Profiler = require("src.engine.debug.profiler")
+local MemoryUsageReporter = require("src.engine.debug.memory_usage_reporter")
+local retard_performance = require("src.engine.debug.retard_performance")
 local EntityManager = require("src.engine.ecs.entity_manager")
 local PauseScreenRenderer = require("src.engine.rendering.pause_screen_renderer")
 local PlayerInput = require("src.engine.input.player_input")
 local Renderer = require("src.engine.rendering.renderer")
 local validate_config = require("src.engine.config.validate_config")
 
-local components = require("src.game.components")
+local ArgParser = require("src.util.arg_parser")
 local Systems = require("src.game.systems")
+local components = require("src.game.components")
 local create_tileset = require("src.game.tileset.create_tileset")
 local generate = require("src.game.generate")
 
@@ -23,6 +24,7 @@ local systems
 local renderer
 local pause_screen_renderer
 local player_input
+local ticks = {}
 
 local function reseed()
    if not seed then
@@ -85,7 +87,40 @@ function love.load(args)
       { vsync = config.rendering.enable_vsync }
    )
 
-   parse_args(args)
+   local arg_parser
+   arg_parser = ArgParser({
+      ["--disable-vsync"] = function()
+         config.rendering.enable_vsync = false
+         log.debug("disabled vsync")
+      end,
+
+      ["--god-mode"] = function()
+         config.world.player.initial_health = math.huge
+         log.debug("enabled god mode")
+      end,
+
+      ["--profile"] = function()
+         table.insert(ticks, tablex.bind(Profiler(), "tick"))
+         log.debug("enabled profiling")
+      end,
+
+      ["--report-memory-usage"] = function()
+         table.insert(ticks, tablex.bind(MemoryUsageReporter(), "tick"))
+         log.debug("enabled memory usage reports")
+      end,
+
+      ["--retard-performance"] = function()
+         table.insert(ticks, retard_performance)
+         log.debug("enabled performance retardation")
+      end,
+
+      ["--development"] = function()
+         arg_parser:trigger_reaction("--retard-performance")
+      end,
+   })
+
+   arg_parser:parse(args)
+
    reset()
 end
 
@@ -96,11 +131,13 @@ function love.update(dt)
       return
    end
 
+   for _, tick in ipairs(ticks) do
+      tick()
+   end
+
    for _, system in ipairs(systems) do
       system:run()
    end
-
-   devtools.tick()
 end
 
 function love.draw()
