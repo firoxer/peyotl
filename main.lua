@@ -114,8 +114,14 @@ function love.load(args)
          log.debug("enabled performance retardation")
       end,
 
+      ["--show-fps"] = function()
+         config.rendering.fps_overlay_enabled = true
+         log.debug("enabled FPS overlay")
+      end,
+
       ["--development"] = function()
          arg_parser:trigger_reaction("--retard-performance")
+         arg_parser:trigger_reaction("--show-fps")
       end,
    })
 
