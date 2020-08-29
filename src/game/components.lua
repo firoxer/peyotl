@@ -38,6 +38,6 @@ return {
    Position =
       require("src.game.components.position_component"),
 
-   Texture =
-      require("src.game.components.texture_component"),
+   Sprite =
+      require("src.game.components.sprite_component"),
 }

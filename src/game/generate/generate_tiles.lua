@@ -2,7 +2,6 @@ local carve_into_preset_temple = require("src.game.generate.generate_tiles.carve
 local carve_with_cellular_automatons = require("src.game.generate.generate_tiles.carve_with_cellular_automatons")
 local carve_with_random_squares = require("src.game.generate.generate_tiles.carve_with_random_squares")
 local carve_with_simplex_noise = require("src.game.generate.generate_tiles.carve_with_simplex_noise")
-local tile_names = require("src.game.tileset.tile_names")
 
 local carves_by_algorithm_name = {
    simplex = carve_with_simplex_noise,
@@ -11,43 +10,43 @@ local carves_by_algorithm_name = {
    preset_temple = carve_into_preset_temple,
 }
 
-local function change_south_wall_tiles_quad(entity_manager, texture_cs)
-   for entity_id, position_c, texture_c in entity_manager:iterate("position", "texture") do
-      if texture_c.tile_name == "wall" then
-         local texture_c_south = texture_cs:get(ds.Point.offset(position_c.point, 0, 1))
+local function change_south_wall_tiles_quad(entity_manager, sprite_cs, sprite_quads)
+   for entity_id, position_c, sprite_c in entity_manager:iterate("position", "sprite") do
+      if sprite_c.quad == sprite_quads.wall then
+         local sprite_c_south = sprite_cs:get(ds.Point.offset(position_c.point, 0, 1))
          if
-            texture_c_south
+            sprite_c_south
             and (
-               texture_c_south.tile_name == tile_names.empty
-               or texture_c_south.tile_name == tile_names.empty2
+               sprite_c_south.quad == sprite_quads.empty1
+               or sprite_c_south.quad == sprite_quads.empty2
             )
          then
-            entity_manager:update_component(entity_id, "texture", {
-               tile_name = tile_names.wall_south
+            entity_manager:update_component(entity_id, "sprite", {
+               quad = sprite_quads.wall_south
             })
          end
-      elseif texture_c.tile_name == "wall" then
-         local texture_c_south = texture_cs:get(ds.Point.offset(position_c.point, 0, 1))
+      elseif sprite_c.quad == sprite_quads.wall then
+         local sprite_c_south = sprite_cs:get(ds.Point.offset(position_c.point, 0, 1))
          if
-            texture_c_south
+            sprite_c_south
             and (
-               texture_c_south.tile_name == tile_names.empty
-               or texture_c_south.tile_name == tile_names.empty2
+               sprite_c_south.quad == sprite_quads.empty1
+               or sprite_c_south.quad == sprite_quads.empty2
             )
          then
-            entity_manager:update_component(entity_id, "texture", {
-               tile_name = tile_names.wall_south
+            entity_manager:update_component(entity_id, "sprite", {
+               quad = sprite_quads.wall_south
             })
          end
       end
    end
 end
 
-return function(world_config, entity_manager, components)
+return function(world_config, entity_manager, components, sprite_quads)
    local tiles_config = world_config.tiles
 
    local current_time = love.timer.getTime()
-   local texture_cs = ds.Matrix()
+   local sprite_cs = ds.Matrix()
 
    local carve = carves_by_algorithm_name[tiles_config.algorithm]
    if carve == nil then
@@ -55,23 +54,23 @@ return function(world_config, entity_manager, components)
    end
    local matrix = carve(tiles_config, world_config.width, world_config.height)
    for point, is_wall in matrix:pairs() do
-      local tile_name
+      local quad
       if is_wall then
-         tile_name = tile_names.wall
+         quad = sprite_quads.wall
       else
-         tile_name = tablex.sample({
-            tile_names.empty,
-            tile_names.empty,
-            tile_names.empty,
-            tile_names.empty2,
+         quad = tablex.sample({
+            sprite_quads.empty1,
+            sprite_quads.empty1,
+            sprite_quads.empty1,
+            sprite_quads.empty2,
          })
       end
 
       local tile_id = entity_manager:new_entity_id()
       entity_manager:add_component(tile_id, components.Position(point))
-      local texture_c = components.Texture(tile_name, 0)
-      entity_manager:add_component(tile_id, texture_c)
-      texture_cs:set(point, texture_c)
+      local sprite_c = components.Sprite(quad, 0)
+      entity_manager:add_component(tile_id, sprite_c)
+      sprite_cs:set(point, sprite_c)
 
       if is_wall then
          entity_manager:add_component(tile_id, components.Collision())
@@ -101,5 +100,5 @@ return function(world_config, entity_manager, components)
       end
    end
 
-   change_south_wall_tiles_quad(entity_manager, texture_cs)
+   change_south_wall_tiles_quad(entity_manager, sprite_cs, sprite_quads)
 end

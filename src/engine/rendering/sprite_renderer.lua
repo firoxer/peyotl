@@ -3,15 +3,13 @@ local make_render_debug_overlay = require("src.engine.rendering.make_render_debu
 local make_render_fps_overlay = require("src.engine.rendering.make_render_fps_overlay")
 local make_render_ui = require("src.engine.rendering.make_render_ui")
 
-local Renderer = prototype(function(self, rendering_config, world_config, entity_manager, tileset)
-   self._tileset = tileset
-
+local SpriteRenderer = prototype(function(self, rendering_config, world_config, entity_manager, sprite_atlas)
    self._render_by_component =
       make_render_by_component(
          rendering_config,
          world_config,
          entity_manager,
-         tileset
+         sprite_atlas
       )
 
    self._render_ui =
@@ -37,9 +35,9 @@ local Renderer = prototype(function(self, rendering_config, world_config, entity
    end
 end)
 
-function Renderer:render()
+function SpriteRenderer:render()
    self._render_by_component()
    self._render_ui()
 end
 
-return Renderer
+return SpriteRenderer

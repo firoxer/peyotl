@@ -37,4 +37,7 @@ return {
 
    is_true =
       require("src.util.assertx.is_true"),
+
+   is_userdata =
+      require("src.util.assertx.is_userdata"),
 }

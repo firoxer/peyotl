@@ -7,6 +7,17 @@ end
 
 -- For tests
 if love == nil then
+   local fake_user_data = {}
+
+   local real_type = type
+   _G.type = function(x)
+      if x == fake_user_data then
+         return "userdata"
+      else
+         return real_type(x)
+      end
+   end
+
    love = {
       graphics = {
          newImage = function()
@@ -23,7 +34,7 @@ if love == nil then
          end,
 
          newQuad = function()
-            return nil
+            return fake_user_data
          end,
       },
 

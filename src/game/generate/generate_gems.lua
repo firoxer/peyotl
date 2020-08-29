@@ -1,6 +1,4 @@
-local tile_names = require("src.game.tileset.tile_names")
-
-return function(gem_config, entity_manager, components)
+return function(gem_config, entity_manager, components, sprite_quads)
    local walkable_points = {}
    for position_id, position_c in entity_manager:iterate("position") do
       if not entity_manager:has_component(position_id, "collision") then
@@ -16,10 +14,10 @@ return function(gem_config, entity_manager, components)
 
       local gem_id = entity_manager:new_entity_id()
       entity_manager:add_component(gem_id, components.Position(point))
-      local gem_quad_name =
+      local gem_quad =
          love.math.random() > 0.5
-            and tile_names.gem1
-            or tile_names.gem2
-      entity_manager:add_component(gem_id, components.Texture(gem_quad_name, 1))
+            and sprite_quads.gem1
+            or sprite_quads.gem2
+      entity_manager:add_component(gem_id, components.Sprite(gem_quad, 1))
    end
 end

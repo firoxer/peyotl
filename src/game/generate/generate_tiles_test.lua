@@ -1,6 +1,7 @@
 local EntityManager = require("src.engine.ecs.entity_manager")
 local components = require("src.game.components")
 local generate_tiles = require("src.game.generate.generate_tiles")
+local load_sprite_atlas = require("src.game.sprites.load_sprite_atlas")
 
 local world_config = {
    width = 8,
@@ -20,9 +21,11 @@ local world_config = {
    },
 }
 
+local _, sprite_quads = load_sprite_atlas(1)
+
 do
    local entity_manager = EntityManager(components)
-   generate_tiles(world_config, entity_manager, components)
+   generate_tiles(world_config, entity_manager, components, sprite_quads)
    local position_component_n = 0
    for _ in entity_manager:iterate("position") do
       position_component_n = position_component_n + 1

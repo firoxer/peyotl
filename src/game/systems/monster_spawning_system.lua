@@ -1,10 +1,10 @@
 local System = require("src.engine.ecs.system")
-local tile_names = require("src.game.tileset.tile_names")
 
-local MonsterSpawningSystem = prototype(System, function(self, world_config, entity_manager, components)
+local MonsterSpawningSystem = prototype(System, function(self, world_config, entity_manager, components, sprite_quads)
    self._monster_config = world_config.monsters
    self._entity_manager = entity_manager
    self._components = components
+   self._sprite_quads = sprite_quads
 end)
 
 function MonsterSpawningSystem:_count_monsters()
@@ -26,7 +26,7 @@ function MonsterSpawningSystem:_spawn_monster(spawning_tile_id, spawning_c)
    entity_manager:add_component(id, self._components.Position(position_c.point))
    entity_manager:add_component(id, self._components.Collision())
    entity_manager:add_component(id, self._components.Monster())
-   entity_manager:add_component(id, self._components.Texture(tile_names.monster, 2))
+   entity_manager:add_component(id, self._components.Sprite(self._sprite_quads.monster1, 2))
    entity_manager:add_component(id, self._components.Chase(spawning_c.chase_target_id, self._monster_config.aggro_range))
 end
 

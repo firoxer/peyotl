@@ -6,13 +6,13 @@ local retard_performance = require("src.engine.debug.retard_performance")
 local EntityManager = require("src.engine.ecs.entity_manager")
 local PauseScreenRenderer = require("src.engine.rendering.pause_screen_renderer")
 local PlayerInput = require("src.engine.input.player_input")
-local Renderer = require("src.engine.rendering.renderer")
+local SpriteRenderer = require("src.engine.rendering.sprite_renderer")
 local validate_config = require("src.engine.config.validate_config")
 
 local ArgParser = require("src.util.arg_parser")
 local Systems = require("src.game.systems")
 local components = require("src.game.components")
-local create_tileset = require("src.game.tileset.create_tileset")
+local load_sprite_atlas = require("src.game.sprites.load_sprite_atlas")
 local generate = require("src.game.generate")
 
 local config = require("config")
@@ -51,12 +51,14 @@ local function reset()
 
    local entity_manager = EntityManager(components)
 
+   local sprite_atlas, sprite_quads = load_sprite_atlas(config.rendering.tiles.size)
+
    systems = {
       Systems.Chase(config.world, entity_manager),
       Systems.Attack(config.world, entity_manager),
       Systems.Death(config.world, entity_manager),
       Systems.Movement(config.world, entity_manager, player_input),
-      Systems.MonsterSpawning(config.world, entity_manager, components),
+      Systems.MonsterSpawning(config.world, entity_manager, components, sprite_quads),
    }
 
    entity_manager.event_subject:subscribe(
@@ -68,12 +70,11 @@ local function reset()
       end
    )
 
-   local tileset = create_tileset(config.rendering.tiles.size)
-   renderer = Renderer(config.rendering, config.world, entity_manager, tileset)
+   renderer = SpriteRenderer(config.rendering, config.world, entity_manager, sprite_atlas)
 
    pause_screen_renderer = PauseScreenRenderer(config.rendering)
 
-   generate(config.world, entity_manager, components)
+   generate(config.world, entity_manager, components, sprite_quads)
 
    game_paused = false
 end
