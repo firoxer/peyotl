@@ -1,7 +1,7 @@
 return function(tbl)
    assertx.is_table(tbl)
 
-   local is_hash_table, table_size = tablex.describe(tbl)
+   local table_type, table_size = tablex.describe(tbl)
 
    if table_size == 0 then
       error("trying to get sample from empty table")
@@ -9,14 +9,14 @@ return function(tbl)
 
    local rand_index = math.ceil(love.math.random() * table_size)
 
-   if is_hash_table then
-      local i = 0
-      for _, elem in pairs(tbl) do
-         i = i + 1
-         if i == rand_index then
-            return elem
-         end
+   if table_type == "hash" then
+      local key = nil
+
+      for _ = 1, rand_index do
+         key = next(tbl, key)
       end
+
+      return tbl[key]
    else
       return tbl[rand_index]
    end

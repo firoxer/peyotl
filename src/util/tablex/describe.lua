@@ -2,16 +2,13 @@ return function(tbl)
    assertx.is_table(tbl)
 
    local size = #tbl
-   local is_hash
 
-   if #tbl == 0 then
-      is_hash = true
+   if size == 0 then
       for _ in pairs(tbl) do
          size = size + 1
       end
+      return "hash", size
    else
-      is_hash = false
+      return "array", size
    end
-
-   return is_hash, size
 end
