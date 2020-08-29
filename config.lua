@@ -25,7 +25,7 @@ return tablex.strict({
       width = 64,
       height = 64,
 
-      background_color = { 3 / 255, 7 / 255, 16 / 255 },
+      background_color = { 0, 0, 0 },
 
       lighting = {
          algorithm = "fog_of_war",
