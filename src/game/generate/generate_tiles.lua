@@ -63,9 +63,6 @@ return function(world_config, entity_manager, components)
             tile_names.empty,
             tile_names.empty,
             tile_names.empty,
-            tile_names.empty,
-            tile_names.empty,
-            tile_names.empty,
             tile_names.empty2,
          })
       end
