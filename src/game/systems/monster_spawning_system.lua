@@ -21,12 +21,17 @@ function MonsterSpawningSystem:_spawn_monster(spawning_tile_id, spawning_c)
 
    local position_c = entity_manager:get_component(spawning_tile_id, "position")
 
+   local sprite_quad = tablex.sample({
+      self._sprite_quads.monster1,
+      self._sprite_quads.monster2,
+   })
+
    local id = entity_manager:new_entity_id()
    entity_manager:add_component(id, self._components.Attack(self._monster_config.damage, 1))
    entity_manager:add_component(id, self._components.Position(position_c.point))
    entity_manager:add_component(id, self._components.Collision())
    entity_manager:add_component(id, self._components.Monster())
-   entity_manager:add_component(id, self._components.Sprite(self._sprite_quads.monster1, 2))
+   entity_manager:add_component(id, self._components.Sprite(sprite_quad, 2))
    entity_manager:add_component(id, self._components.Chase(spawning_c.chase_target_id, self._monster_config.aggro_range))
 end
 
