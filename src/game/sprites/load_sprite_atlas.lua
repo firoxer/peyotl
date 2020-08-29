@@ -17,7 +17,7 @@ return function(tile_size)
       )
    end
 
-   return image, tablex.uptight({
+   return image, tablex.strict({
       wall = quad(0, 0),
       wall_south = quad(0, 1),
       empty1 = quad(1, 0),

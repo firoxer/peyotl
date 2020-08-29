@@ -44,6 +44,6 @@ return {
    shuffle =
       require("src.util.tablex.shuffle"),
 
-   uptight =
-      require("src.util.tablex.uptight"),
+   strict =
+      require("src.util.tablex.strict"),
 }
