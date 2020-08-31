@@ -1,12 +1,15 @@
 require("./init")
 
-local Profiler = require("src.engine.debug.profiler")
-local MemoryUsageReporter = require("src.engine.debug.memory_usage_reporter")
-local retard_performance = require("src.engine.debug.retard_performance")
+local DebugOverlayRenderer = require("src.engine.rendering.debug_overlay_renderer")
 local EntityManager = require("src.engine.ecs.entity_manager")
+local FpsOverlayRenderer = require("src.engine.rendering.fps_overlay_renderer")
+local MemoryUsageReporter = require("src.engine.debug.memory_usage_reporter")
 local PauseScreenRenderer = require("src.engine.rendering.pause_screen_renderer")
 local PlayerInput = require("src.engine.input.player_input")
+local Profiler = require("src.engine.debug.profiler")
 local SpriteRenderer = require("src.engine.rendering.sprite_renderer")
+local UiRenderer = require("src.engine.rendering.ui_renderer")
+local retard_performance = require("src.engine.debug.retard_performance")
 local validate_config = require("src.engine.config.validate_config")
 
 local ArgParser = require("src.util.arg_parser")
@@ -21,10 +24,14 @@ validate_config(config)
 local seed = 1
 local game_paused = false
 local systems
-local renderer
 local pause_screen_renderer
 local player_input
 local ticks = {}
+
+local sprite_renderer
+local fps_overlay_renderer
+local debug_overlay_renderer
+local ui_renderer
 
 local function reseed()
    if not seed then
@@ -70,9 +77,11 @@ local function reset()
       end
    )
 
-   renderer = SpriteRenderer(config.rendering, config.world, entity_manager, sprite_atlas)
-
+   debug_overlay_renderer = DebugOverlayRenderer(config.rendering, entity_manager)
+   fps_overlay_renderer = FpsOverlayRenderer(config.rendering)
    pause_screen_renderer = PauseScreenRenderer(config.rendering)
+   sprite_renderer = SpriteRenderer(config.rendering, config.world, entity_manager, sprite_atlas)
+   ui_renderer = UiRenderer(config.rendering, entity_manager)
 
    generate(config.world, entity_manager, components, sprite_quads)
 
@@ -150,7 +159,17 @@ end
 function love.draw()
    if game_paused then
       pause_screen_renderer:render()
-   else
-      renderer:render()
+      return
+   end
+
+   sprite_renderer:render()
+   ui_renderer:render()
+
+   if config.rendering.fps_overlay_enabled then
+      fps_overlay_renderer:render()
+   end
+
+   if config.rendering.debug_overlay_enabled then
+      debug_overlay_renderer:render()
    end
 end
