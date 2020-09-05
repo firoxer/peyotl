@@ -11,8 +11,8 @@ return tablex.strict({
       },
 
       window = {
-         width = 20,
-         height = 20,
+         width = 21,
+         height = 21,
       },
 
       fps_overlay_enabled = false,

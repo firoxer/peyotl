@@ -4,12 +4,12 @@ local TARGET_FPS = 60
 
 -- This is super rudimentary
 local FpsOverlayRenderer = prototype(function(self, rendering_config)
-   self._window_right_edge =
+   self._right_edge =
       rendering_config.window.width
       * rendering_config.tiles.size
       * rendering_config.tiles.scale
 
-   self._window_bottom_edge =
+   self._bottom_edge =
       rendering_config.window.height
       * rendering_config.tiles.size
       * rendering_config.tiles.scale
